@@ -1,2 +1,2 @@
 # lmmtools
-Tools for multilevel models r package.
+Tools for multilevel models R package.
