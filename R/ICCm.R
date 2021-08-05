@@ -11,8 +11,8 @@
 #'
 #' @example
 #' \donttest{
-#' mod0 <- lmer(mathgain ~ (1 | classid), data = instruction)
-#' ICCm(mod0)
+#' mod <- lmer(mathgain ~ (1 | classid), data = instruction)
+#' ICCm(mod)
 #'}
 #'
 #' @references Snijders, T. A. B. & Bosker, R. J. (2012). Multilevel Analysis (2nd Ed.). Sage Publications Ltd.
