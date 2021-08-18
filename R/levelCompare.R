@@ -4,11 +4,11 @@
 #'
 #' @param model A linear mixed-effects model of class lmerMod or lmerModLmerTest
 #'
-#' @return NEED
+#' @return Computes a likelihood ratio test of the requested model compared to a model with the same predictors but absent the random intercept(s) and slope(s). The p-value of this test is reported.
 #'
-#' @details NEED
+#' @details The likelihood ratio test is Chi-square distributed with as many degrees of freedom as there are random variances and covarances estimated. In a two-level model with a single random intercept, the likelihood ratio sampling distribution is Chi-square with 1 degree of freedom. levelCompare uses the anova() function to perform the likelihood ratio test. Note that because a variance cannot be negative, the actual reference distribution is a 50:50 mix of a spike at 0 and a Chi-square with 1 degree of freedom. The p-value reported does not take this into account and should be divided by 2. See Rabe-Hesketh & Skrondal (2012) Chapter 2, section 2.6.2 for further detail.
 #'
-#' @references NEED
+#' @references Rabe-Hesketh, S. & Skrondal, A. (2012) Multilevel and Longitudinal Modeling Using Stata, Third Ed., Volume 1.
 
 levelCompare <- function(model) {
 
