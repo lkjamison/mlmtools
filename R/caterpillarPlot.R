@@ -1,6 +1,6 @@
 # Caterpillar Plot
 
-# Plots Empirical Bayes Prediction Intervals for Each Random Effect Parameter Across all Groups
+# Plots empirical Bayes both point prediction and prediction intervals for each random effect parameter across all groups.
 
 #' @param model A given lmer model.
 #'
@@ -12,7 +12,15 @@
 #'
 #' @param grey Logical argument specifying whether the intervals should be plotted in color or greyscale.
 #'
-#' @references NEED
+#' @return
+#'
+#' @examples
+#'
+#' data(instruction)
+#' mod0 <- lmer(mathgain ~ (1 | classid), data = instruction)
+#' caterpillarPlot(mod0, title = "title", grpvar = "classid", grey = TRUE)
+#'
+#' @references Rabe-Hesketh S, Skrondal A (2012). Multilevel and Longitudinal Modeling Using Stata, Vol- umes I and II, Third Edition. 3 edition edition. Stata Press. ISBN 978-1-59718-108-2.
 
 caterpillarPlot <- function(model, grpvar, title = print(grpvar), tall = TRUE, grey = FALSE){
   condsd <- condval <- grp <- interval_95 <- NULL

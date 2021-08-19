@@ -1,6 +1,6 @@
 #' Plots Between Group Associations
 #'
-#' Plots the between-group and within-group associations between an outcome and predictor variable across two plots
+#' Plots the between-group and within-group associations between an outcome and predictor variable across two plots.
 #'
 #' @param x Predictor variable.
 #'
@@ -29,6 +29,14 @@
 #' @param size Width of fit line.
 #'
 #' @references Chow, S., Gilmore, R. O., Hallquist, M., Ram, N., & Brinberg, M. (2019). Introduction to multilevel model and interactions. GitHub. https://github.com/psu-psychology/r-bootcamp-2019/blob/master/talks/RBootcamp_MLMInteractions_2019_0820_Final2.Rmd
+#'
+#' @return
+#'
+#' @examples
+#'
+#' data(instruction)
+#' mathkind_betweenPlot <- betweenPlot(x = "mathkind", y = "mathgain", grouping = "classid", dataset = instruction,
+#'                                     xlab = "Kindergarten Math Score", ylab = "Gain in Math Score")
 #'
 #' @export center
 
