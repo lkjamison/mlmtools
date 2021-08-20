@@ -8,8 +8,6 @@
 #'
 #' @return Computes the percent variance explained by the model.
 #'
-#' @details Specifically,  1-(total variance for less parsimonious model/total variance for more parsimonious model).
-#'
 #' @example
 #'
 #' \donttest{
