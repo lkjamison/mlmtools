@@ -21,6 +21,7 @@
 #' caterpillarPlot(mod0, title = "title", grpvar = "classid", grey = TRUE)
 #'
 #' @references Rabe-Hesketh S, Skrondal A (2012). Multilevel and Longitudinal Modeling Using Stata, Vol- umes I and II, Third Edition. 3 edition edition. Stata Press. ISBN 978-1-59718-108-2.
+#' @export caterpillarPlot
 
 caterpillarPlot <- function(model, grpvar, title = print(grpvar), tall = TRUE, grey = FALSE){
   condsd <- condval <- grp <- interval_95 <- NULL
