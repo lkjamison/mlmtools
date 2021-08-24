@@ -14,7 +14,7 @@
 #'
 #' @return
 #'
-#' @examples
+#' @example
 #'
 #' data(instruction)
 #' mod0 <- lmer(mathgain ~ (1 | classid), data = instruction)
