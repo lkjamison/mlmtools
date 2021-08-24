@@ -1,7 +1,7 @@
-# Caterpillar Plot
-
-# Plots empirical Bayes both point prediction and prediction intervals for each random effect parameter across all groups.
-
+#' Caterpillar Plot
+#'
+#' Plots empirical Bayes both point prediction and prediction intervals for each random effect parameter across all groups.
+#'
 #' @param model A given lmer model.
 #'
 #' @param grpvar The name of the grouping variable of interest, as a character string.
