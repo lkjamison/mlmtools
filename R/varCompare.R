@@ -9,7 +9,7 @@
 #'
 #' @details Specifically,  1-(total variance for less parsimonious model/total variance for more parsimonious model).
 #'
-#' @example
+#' @examples
 #'
 #' \donttest{
 #' mod0 <- lmer(mathgain ~ (1 | classid), data = instruction)
