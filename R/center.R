@@ -12,7 +12,7 @@
 #'
 #' @return Creates two new variables in the data frame - a mean of the desired variable computed for each unique value in the grouping variable and a deviation score for each observation within the grouping variable that is that observation's raw score subtracted from the group mean.
 #'
-#' @example
+#' @examples
 #' \donttest{
 #' #Center student level socioeconomic status, "ses", around class mean "ses"
 #' center(instruction, "ses", "class")
