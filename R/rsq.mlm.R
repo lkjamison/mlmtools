@@ -8,7 +8,7 @@
 #'
 #' @return Computes the percent variance explained by the model.
 #'
-#' @example
+#' @examples
 #'
 #' \donttest{
 #' mod <- lmer(mathgain ~ classid_mathkind.cmn + classid_mathkind.devcmn + (1 | classid), data = instruction)
