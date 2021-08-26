@@ -32,6 +32,15 @@ Creates two new variables in the data frame - a mean of the desired variable com
 \description{
 Centers variables using the group-mean (person-mean) centering approach for mixed-effects models.
 }
+\examples{
+\donttest{
+#Center student level socioeconomic status, "ses", around class mean "ses"
+center(instruction, "ses", "class")
+#Center class-level variable teacher math knowledge, mathknow, around school mean "mathknow"
+center(instruction, "mathknow", "school")
+}
+
+}
 \references{
 Enders, C. & Tofighi, D. (2007). Centering predictor variables in cross-sectional multilevel models: A new look at an old problem. Psychological Methods, 12(2), 121–138
 }

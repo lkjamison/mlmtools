@@ -29,6 +29,12 @@ caterpillarPlot(
 \description{
 Plots empirical Bayes both point prediction and prediction intervals for each random effect parameter across all groups.
 }
+\examples{
+
+data(instruction)
+mod0 <- lmer(mathgain ~ (1 | classid), data = instruction)
+classid_caterpillarPlot <- caterpillarPlot(mod0, title = "title", grpvar = "classid", grey = TRUE)
+}
 \references{
 Rabe-Hesketh S, Skrondal A (2012). Multilevel and Longitudinal Modeling Using Stata, Vol- umes I and II, Third Edition. 3 edition edition. Stata Press. ISBN 978-1-59718-108-2.
 }

@@ -17,6 +17,14 @@ Computes the percent variance explained by the model.
 \description{
 Calculates variance explained by lme4-fitted mixed-effects models.
 }
+\examples{
+
+data(instruction)
+mod <- lmer(mathgain ~ classid_mathkind.cmn + classid_mathkind.devcmn + (1 | classid), data = instruction)
+rsq.mlm(mod)
+
+
+}
 \references{
 Nakagawa, S., Johnson, P. C., & Schielzeth, H. (2017). The coefficient of determination R 2 and intra-class correlation coefficient from generalized linear mixed-effects models revisited and expanded. Journal of the Royal Society Interface, 14(134), 20170213.
 }

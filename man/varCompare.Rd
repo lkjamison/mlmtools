@@ -20,6 +20,15 @@ Compares variance explained by additional fixed effects for two lme4-fitted mixe
 \details{
 Specifically,  1-(total variance for less parsimonious model/total variance for more parsimonious model).
 }
+\examples{
+
+\donttest{
+mod0 <- lmer(mathgain ~ (1 | classid), data = instruction)
+mod1 <- lmer(mathgain ~ mathkind + (1 | classid), data = instruction)
+varCompare(mod0, mod1)
+}
+
+}
 \references{
 Snijders, T. A. B. & Bosker, R. J. (2012). Multilevel Analysis (2nd Ed.). Sage Publications Ltd.
 }
