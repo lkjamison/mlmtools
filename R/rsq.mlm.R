@@ -8,6 +8,8 @@
 #'
 #' @return Computes the percent variance explained by the model.
 #'
+#' @references Nakagawa, S., Johnson, P. C., & Schielzeth, H. (2017). The coefficient of determination R 2 and intra-class correlation coefficient from generalized linear mixed-effects models revisited and expanded. Journal of the Royal Society Interface, 14(134), 20170213.
+#'
 #' @examples
 #'
 #' data(instruction)
@@ -15,7 +17,6 @@
 #' rsq.mlm(mod)
 #'
 #'
-#' @references Nakagawa, S., Johnson, P. C., & Schielzeth, H. (2017). The coefficient of determination R 2 and intra-class correlation coefficient from generalized linear mixed-effects models revisited and expanded. Journal of the Royal Society Interface, 14(134), 20170213.
 #' @export
 
 rsq.mlm <- function(model, by_cluster = FALSE){
