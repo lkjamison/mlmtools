@@ -27,15 +27,11 @@ center(
 \item{centerResult}{a logical value indicating whether resulting grouping summary variable values should be centered at 0}
 }
 \value{
-If \code{re_type} is "NA", the proportion of variance at the random effect is computed.
-
-If re_type = "nested", the likeness of y scores in the same level 3 unit (the proportion of variance at Level3_factor), the likeness of y scores in the same level 2 units in the same level 3 unit (proportion of variance at Level3_factor and Level2_factor), and the likeness of level 2 units in the same level 3 unit (proportion of Level2_factor variance at Level3_factor) are computed.
-
-If re_type = "cc", the likeness of y scores in the same C1_factor unit (correlation between outcome values of units in same C1_factor but different C2_factor), the likeness of y scores in the same C2_factor (correlation between outcome values of units in the same C2_factor but different C2_factor), and the likeness of y scores in the same C1_factor and C2_factor combination (correlation between outcome values of units in the same C2_factor and C2_factor) are computed.
+Creates two new variables in the data frame - a mean of the desired variable computed for each unique value in the grouping variable and a deviation score for each observation within the grouping variable that is that observation's raw score subtracted from the group mean.
 }
 \description{
 Centers variables using the group-mean (person-mean) centering approach for mixed-effects models.
 }
 \references{
-NEED
+Enders, C. & Tofighi, D. (2007). Centering predictor variables in cross-sectional multilevel models: A new look at an old problem. Psychological Methods, 12(2), 121–138
 }

@@ -35,10 +35,12 @@
 #' @examples
 #'
 #' data(instruction)
-#' mathkind_betweenPlot <- betweenPlot(x = "mathkind", y = "mathgain", grouping = "classid", dataset = instruction,
-#'                                     xlab = "Kindergarten Math Score", ylab = "Gain in Math Score")
+#' betweenPlot(x = "mathkind", y = "mathgain", grouping = "classid", dataset = instruction, xlab = "Kindergarten Math Score", ylab = "Gain in Math Score")
 #'
-#' @export center
+#' @export
+#'
+#' Plots Between Group Associations
+#' Updated 8.26.2021
 
 betweenPlot <- function(x, y, grouping, dataset, xlab = x, ylab = y, between_title = "Between-Group Association Plot", point_color = "gray40", line_color="black", se = FALSE, full_range = FALSE, lty=1, size=2){
 
