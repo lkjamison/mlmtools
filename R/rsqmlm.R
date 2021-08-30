@@ -14,12 +14,12 @@
 #'
 #' data(instruction)
 #' mod <- lmer(mathgain ~ classid_mathkind.cmn + classid_mathkind.devcmn + (1 | classid), data = instruction)
-#' rsq.mlm(mod)
+#' rsqmlm(mod)
 #'
 #'
 #' @export
 
-rsq.mlm <- function(model, by_cluster = FALSE){
+rsqmlm <- function(model, by_cluster = FALSE){
 
   mods <- list(model)
 
@@ -48,7 +48,7 @@ rsq.mlm <- function(model, by_cluster = FALSE){
 
   # Model contains random slopes
   if (lme4::getME(model, name = 'n_rtrms') == 2 & lme4::getME(model, name = 'cnms')[1] != "(Intercept)" & lme4::getME(model, name = 'cnms')[2] != "(Intercept)") {
-    stop("rsq.mlm cannot be calculated for models containing random slopes.", call. = FALSE)
+    stop("rsqmlm cannot be calculated for models containing random slopes.", call. = FALSE)
     return(NULL)
   }
 
@@ -120,7 +120,7 @@ rsq.mlm <- function(model, by_cluster = FALSE){
       "marginal" = r2_marginal*100,
       "conditional" = r2_conditional*100,
       "byCluster" = by_cluster))
-    class(res) <- "mlmtools_rsq.mlm"
+    class(res) <- "mlmtools_rsqmlm"
     return(res)
   }
 
@@ -164,13 +164,13 @@ rsq.mlm <- function(model, by_cluster = FALSE){
       "random" = r2_random*100,
       "byCluster" = by_cluster,
       "Level" = out$Level))
-    class(res) <- "mlmtools_rsq.mlm"
+    class(res) <- "mlmtools_rsqmlm"
     return(res)
   }
 }
 
 
-print.mlmtools_rsq.mlm <- function(x){
+print.mlmtools_rsqmlm <- function(x){
   if (x$byCluster == FALSE){
     cat(format(round(x$marginal, 2), nsmall = 2), "% of the total variance is explained by the fixed effects.", "\n", sep="")
     cat(format(round(x$conditional, 2), nsmall = 2),"% of the total variance is explained by both fixed and random effects.", sep="")
