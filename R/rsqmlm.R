@@ -12,12 +12,13 @@
 #'
 #' @examples
 #'
+#' \donttest{
 #' data(instruction)
 #' mod <- lmer(mathgain ~ classid_mathkind.cmn + classid_mathkind.devcmn + (1 | classid), data = instruction)
 #' rsqmlm(mod)
+#' }
 #'
-#'
-#' @export
+#' @export rsqmlm
 
 rsqmlm <- function(model, by_cluster = FALSE){
 
