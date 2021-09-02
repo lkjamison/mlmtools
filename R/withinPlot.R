@@ -32,13 +32,15 @@
 #'
 #' @examples
 #'
+#' \donttest{
 #' data(instruction)
 #' mathkind_withinPlot <- withinPlot(x = "mathkind", y = "mathgain", grouping = "classid", dataset = instruction,
 #'                                   xlab = "Kindergarten Math Score", ylab = "Gain in Math Score")
+#' }
 #'
 #' @references Chow, S., Gilmore, R. O., Hallquist, M., Ram, N., & Brinberg, M. (2019). Introduction to multilevel model and interactions. GitHub. https://github.com/psu-psychology/r-bootcamp-2019/blob/master/talks/RBootcamp_MLMInteractions_2019_0820_Final2.Rmd
 #'
-#' @export center
+#' @export withinPlot
 
 withinPlot <- function(x, y, grouping, dataset, xlab = x, ylab = y, within_title = "Within-Group Association Plot", point_color = "gray40", line_color="black", se = FALSE, full_range = FALSE, lty=1, size=2){
 
