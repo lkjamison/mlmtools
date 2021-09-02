@@ -1,6 +1,6 @@
 #' Centers variables for mixed effects models
 #'
-#' Centers variables using the group-mean (person-mean) centering approach for mixed-effects models.
+#' Centers variables using the group-mean (person-mean) centering approach for mixed-effects models, and adds these variables to the data frame.
 #'
 #' @param dataset A dataset containing the variables to be centered and the grouping variable
 #' @param x The variable or variables to be centered
