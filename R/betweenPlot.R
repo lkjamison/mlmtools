@@ -34,8 +34,10 @@
 #'
 #' @examples
 #'
+#' \donttest{
 #' data(instruction)
 #' betweenPlot(x = "mathkind", y = "mathgain", grouping = "classid", dataset = instruction, xlab = "Kindergarten Math Score", ylab = "Gain in Math Score")
+#' }
 #'
 #' @export
 #'
