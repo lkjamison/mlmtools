@@ -11,6 +11,7 @@
 #'
 #' @examples
 #' \donttest{
+#' data(instruction)
 #' mod <- lmer(mathgain ~ (1 | classid), data = instruction)
 #' ICCm(mod)
 #'}
