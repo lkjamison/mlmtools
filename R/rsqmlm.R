@@ -18,7 +18,7 @@
 #' rsqmlm(mod)
 #' }
 #'
-#' @export rsqmlm
+#' @export
 
 rsqmlm <- function(model, by_cluster = FALSE){
 
