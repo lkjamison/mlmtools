@@ -10,6 +10,14 @@
 #'
 #' @references Rabe-Hesketh, S. & Skrondal, A. (2012) Multilevel and Longitudinal Modeling Using Stata, Third Ed., Volume 1. College Station, TX: Stata Press.
 #' 
+#' @examples
+#' 
+#' \donttest{
+#' data(instruction)
+#' mod <- lmer(mathgain ~ (1 | classid), data = instruction)
+#' levelCompare(mod)
+#' }
+#'
 #' @export levelCompare
 
 levelCompare <- function(model) {
