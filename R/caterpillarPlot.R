@@ -12,15 +12,17 @@
 #'
 #' @param grey Logical argument specifying whether the intervals should be plotted in color or greyscale.
 #'
-#' @references Rabe-Hesketh S, Skrondal A (2012). Multilevel and Longitudinal Modeling Using Stata, Vol- umes I and II, Third Edition. 3 edition edition. Stata Press. ISBN 978-1-59718-108-2.
+#' @references Rabe-Hesketh S, Skrondal A (2012). Multilevel and Longitudinal Modeling Using Stata, Volumes I and II, Third Edition. 3 edition edition. Stata Press. ISBN 978-1-59718-108-2.
 #'
 #' @return
 #'
 #' @examples
 #'
+#' \donttest{
 #' data(instruction)
-#' mod0 <- lmer(mathgain ~ (1 | classid), data = instruction)
-#' classid_caterpillarPlot <- caterpillarPlot(mod0, title = "title", grpvar = "classid", grey = TRUE)
+#' mod <- lmer(mathgain ~ (1 | classid), data = instruction)
+#' classid_caterpillarPlot <- caterpillarPlot(mod, title = "title", grpvar = "classid", grey = TRUE)
+#' }
 
 caterpillarPlot <- function(model, grpvar, title = print(grpvar), tall = TRUE, grey = FALSE){
   condsd <- condval <- grp <- interval_95 <- NULL
