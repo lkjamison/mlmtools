@@ -39,7 +39,7 @@
 #' betweenPlot(x = "mathkind", y = "mathgain", grouping = "classid", dataset = instruction, xlab = "Kindergarten Math Score", ylab = "Gain in Math Score")
 #' }
 #'
-#' @export
+#' @export betweenPlot
 #'
 #' Plots Between Group Associations
 #' Updated 8.26.2021
