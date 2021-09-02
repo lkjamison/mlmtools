@@ -14,10 +14,11 @@
 #'
 #' @examples
 #' \donttest{
+#' data(instruction)
 #' #Center student level socioeconomic status, "ses", around class mean "ses"
-#' center(instruction, "ses", "class")
-#' #Center class-level variable teacher math knowledge, mathknow, around school mean "mathknow"
-#' center(instruction, "mathknow", "school")
+#' center(dataset = instruction, x = "ses", grouping = "classid")
+#' #Center class-level variable teacher's mathematic prepartion, mathprep, around school mean "mathprep"
+#' center(dataset = instruction, x = "mathprep", grouping = "schoolid")
 #'}
 #'
 #' @references Enders, C. & Tofighi, D. (2007). Centering predictor variables in cross-sectional multilevel models: A new look at an old problem. Psychological Methods, 12(2), 121–138
