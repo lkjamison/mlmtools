@@ -23,6 +23,8 @@
 #' mod <- lmer(mathgain ~ (1 | classid), data = instruction)
 #' classid_caterpillarPlot <- caterpillarPlot(mod, title = "title", grpvar = "classid", grey = TRUE)
 #' }
+#'
+#' @export caterpillarPlot 
 
 caterpillarPlot <- function(model, grpvar, title = print(grpvar), tall = TRUE, grey = FALSE){
   condsd <- condval <- grp <- interval_95 <- NULL
