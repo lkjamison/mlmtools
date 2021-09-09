@@ -55,9 +55,11 @@ Plots the within-group associations between an outcome and predictor variable ac
 }
 \examples{
 
+\donttest{
 data(instruction)
 mathkind_withinPlot <- withinPlot(x = "mathkind", y = "mathgain", grouping = "classid", dataset = instruction,
                                   xlab = "Kindergarten Math Score", ylab = "Gain in Math Score")
+}
 
 }
 \references{
