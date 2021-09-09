@@ -23,6 +23,7 @@ Computes ICC values for lme3-fitted mixed-effects models.
 }
 \examples{
 \donttest{
+data(instruction)
 mod <- lmer(mathgain ~ (1 | classid), data = instruction)
 ICCm(mod)
 }
