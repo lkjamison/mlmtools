@@ -55,8 +55,10 @@ Plots the between-group and within-group associations between an outcome and pre
 }
 \examples{
 
+\donttest{
 data(instruction)
 betweenPlot(x = "mathkind", y = "mathgain", grouping = "classid", dataset = instruction, xlab = "Kindergarten Math Score", ylab = "Gain in Math Score")
+}
 
 }
 \references{
