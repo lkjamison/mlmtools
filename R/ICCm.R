@@ -1,4 +1,4 @@
-#' Computes ICC values for mixed effects models
+#' Computes ICC values for mixed-effects models
 #'
 #' Computes ICC values for lme4-fitted mixed-effects models.
 #'
