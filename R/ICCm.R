@@ -1,6 +1,6 @@
 #' Computes ICC values for mixed effects models
 #'
-#' Computes ICC values for lme3-fitted mixed-effects models.
+#' Computes ICC values for lme4-fitted mixed-effects models.
 #'
 #' @param model A linear mixed-effects model of class lmerMod or lmerModLmerTest
 #' @param re_type A value indicating whether a model with two random effects is nested or cross-classified
