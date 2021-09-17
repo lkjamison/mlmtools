@@ -189,8 +189,10 @@ varCompare <- function(model1, model2) {
    		return(res)
  	}
 
+#' @method print mlmtools_varcompare
+#' @export
 
-  print.mlmtools_varcompare <- function(x){
+print.mlmtools_varcompare <- function(x){
   if (x$fe1 > x$fe2){
   cat(x$model1, "explains", "")
   cat(x$varEx, "%", sep="")
