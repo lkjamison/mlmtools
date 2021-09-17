@@ -171,6 +171,8 @@ rsqmlm <- function(model, by_cluster = FALSE){
   }
 }
 
+#' @method print mlmtools_rsqmlm
+#' @export
 
 print.mlmtools_rsqmlm <- function(x){
   if (x$byCluster == FALSE){
