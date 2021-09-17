@@ -147,6 +147,8 @@ ICCm <- function(model, re_type = c("NA")) {
 
 }
 
+#' @method print mlmtools_icc
+#' @export
 
 print.mlmtools_icc <- function(x){
   # one random effect
