@@ -13,8 +13,8 @@
 #'
 #' \donttest{
 #' data(instruction)
-#' mod0 <- lmer(mathgain ~ (1 | classid), data = instruction)
-#' mod1 <- lmer(mathgain ~ mathkind + (1 | classid), data = instruction)
+#' mod0 <- lme4::lmer(mathgain ~ (1 | classid), data = instruction)
+#' mod1 <- lme4::lmer(mathgain ~ mathkind + (1 | classid), data = instruction)
 #' varCompare(mod0, mod1)
 #' }
 #'
