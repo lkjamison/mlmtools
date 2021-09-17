@@ -14,7 +14,7 @@
 #'
 #' \donttest{
 #' data(instruction)
-#' mod <- lmer(mathgain ~ (1 | classid), data = instruction)
+#' mod <- lme4::lmer(mathgain ~ (1 | classid), data = instruction)
 #' levelCompare(mod)
 #' }
 #'
