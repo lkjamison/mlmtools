@@ -142,7 +142,7 @@ ICCm <- function(model, re_type = c("NA")) {
       	"ICC2" = round(icc2,3),
       	"ICC3" = round(icc3,3)))
    		class(res) <- "mlmtools_icc"
-   		print(res)
+   		print.mlmtools_icc(res)
  	}
 
 }
