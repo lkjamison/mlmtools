@@ -185,23 +185,10 @@ varCompare <- function(model1, model2) {
 	    "varEx" = varEx,
 	    "fe1" = fixEffmod1,
 	    "fe2" = fixEffmod2))
-   		class(res) <- "mlmtools_varcompare"
+   		class(res) <- "varCompare"
    		return(res)
  	}
 
-#' @method print mlmtools_varcompare
-#' @export
-
-print.mlmtools_varcompare <- function(x){
-  if (x$fe1 > x$fe2){
-  cat(x$model1, "explains", "")
-  cat(x$varEx, "%", sep="")
-  cat("","more variance than", x$model2)
-  } else {
-  cat(x$model2, "explains", "")
-  cat(x$varEx, "%", sep="")
-  cat("","more variance than", x$model1)}
-}
 
 
 
