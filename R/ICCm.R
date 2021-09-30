@@ -113,7 +113,7 @@ ICCm <- function(model, re_type = c("NA")) {
       	"ICC1" = NA,
       	"ICC2" = NA,
       	"ICC3" = NA))
-   		class(res) <- "mlmtools_icc"
+   		class(res) <- "ICCm"
    		return(res)
  	# two random effects - re_type = 'nested' - three level model
  	} else if(lme4::getME(model, name = 'n_rtrms') == 2 & re_type == 'nested') {
