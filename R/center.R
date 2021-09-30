@@ -244,18 +244,9 @@ center <- function(dataset, x, grouping, type = "mean", standardize = FALSE, cen
   # Variable names added to dataset
   resNames <- (list(
     "Variables" = colnames(resToAdd)))
-  class(resNames) <- "mlmtools_center"
+  class(resNames) <- "center"
   return(resNames)
 
 }
-
-#' @method print mlmtools_center
-#' @export
-
-print.mlmtools_center <- function(x){
-  cat("The following variables (group summary, deviation) were added to the dataset: \n", x$Variables, "\n")
-  cat("See mlmtools documentation for detailed description of variables added.")
-}
-
 
 
