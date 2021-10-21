@@ -22,7 +22,7 @@ The likelihood ratio test is Chi-square distributed with as many degrees of free
 
 \donttest{
 data(instruction)
-mod <- lmer(mathgain ~ (1 | classid), data = instruction)
+mod <- lme4::lmer(mathgain ~ (1 | classid), data = instruction)
 levelCompare(mod)
 }
 

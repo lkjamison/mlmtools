@@ -2,7 +2,7 @@
 % Please edit documentation in R/ICCm.R
 \name{ICCm}
 \alias{ICCm}
-\title{Computes ICC values for mixed effects models}
+\title{Computes ICC values for mixed-effects models}
 \usage{
 ICCm(model, re_type = c("NA"))
 }
@@ -19,12 +19,12 @@ If re_type = "nested", the likeness of y scores in the same level 3 unit (the pr
 If re_type = "cc", the likeness of y scores in the same C1_factor unit (correlation between outcome values of units in same C1_factor but different C2_factor), the likeness of y scores in the same C2_factor (correlation between outcome values of units in the same C2_factor but different C2_factor), and the likeness of y scores in the same C1_factor and C2_factor combination (correlation between outcome values of units in the same C2_factor and C2_factor) are computed.
 }
 \description{
-Computes ICC values for lme3-fitted mixed-effects models.
+Computes ICC values for lme4-fitted mixed-effects models.
 }
 \examples{
 \donttest{
 data(instruction)
-mod <- lmer(mathgain ~ (1 | classid), data = instruction)
+mod <- lme4::lmer(mathgain ~ (1 | classid), data = instruction)
 ICCm(mod)
 }
 

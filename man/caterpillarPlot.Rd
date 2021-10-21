@@ -33,7 +33,7 @@ Plots empirical Bayes both point prediction and prediction intervals for each ra
 
 \donttest{
 data(instruction)
-mod <- lmer(mathgain ~ (1 | classid), data = instruction)
+mod <- lme4::lmer(mathgain ~ (1 | classid), data = instruction)
 classid_caterpillarPlot <- caterpillarPlot(mod, title = "title", grpvar = "classid", grey = TRUE)
 }
 
