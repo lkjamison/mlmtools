@@ -14,8 +14,6 @@
 #'
 #' @references Rabe-Hesketh S, Skrondal A (2012). Multilevel and Longitudinal Modeling Using Stata, Volumes I and II, Third Edition. 3 edition edition. Stata Press. ISBN 978-1-59718-108-2.
 #'
-#' @return
-#'
 #' @examples
 #'
 #' \donttest{
