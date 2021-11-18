@@ -47,9 +47,6 @@ withinPlot(
 
 \item{size}{Width of fit line.}
 }
-\value{
-
-}
 \description{
 Plots the within-group associations between an outcome and predictor variable across two plots
 }
@@ -57,8 +54,9 @@ Plots the within-group associations between an outcome and predictor variable ac
 
 \donttest{
 data(instruction)
-mathkind_withinPlot <- withinPlot(x = "mathkind", y = "mathgain", grouping = "classid", dataset = instruction,
-                                  xlab = "Kindergarten Math Score", ylab = "Gain in Math Score")
+mathkind_withinPlot <- withinPlot(x = "mathkind", y = "mathgain",
+grouping = "classid", dataset = instruction,
+xlab = "Kindergarten Math Score", ylab = "Gain in Math Score")
 }
 
 }
