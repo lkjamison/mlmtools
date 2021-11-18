@@ -11,14 +11,14 @@
 #'
 #' @format A data frame with 1190 observations on the following 8 variables.
 #' \describe{
-#' \item{\code{female - female}}{Dummy variable for being female}
-#' \code{mathkind - mathkind}{Math achievement score in the spring of kindergarten}
-#' \code{mathgain - mathgain}{Gain in math achievement score from spring of kindergarten to spring of first grade}
-#' \code{ses - ses}{Socioeconomic status}
-#' \code{mathprep - mathprep}{First grade teacher's mathematic preparation (based on number of courses taken)}
-#' \code{classid - classid}{Classroom identifier}
-#' \code{schoolid - schoolid}{School identifier}
-#' \code{childid - childid}{Student identifier}
+#' \item{\code{female}}{Dummy variable for being female}
+#' \item{\code{mathkind}}{Math achievement score in the spring of kindergarten}
+#' \item{\code{mathgain}}{Gain in math achievement score from spring of kindergarten to spring of first grade}
+#' \item{\code{ses}}{Socioeconomic status}
+#' \item{\code{mathprep}}{First grade teacher's mathematic preparation (based on number of courses taken)}
+#' \item{\code{classid}}{Classroom identifier}
+#' \item{\code{schoolid}}{School identifier}
+#' \item{\code{childid}}{Student identifier}
 #' }
 #'
 #'
