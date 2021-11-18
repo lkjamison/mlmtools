@@ -17,7 +17,8 @@
 #' data(instruction)
 #' #Center student level socioeconomic status, "ses", around class mean "ses"
 #' center(dataset = instruction, x = "ses", grouping = "classid")
-#' #Center class-level variable teacher's mathematic prepartion, mathprep, around school mean "mathprep"
+#' #Center class-level variable teacher's mathematic prepartion,
+#' # mathprep, around school mean "mathprep"
 #' center(dataset = instruction, x = "mathprep", grouping = "schoolid")
 #'}
 #'
