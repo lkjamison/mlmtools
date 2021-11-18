@@ -9,13 +9,13 @@
 \alias{print.varCompare}
 \title{S3Methods for Printing}
 \usage{
-\method{print}{center}(x,  ...)
+\method{print}{center}(x, ...)
 
 \method{print}{ICCm}(x, ...)
 
 \method{print}{levelCompare}(x, ...)
 
-\method{print}{rsqmlm}(x,  ...)
+\method{print}{rsqmlm}(x, ...)
 
 \method{print}{varCompare}(x, ...)
 }

@@ -14,13 +14,13 @@
 #' print.varCompare
 #'
 #' @usage
-#' \method{print}{center}(x,  ...)
+#' \method{print}{center}(x, ...)
 #'
 #' \method{print}{ICCm}(x, ...)
 #'
 #' \method{print}{levelCompare}(x, ...)
 #'
-#' \method{print}{rsqmlm}(x,  ...)
+#' \method{print}{rsqmlm}(x, ...)
 #'
 #' \method{print}{varCompare}(x, ...)
 #'
@@ -34,14 +34,14 @@
 #'
 # Print center
 #' @export
-print.center <- function(x){
+print.center <- function(x, ...){
   cat("The following variables (group summary, deviation) were added to the dataset: \n", x$Variables, "\n")
   cat("See mlmtools documentation for detailed description of variables added.")
 } # DELETE ME
 
 # Print ICCm
 #' @export
-print.ICCm <- function(x){
+print.ICCm <- function(x, ...){
   # one random effect
   if(x$RandEff == 1){
     cat("Proportion of variance at the", x$factor1, "level:", x$ICC)
@@ -60,7 +60,7 @@ print.ICCm <- function(x){
 
 # Print levelCompare
 #' @export
-print.levelCompare <- function(x){
+print.levelCompare <- function(x, ...){
   if (x$resModel == "lmerModel"){
     cat("Chisq(", x$Df, ") = ", format(round(x$Chisq, 2), nsmall = 2), ", ", x$pVal.print, ", logLik = ", format(round(x$logLik, 2), nsmall = 2),".", '\n', sep = "")
     cat("The model that accounts for nesting (lmer model) fits the data significantly \nbetter than a model that does not account for nesting (lm model).", '\n')
@@ -72,7 +72,7 @@ print.levelCompare <- function(x){
 
 # Print rsqmlm
 #' @export
-print.rsqmlm <- function(x){
+print.rsqmlm <- function(x, ...){
   if (x$byCluster == FALSE){
     cat(format(round(x$marginal, 2), nsmall = 2), "% of the total variance is explained by the fixed effects.", "\n", sep="")
     cat(format(round(x$conditional, 2), nsmall = 2),"% of the total variance is explained by both fixed and random effects.", sep="")
@@ -85,7 +85,7 @@ print.rsqmlm <- function(x){
 
 # Print varCompare
 #' @export
-print.varCompare <- function(x){
+print.varCompare <- function(x, ...){
   if (x$fe1 > x$fe2){
     cat(x$model1, "explains", "")
     cat(x$varEx, "%", sep="")
