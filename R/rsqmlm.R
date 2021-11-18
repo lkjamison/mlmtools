@@ -15,7 +15,8 @@
 #' \donttest{
 #' data(instruction)
 #' center(dataset = instruction, x = "mathkind", grouping = "classid")
-#' mod <- lme4::lmer(mathgain ~ classid_mathkind.cmn + classid_mathkind.devcmn + (1 | classid), data = instruction)
+#' mod <- lme4::lmer(mathgain ~ classid_mathkind.cmn +
+#' classid_mathkind.devcmn + (1 | classid), data = instruction)
 #' rsqmlm(mod)
 #' }
 #'
