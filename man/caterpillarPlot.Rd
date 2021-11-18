@@ -23,9 +23,6 @@ caterpillarPlot(
 
 \item{grey}{Logical argument specifying whether the intervals should be plotted in color or greyscale.}
 }
-\value{
-
-}
 \description{
 Plots empirical Bayes both point prediction and prediction intervals for each random effect parameter across all groups.
 }
