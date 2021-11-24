@@ -123,7 +123,7 @@ rsqmlm <- function(model, by_cluster = FALSE){
       "marginal" = r2_marginal*100,
       "conditional" = r2_conditional*100,
       "byCluster" = by_cluster))
-    class(res) <- "mlmtools_rsqmlm"
+    class(res) <- "rsqmlm"
     return(res)
   }
 
