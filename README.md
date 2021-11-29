@@ -15,4 +15,13 @@ Jamison, Erik Ruzek, and Gus Sjobek.
 
 # Hex
 
-Put desired hex sticker into the folder man/figures/ (name it hex.png)
+-   Put desired hex sticker into the folder man/figures/ (name it
+    hex.pn)
+
+# website
+
+-   after merge, go to `settings` (by insights) and then `Pages`. Once
+    there, enable github pages for master branch, and switch from `root`
+    to `docs`.
+
+-   to build website, use `pkgdown::build_site()`
