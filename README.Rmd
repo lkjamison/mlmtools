@@ -30,3 +30,5 @@ there, enable github pages for master branch, and switch from `root`
 to `docs`.
 
 * to build website, use `pkgdown::build_site()`
+
+* click gear by "About", and enter in website.

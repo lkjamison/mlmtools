@@ -25,3 +25,5 @@ Jamison, Erik Ruzek, and Gus Sjobek.
     to `docs`.
 
 -   to build website, use `pkgdown::build_site()`
+
+-   click gear by “About,” and enter in website.
