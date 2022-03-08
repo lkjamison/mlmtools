@@ -35,7 +35,7 @@
 # Print center
 #' @export
 print.center <- function(x, ...){
-  cat("The following variables (group summary, deviation) were added to the dataset: \n", x$Variables, "\n")
+  cat("The following variables (deviation, group summary) were added to the dataset: \n", x$Variables, "\n")
   cat("See mlmtools documentation for detailed description of variables added.")
 } # DELETE ME
 
