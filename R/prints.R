@@ -44,12 +44,12 @@ print.center <- function(x, ...){
 print.ICCm <- function(x, ...){
   # one random effect
   if(x$RandEff == 1){
-    cat("Proportion of variance at the", x$factor1, "level:", x$ICC)
+    cat("Likeness of", x$outcome, "values of units in the same", x$factor1, "factor:", x$ICC)
     # two random effects - re_type = 'nested' - three level model
   } else if(x$RandEff == 2 & x$type == 'nested') {
-    cat("Proportion of variance at the", x$factor1, "level:", x$ICC1, '\n')
-    cat("Proportion of variance at the", x$factor1, "level and the", x$factor2, "level:", x$ICC2, '\n')
-    cat("Proportion of", x$factor2, "level variance at the", x$factor1, "level:", x$ICC3)
+    cat("Likeness of", x$outcome, "values of units in the same", x$factor1, "level:", x$ICC1, '\n')
+    cat("Likeness of", x$outcome, "values of units in the same", x$factor1, "level and the same", x$factor2, "level:", x$ICC2, '\n')
+    cat("Likeness of", x$outcome, "values of units in the same", x$factor2, "level after controlling for the", x$factor1, "level:", x$ICC3, '\n')
     # two random effects - re_type = 'cc' - cross-classified model
   } else if(x$RandEff == 2 & x$type == 'cc') {
     cat("Likeness of", x$outcome, "values of units in the same", x$factor2, "factor but different", x$factor1, "factor:", x$ICC1, '\n')
