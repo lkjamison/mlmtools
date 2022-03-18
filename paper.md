@@ -22,7 +22,7 @@ affiliations:
     index: 2
 date: 08 March 2022
 year: 2022
-bibliography: refs.bib
+bibliography: inst/refs.bib
 ---
 
 # Summary
@@ -63,7 +63,7 @@ The ICC, or likeness of mathgain values at the class level is 0.15. Stated equiv
 ```{r}
 caterpillarPlot(mod0, title = "title", grpvar = "classid", grey = TRUE)
 ```
-![Caterpillar Plot](/Users/golinolab/Dropbox/mlmtools/Journal Submission/JOSS Article/figure_1.png)
+![Caterpillar Plot](man/figures/figure_1.png)
 
 This plot shows the 95% prediction intervals for the random intercepts for classrooms in the data based on the null model. 
 
@@ -146,7 +146,7 @@ mathkind_withinPlot <- withinPlot(x = "mathkind", y = "mathgain",
                                   xlab = "Kindergarten Math Score",
                                   ylab = "Gain in Math Score")
 ```
-![Within-Group Association Plot](/Users/golinolab/Dropbox/mlmtools/Journal Submission/JOSS Article/figure_3.png)
+![Within-Group Association Plot](man/figures/figure_2.png)
 
 The unadjusted within-classroom associations between maths scores in kindergarten and maths gains are visualized above and the between classroom association below. 
 
@@ -157,7 +157,7 @@ mathkind_betweeenPlot <- betweenPlot(x = "mathkind", y = "mathgain",
                                      xlab = "Kindergarten Math Score",
                                      ylab = "Gain in Math Score")
 ```
-![Between-Group Association Plot](/Users/golinolab/Dropbox/mlmtools/Journal Submission/JOSS Article/figure_2.png)
+![Between-Group Association Plot](man/figures/figure_3.png)
 
 
 # Acknowledgements
