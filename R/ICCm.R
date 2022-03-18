@@ -115,27 +115,16 @@ ICCm <- function(model, re_type = c("NA")) {
       	"ICC3" = NA))
    		class(res) <- "ICCm"
    		return(res)
- 	# two random effects - re_type = 'nested' - three level model
- 	} else if(lme4::getME(model, name = 'n_rtrms') == 2 & re_type == 'nested') {
+ 	# two random effects - three level model
+ 	} else if(lme4::getME(model, name = 'n_rtrms') == 2) {
  	 	res <- (list(
   	  	"RandEff" = 2,
-  	  	"type" = 'nested',
+  	  	"type" = re_type,
   	  	"factor1" = gsub("(:).*","",names(lme4::VarCorr(model)))[2],
-  	  	"factor2" = gsub("(:).*","",names(lme4::VarCorr(model)))[1],
-  	  	"outcome" = names(stats::model.frame(model))[1],
-      	"ICC" = NA,
-      	"ICC1" = round(icc1,3),
-      	"ICC2" = round(icc2,3),
-      	"ICC3" = round(icc3,3)))
-   		class(res) <- "ICCm"
-   		return(res)
-	# two random effects - re_type = 'cc' - cross-classified model
- 	} else if(lme4::getME(model, name = 'n_rtrms') == 2 & re_type == 'cc') {
- 	 	res <- (list(
-  	  	"RandEff" = 2,
-  	  	"type" = 'cc',
-  	  	"factor1" = names(lme4::VarCorr(model))[1],
-  	  	"factor2" = names(lme4::VarCorr(model))[2],
+  	  	"factor2" = if(sum(grepl("/", model@call, fixed = TRUE)) == 0) {
+  	  	   gsub(".*(:)","",names(lme4::VarCorr(model)))[1] # If model is specified as (1|a)+(1|a:b)) or (1|a)+(1|b)
+  	  	} else { gsub(").*","",gsub(".*(/)","",mod4@call)[2]) # If model is specified as (1|a/b)
+  	  	},
   	  	"outcome" = names(stats::model.frame(model))[1],
       	"ICC" = NA,
       	"ICC1" = round(icc1,3),
