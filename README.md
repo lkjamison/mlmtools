@@ -35,22 +35,12 @@ To install the latest release version (0.0.0.9) from
 ``` r
 # install.packages("devtools")
 devtools::install_github("lj5yn/mlmtools")
-#> Downloading GitHub repo lj5yn/mlmtools@HEAD
-<<<<<<< HEAD
-#> Installing 1 packages: Rcpp
-#> Installing package into 'C:/Users/erik.ruzek/AppData/Local/Temp/1/RtmpCyJOvF/temp_libpath51282ae578da'
-#> (as 'lib' is unspecified)
-#> Installing package into 'C:/Users/erik.ruzek/AppData/Local/Temp/1/RtmpCyJOvF/temp_libpath51282ae578da'
-=======
 #> Rcpp (1.0.8 -> 1.0.8.3) [CRAN]
-#> Installing 1 packages: Rcpp
-#> Installing package into 'C:/Users/erik.ruzek/AppData/Local/Temp/1/RtmpCyJOvF/temp_libpath51284b2f6c6f'
-#> (as 'lib' is unspecified)
 #> package 'Rcpp' successfully unpacked and MD5 sums checked
 #> 
 #> The downloaded binary packages are in
-#>  C:\Users\erik.ruzek\AppData\Local\Temp\1\Rtmp6DnsmB\downloaded_packages
-#>       v  checking for file 'C:\Users\erik.ruzek\AppData\Local\Temp\1\Rtmp6DnsmB\remotes2c41e88b\lj5yn-mlmtools-7364190/DESCRIPTION'
+#>  C:\Users\erik.ruzek\AppData\Local\Temp\1\Rtmpg5xs3A\downloaded_packages
+#>       v  checking for file 'C:\Users\erik.ruzek\AppData\Local\Temp\1\Rtmpg5xs3A\remotes1710413c5e56\lj5yn-mlmtools-74df022/DESCRIPTION'
 #>       -  preparing 'mlmtools':
 #>    checking DESCRIPTION meta-information ...     checking DESCRIPTION meta-information ...   v  checking DESCRIPTION meta-information
 #>       -  checking for LF line-endings in source and make files and shell scripts
@@ -60,12 +50,9 @@ devtools::install_github("lj5yn/mlmtools")
 #>      serialize/load version 3 cannot be read in older versions of R.
 #>      File(s) containing such objects:
 #>        'mlmtools/Data/instruction.rda'
-#>   -  building 'mlmtools_0.0.0.9000.tar.gz'
+#> -  building 'mlmtools_0.0.0.9000.tar.gz'
 #>      
 #> 
-#> Installing package into 'C:/Users/erik.ruzek/AppData/Local/Temp/1/RtmpCyJOvF/temp_libpath51284b2f6c6f'
->>>>>>> 03792c21d74ddfae49919204fcdabb0fde7efb6e
-#> (as 'lib' is unspecified)
 ```
 
 ## Sample workflow
