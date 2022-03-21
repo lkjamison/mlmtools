@@ -35,24 +35,6 @@ To install the latest release version (0.0.0.9) from
 ``` r
 # install.packages("devtools")
 devtools::install_github("lj5yn/mlmtools")
-#> Rcpp (1.0.8 -> 1.0.8.3) [CRAN]
-#> package 'Rcpp' successfully unpacked and MD5 sums checked
-#> 
-#> The downloaded binary packages are in
-#>  C:\Users\erik.ruzek\AppData\Local\Temp\1\Rtmpg5xs3A\downloaded_packages
-#>       v  checking for file 'C:\Users\erik.ruzek\AppData\Local\Temp\1\Rtmpg5xs3A\remotes1710413c5e56\lj5yn-mlmtools-74df022/DESCRIPTION'
-#>       -  preparing 'mlmtools':
-#>    checking DESCRIPTION meta-information ...     checking DESCRIPTION meta-information ...   v  checking DESCRIPTION meta-information
-#>       -  checking for LF line-endings in source and make files and shell scripts
-#>       -  checking for empty or unneeded directories
-#>      NB: this package now depends on R (>=        NB: this package now depends on R (>= 3.5.0)
-#>      WARNING: Added dependency on R >= 3.5.0 because serialized objects in
-#>      serialize/load version 3 cannot be read in older versions of R.
-#>      File(s) containing such objects:
-#>        'mlmtools/Data/instruction.rda'
-#> -  building 'mlmtools_0.0.0.9000.tar.gz'
-#>      
-#> 
 ```
 
 ## Sample workflow
@@ -92,7 +74,7 @@ plots, which graph the 95% prediction intervals for the random effects.
 withinPlot(x = "mathkind", y = "mathgain", grouping = "classid", dataset = instruction)
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="75%" />
+<img src="man/figures/README-unnamed-chunk-3-1.png" width="75%" />
 
 ``` r
 # caterpillar plot
@@ -100,4 +82,4 @@ caterpillarPlot(fit2, grpvar = "classid")
 #> [1] "classid"
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-2.png" width="75%" />
+<img src="man/figures/README-unnamed-chunk-3-2.png" width="75%" />
