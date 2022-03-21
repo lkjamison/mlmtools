@@ -20,7 +20,7 @@ Tools for multilevel models R package. Developed by Jessica Mazen, Laura Jamison
 
 # Hex
 
-* Put desired hex sticker into the folder man/figures/ (name it hex.pn)
+* Put desired hex sticker into the folder man/figures/ (name it hex.png)
 
 
 # website

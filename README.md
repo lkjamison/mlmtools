@@ -16,7 +16,7 @@ Jamison, Erik Ruzek, and Gus Sjobek.
 # Hex
 
 -   Put desired hex sticker into the folder man/figures/ (name it
-    hex.pn)
+    hex.png)
 
 # website
 
