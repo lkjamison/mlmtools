@@ -1,11 +1,17 @@
 ---
 output: 
   github_document
-bibliography: inst/REFERENCES.bib
 ---
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "75%"
+)
+```
 
-<img src="man/figures/hex.png" width = 250 />
 
 
 # mlmtools
