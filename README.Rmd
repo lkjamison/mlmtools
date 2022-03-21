@@ -60,6 +60,8 @@ varCompare(fit2, fit1)
 
 ## Visualizations
 
+Rich visualizations of associations can be had along with caterpillar plots, which graph the 95% prediction intervals for the random effects.
+
 ```{r}
 # visualze within-group association
 withinPlot(x = "mathkind", y = "mathgain", grouping = "classid", dataset = instruction)
