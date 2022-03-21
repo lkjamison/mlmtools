@@ -21,6 +21,7 @@ Multilevel and mixed effects models often require specialized data pre-processin
 The package was developed by Jessica Mazen, Laura Jamison, Erik Ruzek, and Gus Sjobek.
 
 ## Included functions
+* Center level-1 predictors around their group (cluster) means
 * Intraclass correlation coefficients (ICC)
 * Variance explained
   + When comparing nested models
@@ -35,7 +36,7 @@ The package was developed by Jessica Mazen, Laura Jamison, Erik Ruzek, and Gus S
 ## Installation
 To install the latest release version (0.0.0.9) from [GitHub](https://github.com/) with:
 
-``` {r, message=FALSE}
+``` r
 # install.packages("devtools")
 devtools::install_github("lj5yn/mlmtools")
 ```
