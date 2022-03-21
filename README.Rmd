@@ -9,26 +9,62 @@ bibliography: inst/REFERENCES.bib
 
 
 # mlmtools
-Tools for multilevel models R package. Developed by Jessica Mazen, Laura Jamison, Erik Ruzek, and Gus Sjobek.
 
-# Build README
+Multilevel and mixed effects models often require specialized data pre-processing and further post-estimation derivations and graphics to gain insight into model results. `mlmtools` is a suite of pre- and post-estimation tools for multilevel models in R. The package's post-estimation tools are designed to work with models estimated using `lme4`'s lmer function, which fits linear mixed effects regression models. Although nearly all the functions provided in the `mlmtools` package exist as singleton functions within other R packages, they are often improved in `mlmtools` and more accessible by being located within a multilevel modeling specific package.
 
-* only make changes to  `README.Rmd`
+The package was developed by Jessica Mazen, Laura Jamison, Erik Ruzek, and Gus Sjobek.
 
-* to build `README.md` from  `README.Rmd` use `devtools::build_readme()`
+## Included functions
+* Intraclass correlation coefficients (ICC)
+* Variance explained
+  + When comparing nested models
+  + $R^2$
+* Test of necessity of random intercepts
+* Visualizations 
+  + Associations between variables within clusters
+  + Associations between variables between clusters
+  + Caterpillar plots
 
 
-# Hex
+## Installation
+To install the latest release version (0.0.0.9) from [GitHub](https://github.com/) with:
 
-* Put desired hex sticker into the folder man/figures/ (name it hex.pn)
+``` {r}
+# install.packages("devtools")
+devtools::install_github("lj5yn/mlmtools")
+```
 
+## Sample workflow
 
-# website
+Working with the included data, we briefly show how some of the included functions can be used. 
 
-* after merge, go to `settings` (by insights) and then `Pages`. Once
-there, enable github pages for master branch, and switch from `root`
-to `docs`.
+```{r}
+# data
+library(mlmtools)
+library(lme4)
+data("instruction")
 
-* to build website, use `pkgdown::build_site()`
+# fit variance components model
+fit1 <- lmer(mathgain ~ 1 + (1|classid), instruction)
+  
+# intraclass correlation coefficient
+ICCm(fit1)
 
-* click gear by "About", and enter in website.
+# add predictor
+fit2 <- lmer(mathgain ~ mathkind + (1|classid), instruction)
+
+# variance explained by adding predictor
+varCompare(fit2, fit1)
+
+```
+
+## Visualizations
+
+```{r}
+# visualze within-group association
+withinPlot(x = "mathkind", y = "mathgain", grouping = "classid", dataset = instruction)
+
+# caterpillar plot
+caterpillarPlot(fit2, grpvar = "classid")
+```
+
