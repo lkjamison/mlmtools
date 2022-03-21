@@ -35,7 +35,7 @@ The package was developed by Jessica Mazen, Laura Jamison, Erik Ruzek, and Gus S
 ## Installation
 To install the latest release version (0.0.0.9) from [GitHub](https://github.com/) with:
 
-``` {r}
+``` {r, results='hide'}
 # install.packages("devtools")
 devtools::install_github("lj5yn/mlmtools")
 ```
