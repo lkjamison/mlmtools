@@ -57,8 +57,11 @@ fit1 <- lmer(mathgain ~ 1 + (1|classid), instruction)
 # intraclass correlation coefficient
 ICCm(fit1)
 
-# add predictor
-fit2 <- lmer(mathgain ~ mathkind + (1|classid), instruction)
+# group-mean center mathkind 
+center(instruction, x="mathkind", grouping = "classid")
+
+# add group-mean centered and group mean as predictors
+fit2 <- lmer(mathgain ~ classid_mathkind.devcmn + classid_mathkind.cmn + (1|classid), instruction)
 
 # variance explained by adding predictor
 varCompare(fit2, fit1)
