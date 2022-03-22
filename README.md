@@ -57,12 +57,18 @@ fit1 <- lmer(mathgain ~ 1 + (1|classid), instruction)
 ICCm(fit1)
 #> Likeness of mathgain values of units in the same classid factor: 0.149
 
-# add predictor
-fit2 <- lmer(mathgain ~ mathkind + (1|classid), instruction)
+# group-mean center mathkind 
+center(instruction, x="mathkind", grouping = "classid")
+#> The following variables (deviation, group summary) were added to the dataset: 
+#>  classid_mathkind.devcmn classid_mathkind.cmn 
+#> See mlmtools documentation for detailed description of variables added.
+
+# add group-mean centered and group mean as predictors
+fit2 <- lmer(mathgain ~ classid_mathkind.devcmn + classid_mathkind.cmn + (1|classid), instruction)
 
 # variance explained by adding predictor
 varCompare(fit2, fit1)
-#> fit2 explains 30.91% more variance than fit1
+#> fit2 explains 31.08% more variance than fit1
 ```
 
 ## Visualizations
