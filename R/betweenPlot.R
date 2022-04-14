@@ -136,8 +136,6 @@ betweenPlot <- function(x, y, grouping, dataset, xlab = x, ylab = y, between_tit
   }
 
   # respecify variables as centered
-  #invisible(mlmtools::center(temp, c("x","y"), "grouping", type = "mean", standardize = FALSE, centerResult = FALSE))
-
   invisible(center(temp, c("x","y"), "grouping", type = "mean", standardize = FALSE, centerResult = FALSE))
 
   ##### Between-group plot
