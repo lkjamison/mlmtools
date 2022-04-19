@@ -39,14 +39,15 @@ mlm_assumptions <- function(model) {
 
   residlinearity.plot <- plot(resid(model),#extract the residuals
                          data[,y]) #specify original y variable
-  test <- lapply(as.list(x), FUN = function(data) ggplot2::ggplot(data, ggplot2::aes_string(x=x, y=y)) +
-           ggplot2::geom_point()+
-           ggplot2::geom_smooth(method=stats::loess) +
-           ggplot2::theme_classic())
-  linearity.plot <- ggplot2::ggplot(data, ggplot2::aes_string(x=x, y=y)) +
-    ggplot2::geom_point()+
-    ggplot2::geom_smooth(method=stats::loess) +
-    ggplot2::theme_classic()
+
+  # https://rpubs.com/paul4forest/ggplot_lapply
+  linearityplot_fun <- function(xvar){
+    ggplot2::ggplot(data, ggplot2::aes_string(x=xvar, y=y)) +
+      ggplot2::geom_point()+
+      ggplot2::geom_smooth(method=stats::loess) +
+      ggplot2::theme_classic()
+  }
+  linearity.plots <- lapply(x, linearityplot_fun)
 
   # Homogeneity of Variance
 
