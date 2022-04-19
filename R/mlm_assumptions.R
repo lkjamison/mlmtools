@@ -26,22 +26,27 @@ mlm_assumptions <- function(model) {
   }
 
   # Data
-
-  call <- stats::getCall(model)
-  data <- call[["data"]]
-  data <- eval(data, parent.frame())
+  data <- getData(model)
 
   # Original y variable
 
-  form <- deparse(call[["formula"]])
-  y <- trimws(strsplit(form, "[~+]")[[1]][1])
+  form <- deparse(formula(model))
+  y <- trimws(strsplit(form, "[~+]")[[1]][1]) # Extracts dependent variable from the model
+  x <- attributes(terms(model))$term.labels # Extracts independent variables from the model
+
 
   # Linearity
 
-  ##### TO DO: should these plot all variables?
-
-  linearity.plot <- plot(resid(model),#extract the residuals
+  residlinearity.plot <- plot(resid(model),#extract the residuals
                          data[,y]) #specify original y variable
+  test <- lapply(as.list(x), FUN = function(data) ggplot2::ggplot(data, ggplot2::aes_string(x=x, y=y)) +
+           ggplot2::geom_point()+
+           ggplot2::geom_smooth(method=stats::loess) +
+           ggplot2::theme_classic())
+  linearity.plot <- ggplot2::ggplot(data, ggplot2::aes_string(x=x, y=y)) +
+    ggplot2::geom_point()+
+    ggplot2::geom_smooth(method=stats::loess) +
+    ggplot2::theme_classic()
 
   # Homogeneity of Variance
 
@@ -57,6 +62,9 @@ mlm_assumptions <- function(model) {
   qqline(resid(model))
 
   lattice::qqmath(model, id=0.05)
+  lme4::ggmath
+  lme4:ggmath.ranef.mer
+
 
   # Multicollinearity
 
