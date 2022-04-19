@@ -37,10 +37,14 @@ mlm_assumptions <- function(model) {
 
   # Linearity
 
-  residlinearity.plot <- plot(resid(model),#extract the residuals
-                         data[,y]) #specify original y variable
+  residlinearity.plot <- ggplot2::ggplot(as.data.frame(cbind(resid(model),data[,y])),
+                                         ggplot2::aes(x = V1, y = V2)) +
+    ggplot2::geom_point() +
+    ggplot2::geom_smooth(method=stats::loess) +
+    ggplot2::theme_classic() +
+    ggplot2::xlab("Residuals") +
+    ggplot2::ylab("Original y")
 
-  # https://rpubs.com/paul4forest/ggplot_lapply
   linearityplot_fun <- function(xvar){
     ggplot2::ggplot(data, ggplot2::aes_string(x=xvar, y=y)) +
       ggplot2::geom_point()+
@@ -71,9 +75,6 @@ mlm_assumptions <- function(model) {
 
   ##### TO DO: vif is from car, eigen requires numeric
 
-  # Autocorrelation
-
-  ##### TO DO: do we need this? Longitudinal argument?
-
+  return(residlinearity.plot, linearity.plots)
 }
 
