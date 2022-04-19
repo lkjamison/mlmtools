@@ -20,7 +20,7 @@
 #'
 #' @export levelComparePlot
 
-levelComparePlot <- function(model, xlab = x, ylab = y, estimation_title = "Estimations Plot"){
+estimationsPlot <- function(model, xlab = x, ylab = y, estimation_title = "Estimations Plot"){
 
   # Error if model not of class merMod
 
