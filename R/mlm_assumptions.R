@@ -70,19 +70,21 @@ mlm_assumptions <- function(model) {
 
   data$Leverage = data$predicted/(1 - data$predicted)
   data$mse = (residuals(model))^2/var(residuals(model))
-  data$CooksD <- (1/6)*(mse)*Leverage
+  data$CooksD <- (1/6)*(data$mse)*data$Leverage
   Outliers <- rownames(data[data$CooksD > (4/nrow(data)),])
-
+  y.resid <- as.vector(quantile(residuals(model,scaled = TRUE), c(0.25, 0.75), names = FALSE, type = 7, na.rm = TRUE))
+  x.resid <- qnorm(c(0.25, 0.75))
+  slope <- diff(y.resid)/diff(x.resid)
+  int <- y.resid[[1L]] - slope * x.resid[[1L]]
   residNorm <- ggplot2::ggplot(data, ggplot2::aes(qqnorm(residuals(model,scaled = TRUE))[[1]], residuals(model, scaled = TRUE))) +
     ggplot2::geom_point(na.rm = TRUE) +
-    try(ggplot2::geom_abline(ggplot2::aes(qqline(residuals(model,scaled = TRUE)))), silent = TRUE) +
+    ggplot2::geom_abline(slope = slope, intercept = int) +
     ggplot2::xlab("Theoretical Quantiles") +
     ggplot2::ylab("Standardized Residuals") +
     ggplot2::ggtitle("Normal Q-Q") +
     ggplot2::theme_classic()
 
   # Multicollinearity
-
   if (length(x) < 2) stop("model contains fewer than 2 terms")
   v <- as.matrix(vcov(model))
   assign <- attr(model.matrix(model), "assign")
