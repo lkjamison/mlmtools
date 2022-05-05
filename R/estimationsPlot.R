@@ -57,6 +57,8 @@ estimationsPlot <- function(model, xlab = x, ylab = y, estimation_title = "Estim
 
   means <- aggregate(predicted ~ age + Sex, data = predicted_data, FUN= "mean" )
 
+  ### TRY USING GGPREDICT AND RANEF - CHECK IF GGEFFECTS DOES THIS BETTER OR IN A MORE USEFUL WAY
+
   estimations.plot <- ggplot(Orthodont, aes(x=age, y=distance, colour=Sex)) +
     geom_point(size=3) +
     geom_line(aes(y=predict(fm3), group=Subject, size="Subjects")) +

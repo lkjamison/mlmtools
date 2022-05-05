@@ -11,12 +11,6 @@
 #' @references
 
 mlm_assumptions <- function(model) {
-  # Resources:
-
-  #https://stats.stackexchange.com/questions/77891/checking-assumptions-lmer-lme-mixed-models-in-r
-  #https://stats.stackexchange.com/questions/376273/assumptions-for-lmer-models
-  #https://ademos.people.uic.edu/Chapter18.html#62_assumption_2_homogeneity_of_variance
-  #https://bookdown.org/animestina/phd_july_19/testing-the-assumptions.html
 
   # Model class must be 'lmerMod' or 'lmerModLmerTest'
   classCheck <- class(model) == "lmerMod" || class(model) == "lmerModLmerTest"
@@ -29,13 +23,11 @@ mlm_assumptions <- function(model) {
   data <- getData(model)
 
   # Original y variable
-
   form <- deparse(formula(model))
   y <- trimws(strsplit(form, "[~+]")[[1]][1]) # Extracts dependent variable from the model
   x <- attributes(terms(model))$term.labels # Extracts independent variables from the model
 
   # Linearity
-
   linearityplot_fun <- function(xvar){
     ggplot2::ggplot(data, ggplot2::aes_string(x=xvar, y=y)) +
       ggplot2::geom_point()+
@@ -45,22 +37,23 @@ mlm_assumptions <- function(model) {
   linearity.plots <- lapply(x, linearityplot_fun)
 
   # Homogeneity of Variance
-
-  data$model.Res<- abs(residuals(model))^2 # squares the absolute values of the residuals to provide the more robust estimate
-  Levene.model <- lm(model.Res ~ classid, data=data) #ANOVA of the squared residuals
+  data$model.Res2<- abs(residuals(model))^2 # squares the absolute values of the residuals to provide the more robust estimate
+  Levene.model <- lm(model.Res2 ~ classid, data=data) #ANOVA of the squared residuals
   homo.test <- anova(Levene.model) #displays the results
+
   data$predicted <- predict(model)
   #create a fitted vs residual plot
-  Plot.model <- ggplot2::ggplot(data=data,mapping=ggplot2::aes(x=predicted,y=residuals(model))) +
+  fitted.residual.plot <- ggplot2::ggplot(data=data,mapping=ggplot2::aes(x=predicted,y=residuals(model))) +
     ggplot2::geom_point() +
     ggplot2::geom_hline(yintercept=0,linetype="dashed") +
     ggplot2::theme_classic() +
     ggplot2::xlab("Predicted Values") +
-    ggplot2::ylab("Model Residuals")
+    ggplot2::ylab("Model Residuals") +
+    ggplot2::ggtitle("Fitted vs. Residuals")
 
   # Normally distributed residuals
 
-  residlinearity.plot <- ggplot2::ggplot(as.data.frame(cbind(resid(model),data[,y])),
+  resid.linearity.plot <- ggplot2::ggplot(as.data.frame(cbind(resid(model),data[,y])),
                                          ggplot2::aes(x = V1, y = V2)) +
     ggplot2::geom_point() +
     ggplot2::geom_smooth(formula = y ~ x, method=stats::loess) +
@@ -71,18 +64,34 @@ mlm_assumptions <- function(model) {
   data$Leverage = data$predicted/(1 - data$predicted)
   data$mse = (residuals(model))^2/var(residuals(model))
   data$CooksD <- (1/6)*(data$mse)*data$Leverage
-  Outliers <- rownames(data[data$CooksD > (4/nrow(data)),])
+  outliers <- rownames(data[data$CooksD > (4/nrow(data)),])
   y.resid <- as.vector(quantile(residuals(model,scaled = TRUE), c(0.25, 0.75), names = FALSE, type = 7, na.rm = TRUE))
   x.resid <- qnorm(c(0.25, 0.75))
   slope <- diff(y.resid)/diff(x.resid)
   int <- y.resid[[1L]] - slope * x.resid[[1L]]
-  residNorm <- ggplot2::ggplot(data, ggplot2::aes(qqnorm(residuals(model,scaled = TRUE))[[1]], residuals(model, scaled = TRUE))) +
+  resid.normality.plot <- ggplot2::ggplot(data, ggplot2::aes(qqnorm(residuals(model,scaled = TRUE))[[1]], residuals(model, scaled = TRUE))) +
     ggplot2::geom_point(na.rm = TRUE) +
     ggplot2::geom_abline(slope = slope, intercept = int) +
     ggplot2::xlab("Theoretical Quantiles") +
     ggplot2::ylab("Standardized Residuals") +
     ggplot2::ggtitle("Normal Q-Q") +
     ggplot2::theme_classic()
+
+  # Component + Residual plots
+  ### continuous predictors only - Will not produce a plot ot for logical, unordered factor, character, < 3 unique values in predictors
+
+  x.ResidComponent <- x[sapply(x, function(x) ifelse(!is.factor(data$mathkind), TRUE, is.ordered(data$mathkind)) & !is.character(data[,x]) & length(unique((data[,x])))>2)]
+
+  data$model.Res <- residuals(model)
+  ResidComponent_fun <- function(xvar){
+    ggplot2::ggplot(data, ggplot2::aes_string(x=data[,xvar], y=data[,"model.Res"])) +
+      ggplot2::geom_point() +
+      ggplot2::geom_smooth() +
+      ggplot2::geom_hline(yintercept = 0) +
+      ggplot2::xlab(xvar) +
+      ggplot2::ylab("Residuals")
+  }
+  resid.component.plots <- lapply(x.ResidComponent, ResidComponent_fun)
 
   # Multicollinearity
   if (length(x) < 2) stop("model contains fewer than 2 terms")
@@ -94,41 +103,43 @@ mlm_assumptions <- function(model) {
   }
   R <- cov2cor(v)
   detR <- det(R)
-  Multicollinearity <- matrix(0, length(x), 3)
-  rownames(Multicollinearity) <- x
-  colnames(Multicollinearity) <- c("GVIF", "Df", "GVIF^(1/(2*Df))")
+  multicollinearity <- matrix(0, length(x), 3)
+  rownames(multicollinearity) <- x
+  colnames(multicollinearity) <- c("GVIF", "Df", "GVIF^(1/(2*Df))")
   for (term in 1:length(x)) {
     subs <- which(assign == x)
-    Multicollinearity[term, 1] <- det(as.matrix(R[subs, subs])) *
+    multicollinearity[term, 1] <- det(as.matrix(R[subs, subs])) *
       det(as.matrix(R[-subs, -subs])) / detR
-    Multicollinearity[x, 2] <- length(subs)
+    multicollinearity[x, 2] <- length(subs)
   }
-  if (all(Multicollinearity[, 2] == 1)){
-    Multicollinearity <- Multicollinearity[, 1]
+  if (all(multicollinearity[, 2] == 1)){
+    multicollinearity <- multicollinearity[, 1]
     } else {
-      Multicollinearity[, 3] <- Multicollinearity[, 1]^(1/(2 * Multicollinearity[, 2]))
+      multicollinearity[, 3] <- multicollinearity[, 1]^(1/(2 * multicollinearity[, 2]))
     }
-  Multicollinearity <- Multicollinearity[,1]
+  multicollinearity <- multicollinearity[,1]
 
   ### TO DO: PRINTS
   if(homo.test$`Pr(>F)`[1] >= .05){
-    print("Homogeneity of variance assumption met")
+    print("Homogeneity of variance assumption met.")
   } else {
     print("Homogeneity of variance assumption NOT met. See: TO DO ADD RESOURCES")
   }
-  if(any(Multicollinearity > 5)){
-    print("Multicollinearity detected - VIF value above 5. This might be problematic for the model - consider removing the variable from the model. Check the Multicollinearity object for more details.")
+  if(any(multicollinearity > 5)){
+    print("Multicollinearity detected - VIF value above 5. This might be problematic for the model - consider removing the variable from the model. Check the multicollinearity object for more details.")
   } else {
     print("No multicollinearity detected in the model.")
   }
-  if(length(Outliers) > 0){
-    print("Outliers detected. See Outliers object for more information.")
+  if(length(outliers) > 0){
+    print("Outliers detected. See outliers object for more information.")
   } else {
     print("No outliers detected.")
   }
+  print("Visually inspect all plot objects.  See ?mlm_asssumptions for more information on how to inspect these plots.")
 
-  result <- list(linearity.plots, homo.test, residlinearity.plot, residNorm, Multicollinearity, Outliers)
-  names(result) <- c("linearity.plots", "homo.test", "residlinearity.plot", "residNorm", "Multicollinearity","Outliers")
+  result <- list(linearity.plots,homo.test,fitted.residual.plot,outliers,resid.normality.plot,resid.component.plots,multicollinearity)
+  names(result) <- c("linearity.plots","homo.test","fitted.residual.plot","outliers","resid.normality.plot","resid.component.plots","multicollinearity")
   suppressMessages(return(result))
+
 }
 test <- mlm_assumptions(model)
