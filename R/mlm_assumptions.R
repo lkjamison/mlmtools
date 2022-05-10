@@ -4,23 +4,22 @@
 #'
 #' @param model A linear mixed-effects model of class lmerMod or lmerModLmerTest
 #'
-#' @return
+#' @return TO DO
 #'
-#' @details
+#' @references TO DO
 #'
-#' @references
+#' @export mlm_assumptions
 
 mlm_assumptions <- function(model) {
 
   # Model class must be 'lmerMod' or 'lmerModLmerTest'
-  classCheck <- class(model) == "lmerMod" || class(model) == "lmerModLmerTest"
-  if (!all(classCheck)) {
+  if (!(class(model)=="lmerMod"|class(model)=="lmerModLmerTest")) {
     stop("Model class is not 'lmerMod' or 'lmerModLmerTest'.", call. = FALSE)
     return(NULL)
   }
 
   # Data
-  data <- getData(model)
+  data <- lme4::getData(model)
 
   # Original y variable
   form <- deparse(formula(model))
@@ -89,35 +88,41 @@ mlm_assumptions <- function(model) {
       ggplot2::geom_smooth() +
       ggplot2::geom_hline(yintercept = 0) +
       ggplot2::xlab(xvar) +
-      ggplot2::ylab("Residuals")
+      ggplot2::ylab("Residuals") +
+      ggplot2::theme_classic()
   }
   resid.component.plots <- lapply(x.ResidComponent, ResidComponent_fun)
 
   # Multicollinearity
-  if (length(x) < 2) stop("model contains fewer than 2 terms")
-  v <- as.matrix(vcov(model))
-  assign <- attr(model.matrix(model), "assign")
-  if (names(fixef(model)[1]) == "(Intercept)") {
-    v <- v[-1, -1]
-    assign <- assign[-1]
-  }
-  R <- cov2cor(v)
-  detR <- det(R)
-  multicollinearity <- matrix(0, length(x), 3)
-  rownames(multicollinearity) <- x
-  colnames(multicollinearity) <- c("GVIF", "Df", "GVIF^(1/(2*Df))")
-  for (term in 1:length(x)) {
-    subs <- which(assign == x)
-    multicollinearity[term, 1] <- det(as.matrix(R[subs, subs])) *
-      det(as.matrix(R[-subs, -subs])) / detR
-    multicollinearity[x, 2] <- length(subs)
-  }
-  if (all(multicollinearity[, 2] == 1)){
-    multicollinearity <- multicollinearity[, 1]
+  if (length(x) < 2) {
+    multicollinearity <- ("Model contains fewer than 2 terms, multicollinearity cannot be assessed.")
+  } else {
+    v <- as.matrix(vcov(model))
+    assign <- attr(model.matrix(model), "assign")
+    if (names(fixef(model)[1]) == "(Intercept)") {
+      v <- v[-1, -1]
+      assign <- assign[-1]
+    }
+    R <- cov2cor(v)
+    detR <- det(R)
+    multicollinearity <- matrix(0, length(x), 3)
+    rownames(multicollinearity) <- x
+    colnames(multicollinearity) <- c("GVIF", "Df", "GVIF^(1/(2*Df))")
+    for (term in 1:length(x)) {
+      subs <- which(assign == x)
+      multicollinearity[term, 1] <- det(as.matrix(R[subs, subs])) *
+        det(as.matrix(R[-subs, -subs])) / detR
+      multicollinearity[x, 2] <- length(subs)
+    }
+    if (all(multicollinearity[, 2] == 1)){
+      multicollinearity <- multicollinearity[, 1]
     } else {
       multicollinearity[, 3] <- multicollinearity[, 1]^(1/(2 * multicollinearity[, 2]))
     }
-  multicollinearity <- multicollinearity[,1]
+    multicollinearity <- multicollinearity[,1]
+  }
+
+
 
   ### TO DO: PRINTS
   if(homo.test$`Pr(>F)`[1] >= .05){
@@ -125,10 +130,14 @@ mlm_assumptions <- function(model) {
   } else {
     print("Homogeneity of variance assumption NOT met. See: TO DO ADD RESOURCES")
   }
-  if(any(multicollinearity > 5)){
-    print("Multicollinearity detected - VIF value above 5. This might be problematic for the model - consider removing the variable from the model. Check the multicollinearity object for more details.")
+  if(is.character(multicollinearity)){
+    print(multicollinearity)
   } else {
-    print("No multicollinearity detected in the model.")
+    if(any(multicollinearity > 5)){
+      print("Multicollinearity detected - VIF value above 5. This might be problematic for the model - consider removing the variable from the model. Check the multicollinearity object for more details.")
+    } else {
+      print("No multicollinearity detected in the model.")
+    }
   }
   if(length(outliers) > 0){
     print("Outliers detected. See outliers object for more information.")
@@ -142,4 +151,4 @@ mlm_assumptions <- function(model) {
   suppressMessages(return(result))
 
 }
-test <- mlm_assumptions(model)
+
