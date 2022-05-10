@@ -101,7 +101,7 @@ levelComparePlot <- function(x, y, grouping, dataset, xlab = x, ylab = y, compar
   }
 
   # respecify variables as centered
-  if(center = TRUE) {
+  if(center == TRUE) {
     invisible(center(temp, c("x","y"), "grouping", type = "mean", standardize = FALSE, centerResult = FALSE))
   }
 
