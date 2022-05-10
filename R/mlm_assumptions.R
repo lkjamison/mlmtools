@@ -24,7 +24,23 @@ mlm_assumptions <- function(model) {
   # Original y variable
   form <- deparse(formula(model))
   y <- trimws(strsplit(form, "[~+]")[[1]][1]) # Extracts dependent variable from the model
+
+  # Predictors
   x <- attributes(terms(model))$term.labels # Extracts independent variables from the model
+  if(any(grepl(":",x))){ # If an interaction term is present
+    int <- x[grepl(":",x)] # Grab the interaction term(s) TO DO three-way interaction?
+    int.var <- sapply(int, function(x) strsplit(x,"[~:]")[[1]]) # Split interaction(s) into variables
+    # For each column, check the class of the variable in data
+    matrix(sapply(int.var, function(x) class(data[,x])), nrow=2,ncol=2)
+    # Check the combination of the variables
+    # Determine plot method
+  }
+
+
+  # Multiply two continuous interactors
+  # Plot continuous at every level of categorical interactor
+  # Ignore two categorical variable interactions
+
 
   # Linearity
   linearityplot_fun <- function(xvar){
