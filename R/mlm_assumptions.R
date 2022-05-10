@@ -27,27 +27,47 @@ mlm_assumptions <- function(model) {
 
   # Predictors
   x <- attributes(terms(model))$term.labels # Extracts independent variables from the model
-  if(any(grepl(":",x))){ # If an interaction term is present
-    int <- x[grepl(":",x)] # Grab the interaction term(s) TO DO three-way interaction?
-    int.var <- sapply(int, function(x) strsplit(x,"[~:]")[[1]]) # Split interaction(s) into variables
-    # For each column, check the class of the variable in data
-    matrix(sapply(int.var, function(x) class(data[,x])), nrow=2,ncol=2)
-    # Check the combination of the variables
-    # Determine plot method
-  }
-
 
   # Multiply two continuous interactors
   # Plot continuous at every level of categorical interactor
   # Ignore two categorical variable interactions
 
-
   # Linearity
   linearityplot_fun <- function(xvar){
-    ggplot2::ggplot(data, ggplot2::aes_string(x=xvar, y=y)) +
-      ggplot2::geom_point()+
-      ggplot2::geom_smooth(formula = y ~ x, method=stats::loess) +
-      ggplot2::theme_classic()
+    if(grepl(":",xvar)){
+        int <- xvar[grepl(":",xvar)] # Grab the interaction term(s) TO DO three-way interaction?
+        int.var <- strsplit(int,"[~:]")[[1]] # Split interaction(s) into variables
+        n.int <- length(int.var)
+        if(n.int > 2){
+          return(paste0("Linearity plot cannot be estimated for ", xvar, ". Function currently does not support interactions beyond 2 variables."))
+        } else {
+          # For each column, check the class of the variable in data
+          int.class <- sapply(int.var, function(x) class(data[,x]))
+          # Check the combination of the variables
+          ### Numeric and/or logical
+          if(all(int.class %in% c("numeric","integer"))){
+            data$interaction <- data[,int.var[1]]*data[,int.var[2]]
+            colnames(data)[which(colnames(data)=="interaction")] <- int
+            ggplot2::ggplot(data, ggplot2::aes_string(x=int, y=y)) +
+              ggplot2::geom_point()+
+              ggplot2::geom_smooth(formula = y ~ x, method=stats::loess) +
+              ggplot2::theme_classic()}
+          }
+          ### Both are character facotr or logical with numeric or integer
+          if(all(int.class %in% c("character", "factor","logical"))){
+            return(paste0("Linearity plot cannot be estimated for ", xvar, ". Function currently does not support interactions between only character, factor, or logical variables."))
+          }
+          ### One character, factor, or logical with numeric or integer
+           else {
+
+            }
+        }
+    } else {
+      ggplot2::ggplot(data, ggplot2::aes_string(x=xvar, y=y)) +
+        ggplot2::geom_point()+
+        ggplot2::geom_smooth(formula = y ~ x, method=stats::loess) +
+        ggplot2::theme_classic()}
+
   }
   linearity.plots <- lapply(x, linearityplot_fun)
 
