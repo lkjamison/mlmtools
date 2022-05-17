@@ -12,6 +12,8 @@
 
 mlm_assumptions <- function(model) {
 
+  # TO DO: ACCOUNT FOR NA'S
+
   # Model class must be 'lmerMod' or 'lmerModLmerTest'
   if (!(class(model)=="lmerMod"|class(model)=="lmerModLmerTest")) {
     stop("Model class is not 'lmerMod' or 'lmerModLmerTest'.", call. = FALSE)
@@ -34,41 +36,58 @@ mlm_assumptions <- function(model) {
 
   # Linearity
   linearityplot_fun <- function(xvar){
+    # If interaction
     if(grepl(":",xvar)){
-        int <- xvar[grepl(":",xvar)] # Grab the interaction term(s) TO DO three-way interaction?
-        int.var <- strsplit(int,"[~:]")[[1]] # Split interaction(s) into variables
-        n.int <- length(int.var)
-        if(n.int > 2){
-          return(paste0("Linearity plot cannot be estimated for ", xvar, ". Function currently does not support interactions beyond 2 variables."))
-        } else {
-          # For each column, check the class of the variable in data
-          int.class <- sapply(int.var, function(x) class(data[,x]))
-          # Check the combination of the variables
-          ### Numeric and/or logical
-          if(all(int.class %in% c("numeric","integer"))){
-            data$interaction <- data[,int.var[1]]*data[,int.var[2]]
-            colnames(data)[which(colnames(data)=="interaction")] <- int
-            ggplot2::ggplot(data, ggplot2::aes_string(x=int, y=y)) +
-              ggplot2::geom_point()+
-              ggplot2::geom_smooth(formula = y ~ x, method=stats::loess) +
-              ggplot2::theme_classic()}
-          }
-          ### Both are character facotr or logical with numeric or integer
+      int <- xvar[grepl(":",xvar)] # Interaction name
+      int.var <- strsplit(int,"[~:]")[[1]] # Split interaction(s) into variables
+      n.int <- length(int.var)
+      # If three way or more interaction
+      if(n.int > 2){
+        return(paste0("Linearity plot cannot be estimated for ", xvar, ". Function currently does not support interactions beyond 2 variables."))
+      }
+      # If two way interaction
+      else {
+        # For each column, check the class of the variable in data
+        int.class <- sapply(int.var, function(x) class(data[,x]))
+        # Check the combination of the variables
+        if(all(int.class %in% c("numeric","integer"))){
+          data$interaction <- data[,int.var[1]]*data[,int.var[2]]
+          int <- gsub("\\:", ".", int)
+          colnames(data)[which(colnames(data)=="interaction")] <- int
+          ggplot2::ggplot(data, ggplot2::aes_string(x=int, y=y)) +
+            ggplot2::geom_point()+
+            ggplot2::geom_smooth(formula = y ~ x, method=stats::loess) +
+            ggplot2::theme_classic() +
+            ggplot2::ggtitle(xvar)
+        }
+        ### Both are character factor or logical with numeric or integer
+        else {
           if(all(int.class %in% c("character", "factor","logical"))){
             return(paste0("Linearity plot cannot be estimated for ", xvar, ". Function currently does not support interactions between only character, factor, or logical variables."))
           }
           ### One character, factor, or logical with numeric or integer
-           else {
-
-            }
+          else {
+            data$facet <- data[,names(which(int.class != c("numeric","integer")))]
+            ggplot2::ggplot(data, ggplot2::aes_string(x=names(which(int.class == c("numeric","integer"))), y=y)) +
+              ggplot2::geom_point()+
+              ggplot2::geom_smooth(formula = y ~ x, method=stats::loess) +
+              ggplot2::theme_classic() +
+              ggplot2::facet_wrap(~facet) +
+              ggplot2::ggtitle(xvar)
+          }
         }
-    } else {
+      }
+    }
+    # If not an interaction
+    else {
       ggplot2::ggplot(data, ggplot2::aes_string(x=xvar, y=y)) +
         ggplot2::geom_point()+
         ggplot2::geom_smooth(formula = y ~ x, method=stats::loess) +
-        ggplot2::theme_classic()}
-
+        ggplot2::theme_classic() +
+        ggplot2::ggtitle(xvar)
+    }
   }
+
   linearity.plots <- lapply(x, linearityplot_fun)
 
   # Homogeneity of Variance
@@ -113,9 +132,9 @@ mlm_assumptions <- function(model) {
     ggplot2::theme_classic()
 
   # Component + Residual plots
-  ### continuous predictors only - Will not produce a plot ot for logical, unordered factor, character, < 3 unique values in predictors
+  ### continuous predictors only - Will not produce a plot for logical, unordered factor, character, < 3 unique values in predictors, or an interaction
 
-  x.ResidComponent <- x[sapply(x, function(x) ifelse(!is.factor(data$mathkind), TRUE, is.ordered(data$mathkind)) & !is.character(data[,x]) & length(unique((data[,x])))>2)]
+  x.ResidComponent <- x[!grepl(":",x)][sapply(x[!grepl(":",x)], function(x) ifelse(!is.factor(data[,x]), TRUE, is.ordered(data[,x])) & !is.character(data[,x]) & length(unique((data[,x])))>2)]
 
   data$model.Res <- residuals(model)
   ResidComponent_fun <- function(xvar){
@@ -157,30 +176,6 @@ mlm_assumptions <- function(model) {
     }
     multicollinearity <- multicollinearity[,1]
   }
-
-
-
-  ### TO DO: PRINTS
-  if(homo.test$`Pr(>F)`[1] >= .05){
-    print("Homogeneity of variance assumption met.")
-  } else {
-    print("Homogeneity of variance assumption NOT met. See: TO DO ADD RESOURCES")
-  }
-  if(is.character(multicollinearity)){
-    print(multicollinearity)
-  } else {
-    if(any(multicollinearity > 5)){
-      print("Multicollinearity detected - VIF value above 5. This might be problematic for the model - consider removing the variable from the model. Check the multicollinearity object for more details.")
-    } else {
-      print("No multicollinearity detected in the model.")
-    }
-  }
-  if(length(outliers) > 0){
-    print("Outliers detected. See outliers object for more information.")
-  } else {
-    print("No outliers detected.")
-  }
-  print("Visually inspect all plot objects.  See ?mlm_asssumptions for more information on how to inspect these plots.")
 
   result <- list(linearity.plots,homo.test,fitted.residual.plot,outliers,resid.normality.plot,resid.component.plots,multicollinearity)
   names(result) <- c("linearity.plots","homo.test","fitted.residual.plot","outliers","resid.normality.plot","resid.component.plots","multicollinearity")
