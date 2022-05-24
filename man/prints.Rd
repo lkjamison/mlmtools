@@ -7,6 +7,7 @@
 \alias{print.levelCompare}
 \alias{print.rsqmlm}
 \alias{print.varCompare}
+\alias{print.mlm_assumptions}
 \title{S3Methods for Printing}
 \usage{
 \method{print}{center}(x, ...)
@@ -18,6 +19,8 @@
 \method{print}{rsqmlm}(x, ...)
 
 \method{print}{varCompare}(x, ...)
+
+\method{print}{mlm_assumptions}(x, ...)
 }
 \arguments{
 \item{x}{Object from \code{mlmtools} package}
