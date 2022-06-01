@@ -107,19 +107,4 @@ print.mlm_assumptions <- function(x, ...){
   } else {
     cat("Homogeneity of variance assumption NOT met. See: TO DO ADD RESOURCES")
   }
-  if(is.character(multicollinearity)){
-    cat(multicollinearity)
-  } else {
-    if(any(multicollinearity > 5)){
-      cat("Multicollinearity detected - VIF value above 5. This might be problematic for the model - consider removing the variable from the model. Check the multicollinearity object for more details.")
-    } else {
-      cat("No multicollinearity detected in the model.")
-    }
-  }
-  if(length(outliers) > 0){
-    cat("Outliers detected. See outliers object for more information.")
-  } else {
-    cat("No outliers detected.")
-  }
-  cat("Visually inspect all plot objects.  See ?mlm_asssumptions for more information on how to inspect these plots.")
 }
