@@ -221,7 +221,7 @@ mlm_assumptions <- function(model) {
 
   # Multicollinearity
   if (length(x) < 2) {
-    multicollinearity <- ("Model contains fewer than 2 terms, multicollinearity cannot be assessed.")
+    multicollinearity <- ("Model contains fewer than 2 terms, multicollinearity cannot be assessed.\n")
   } else {
     v <- as.matrix(vcov(model))
     assign <- attr(model.matrix(model), "assign")
