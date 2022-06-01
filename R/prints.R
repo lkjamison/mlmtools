@@ -121,5 +121,5 @@ print.mlm_assumptions <- function(x, ...){
   } else {
     cat("No outliers detected.\n")
   }
-  cat("Visually inspect all plot objects.  See ?mlm_asssumptions for more information on how to inspect these plots.")
+  cat("Visually inspect all plot objects.  See ?mlm_assumptions for more information on how to inspect these plots.")
 }
