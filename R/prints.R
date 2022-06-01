@@ -102,7 +102,7 @@ print.varCompare <- function(x, ...){
 # Print mlm_assumptions
 #' @export
 print.mlm_assumptions <- function(x, ...){
-  if(x$homo.test$`Pr(>F)`[1] >= .05){
+  print(if(x$homo.test$`Pr(>F)`[1] >= .05){
     cat("Homogeneity of variance assumption met.\n")
   } else {
     cat("Homogeneity of variance assumption NOT met. See: TO DO ADD RESOURCES\n")
@@ -121,5 +121,5 @@ print.mlm_assumptions <- function(x, ...){
   } else {
     cat("No outliers detected.\n")
   }
-  cat("Visually inspect all plot objects.  See ?mlm_asssumptions for more information on how to inspect these plots.")
+  cat("Visually inspect all plot objects.  See ?mlm_asssumptions for more information on how to inspect these plots."))
 }
