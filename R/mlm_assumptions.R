@@ -258,6 +258,7 @@ mlm_assumptions <- function(model) {
   } else {
     c("linearity.plots","homo.test","fitted.residual.plot","outliers","resid.normality.plot","resid.component.plots","multicollinearity")
   }
+  class(result) <- "mlm_assumptions"
   suppressMessages(return(result))
 
 }
