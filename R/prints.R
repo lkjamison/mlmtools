@@ -103,23 +103,43 @@ print.varCompare <- function(x, ...){
 #' @export
 print.mlm_assumptions <- function(x, ...){
   if(x$homo.test$`Pr(>F)`[1] >= .05){
-    cat("Homogeneity of variance assumption met.")
+    cat("Homogeneity of variance assumption met.\n")
   } else {
-    cat("Homogeneity of variance assumption NOT met. See: TO DO ADD RESOURCES")
+    cat("Homogeneity of variance assumption NOT met. See: TO DO ADD RESOURCES\n")
   }
   if(is.character(x$multicollinearity)){
     cat(x$multicollinearity)
   } else {
     if(any(x$multicollinearity > 5)){
-      cat("Multicollinearity detected - VIF value above 5. This might be problematic for the model - consider removing the variable from the model. Check the multicollinearity object for more details.")
+      cat("Multicollinearity detected - VIF value above 5. This might be problematic for the model - consider removing the variable from the model.\n Check the multicollinearity object for more details.\n")
     } else {
-      cat("No multicollinearity detected in the model.")
+      cat("No multicollinearity detected in the model.\n")
     }
   }
   if(length(x$outliers) > 0){
-    cat("Outliers detected. See outliers object for more information.")
+    cat("Outliers detected. See outliers object for more information.\n")
   } else {
     cat("No outliers detected.")
   }
   cat("Visually inspect all plot objects.  See ?mlm_asssumptions for more information on how to inspect these plots.")
+  invisible(if(x$homo.test$`Pr(>F)`[1] >= .05){
+    cat("Homogeneity of variance assumption met.\n")
+  } else {
+    cat("Homogeneity of variance assumption NOT met. See: TO DO ADD RESOURCES\n")
+  }
+  if(is.character(x$multicollinearity)){
+    cat(x$multicollinearity)
+  } else {
+    if(any(x$multicollinearity > 5)){
+      cat("Multicollinearity detected - VIF value above 5. This might be problematic for the model - consider removing the variable from the model.\n Check the multicollinearity object for more details.\n")
+    } else {
+      cat("No multicollinearity detected in the model.\n")
+    }
+  }
+  if(length(x$outliers) > 0){
+    cat("Outliers detected. See outliers object for more information.\n")
+  } else {
+    cat("No outliers detected.")
+  }
+  cat("Visually inspect all plot objects.  See ?mlm_asssumptions for more information on how to inspect these plots."))
 }
