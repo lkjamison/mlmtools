@@ -104,7 +104,7 @@ print.varCompare <- function(x, ...){
 print.mlm_assumptions <- function(x, ...){
   if(x$homo.test$`Pr(>F)`[1] >= .05){
     cat("Homogeneity of variance assumption met.\n")
-    invisible(cat("Homogeneity of variance assumption met.\n"))
+    invisible("Homogeneity of variance assumption met.\n")
   } else {
     cat("Homogeneity of variance assumption NOT met. See: TO DO ADD RESOURCES\n")
     invisible(cat("Homogeneity of variance assumption NOT met. See: TO DO ADD RESOURCES\n"))
