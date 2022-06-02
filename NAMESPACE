@@ -3,7 +3,6 @@
 S3method(print,ICCm)
 S3method(print,center)
 S3method(print,levelCompare)
-S3method(print,mlm_assumptions)
 S3method(print,rsqmlm)
 S3method(print,varCompare)
 export(ICCm)
