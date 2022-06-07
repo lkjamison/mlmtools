@@ -221,7 +221,7 @@ mlm_assumptions <- function(model) {
 
   # Multicollinearity
   if (length(x) < 2) {
-    multicollinearity <- ("Model contains fewer than 2 terms, multicollinearity cannot be assessed.")
+    multicollinearity <- ("Model contains fewer than 2 terms, multicollinearity cannot be assessed.\n")
   } else {
     v <- as.matrix(vcov(model))
     assign <- attr(model.matrix(model), "assign")
@@ -248,6 +248,7 @@ mlm_assumptions <- function(model) {
     multicollinearity <- multicollinearity[,1]
   }
 
+  # Combining Results
   result <- if(class(model)=="glmerMod"){
     list(linearity.plots,outliers,multicollinearity)
     } else {
@@ -258,6 +259,53 @@ mlm_assumptions <- function(model) {
   } else {
     c("linearity.plots","homo.test","fitted.residual.plot","outliers","resid.normality.plot","resid.component.plots","multicollinearity")
   }
+
+  # Adding messages for summary/interpretation
+  if(class(model)!="glmerMod"){
+    message(if(result$homo.test$`Pr(>F)`[1] >= .05){
+      cat("Homogeneity of variance assumption met.\n")
+    } else {
+      cat("Homogeneity of variance assumption NOT met. See: TO DO ADD RESOURCES\n")
+    })
+    message(if(is.character(result$multicollinearity)){
+      cat(result$multicollinearity)
+    } else {
+      if(any(result$multicollinearity > 5)){
+        cat("Multicollinearity detected - VIF value above 5. This might be problematic for the model - consider removing the variable from the model.\n Check the multicollinearity object for more details.\n")
+      } else {
+        cat("No multicollinearity detected in the model.\n")
+      }
+    })
+    message(if(length(result$outliers) > 0){
+      cat("Outliers detected. See outliers object for more information.\n")
+    } else {
+      cat("No outliers detected.\n")
+    })
+    message(cat("Visually inspect all 4 plot types by calling them from the object created by mlm_assumptions() such as object$fitted.residual.plot and object$resid.normality.plot. linearity.plots and resid.component.plots may contain more than one plot depending on the model specified. Check how many there are, for example using length(object$linearity.plots). Then inspect each plot within each object, for example using object$linearity.plots[[1]] to access the first plot within the linearity.plots list.\n"))
+    message(cat("See ?mlm_assumptions for more details and resources."))
+  } else {
+    message(if(is.character(result$multicollinearity)){
+      cat(result$multicollinearity)
+    } else {
+      if(any(result$multicollinearity > 5)){
+        cat("Multicollinearity detected - VIF value above 5. This might be problematic for the model - consider removing the variable from the model.\n Check the multicollinearity object for more details.\n")
+      } else {
+        cat("No multicollinearity detected in the model.\n")
+      }
+    })
+    message(if(length(result$outliers) > 0){
+      cat("Outliers detected. See outliers object for more information.\n")
+    } else {
+      cat("No outliers detected.\n")
+    })
+    message(cat("Visually inspect the linearity.plots object by calling it from the object created by mlm_assumptions() such as object$linearity.plots. linearity.plots may contain more than one plot depending on the model specified. Check how many there are, for example using length(object$linearity.plots). Then inspect each plot within the object, for example using object$linearity.plots[[1]] to access the first plot within the linearity.plots list.\n"))
+    message(cat("See ?mlm_assumptions for more details and resources."))
+  }
+
+  # Assigning object class
+  class(result) <- "mlm_assumptions"
+
+  # Returning object
   suppressMessages(return(result))
 
 }
