@@ -306,7 +306,7 @@ mlm_assumptions <- function(model) {
   class(result) <- "mlm_assumptions"
 
   # Returning object
-  invisible(suppressMessages(return(result)))
+  suppressMessages(return(result))
 
 }
 
