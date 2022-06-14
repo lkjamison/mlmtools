@@ -25,9 +25,15 @@ levelCompare <- function(model) {
   mods <- list(model)
 
   # Model class must be 'lmerMod' or 'lmerModLmerTest'
-  classCheck <- vapply(mods, function(x) class(x) == "lmerMod" || class(x) == "lmerModLmerTest", NA)
+  classCheck <- vapply(mods, function(x) (class(x)=="lmerMod"|class(x)=="lmerModLmerTest"|class(x)=="glmerMod"), NA)
   if (!all(classCheck)) {
-    stop("Model class is not 'lmerMod' or 'lmerModLmerTest'.", call. = FALSE)
+    stop("Model class is not 'lmerMod', 'lmerModLmerTest', or 'glmerMod.", call. = FALSE)
+    return(NULL)
+  }
+
+  glmerCheck <- vapply(mods, function(x) class(x)=="glmerMod" & family(x)[[1]]=="binomial", NA)
+  if(!all(glmerCheck)){
+    stop("Function currently only supports binomial family glmerMod models.", call. = FALSE)
     return(NULL)
   }
 
