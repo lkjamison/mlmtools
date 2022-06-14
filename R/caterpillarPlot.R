@@ -4,7 +4,7 @@
 #'
 #' @param model A given lmer model.
 #'
-#' @param grpvar The name of the grouping variable of interest, as a character string.
+#' @param grouping The name of the grouping variable of interest, as a character string.
 #'
 #' @param title The title of the plot.
 #'
@@ -19,16 +19,16 @@
 #' \donttest{
 #' data(instruction)
 #' mod <- lme4::lmer(mathgain ~ (1 | classid), data = instruction)
-#' classid_caterpillarPlot <- caterpillarPlot(mod, title = "title", grpvar = "classid", grey = TRUE)
+#' classid_caterpillarPlot <- caterpillarPlot(mod, title = "title", grouping = "classid", grey = TRUE)
 #' }
 #'
 #' @export caterpillarPlot
 
-caterpillarPlot <- function(model, grpvar, title = print(grpvar), tall = TRUE, grey = FALSE){
+caterpillarPlot <- function(model, grouping, title = print(grouping), tall = TRUE, grey = FALSE){
   condsd <- condval <- grp <- interval_95 <- NULL
 
   model.re <- data.frame(lme4::ranef(model))
-  model.re <- model.re[which(model.re$grpvar == grpvar),]
+  model.re <- model.re[which(model.re$grpvar == grouping),]
 
   model.re$int_pos2 <- model.re$condval + 2*model.re$condsd
   model.re$int_neg2 <- model.re$condval - 2*model.re$condsd
