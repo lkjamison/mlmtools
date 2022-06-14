@@ -45,6 +45,3 @@ Plots the line of best for the relationship between two variables accounting for
 }
 
 }
-\references{
-
-}
