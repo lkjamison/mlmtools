@@ -12,8 +12,6 @@
 
 mlm_assumptions <- function(model) {
 
-  # TO DO: ACCOUNT FOR NA'S
-
   # Model class must be 'lmerMod' or 'lmerModLmerTest'
   if (!(class(model)=="lmerMod"|!class(model)=="lmerModLmerTest"|!class(model)=="glmerMod")) {
     stop("Model class is not 'lmerMod', 'lmerModLmerTest', or 'glmerMod'.", call. = FALSE)
@@ -72,8 +70,7 @@ mlm_assumptions <- function(model) {
           ggplot2::ggplot(data, ggplot2::aes_string(x=int, y=yvar)) +
             ggplot2::geom_point()+
             ggplot2::geom_smooth(formula = y ~ x, method=stats::loess) +
-            ggplot2::theme_classic() +
-            ggplot2::ggtitle(xvar)
+            ggplot2::theme_classic()
         }
         ### Both are character factor or logical with numeric or integer
         else {
@@ -136,14 +133,13 @@ mlm_assumptions <- function(model) {
   data$mse = (residuals(model))^2/var(residuals(model))
   data$CooksD <- (1/6)*(data$mse)*data$Leverage
   outliers <- rownames(data[data$CooksD > (4/nrow(data)),])
+  if(length(outliers) == 0){
+    outliers <- "No outliers detected."
+  }
+  data$model.Res <- residuals(model)
   if(class(model) != "glmerMod"){
-    y.resid <- as.vector(quantile(residuals(model,scaled = TRUE), c(0.25, 0.75), names = FALSE, type = 7, na.rm = TRUE))
-    x.resid <- qnorm(c(0.25, 0.75))
-    slope <- diff(y.resid)/diff(x.resid)
-    int <- y.resid[[1L]] - slope * x.resid[[1L]]
-    resid.normality.plot <- ggplot2::ggplot(data, ggplot2::aes(qqnorm(residuals(model,scaled = TRUE))[[1]], residuals(model, scaled = TRUE))) +
-      ggplot2::geom_point(na.rm = TRUE) +
-      ggplot2::geom_abline(slope = slope, intercept = int) +
+    resid.normality.plot <- ggplot2::qplot(sample = model.Res, data = data) +
+      ggplot2::stat_qq_line() +
       ggplot2::xlab("Theoretical Quantiles") +
       ggplot2::ylab("Standardized Residuals") +
       ggplot2::ggtitle("Normal Q-Q") +
@@ -154,7 +150,7 @@ mlm_assumptions <- function(model) {
   ### continuous predictors only - Will not produce a plot for logical, unordered factor, character, < 3 unique values in predictors, interactions between categorical variables, or interactions of > 3 variables
   if(class(model) != "glmerMod"){
     x.ResidComponent <- c(x[!grepl(":",x)][sapply(x[!grepl(":",x)], function(x) ifelse(!is.factor(data[,x]), TRUE, is.ordered(data[,x])) & !is.character(data[,x]) & length(unique((data[,x])))>2)],x[grepl(":",x)])
-    data$model.Res <- residuals(model)
+    #data$model.Res <- residuals(model)
     ResidComponent_fun <- function(xvar){
       # If interaction
       if(grepl(":",xvar)){
@@ -212,8 +208,7 @@ mlm_assumptions <- function(model) {
           ggplot2::geom_hline(yintercept = 0) +
           ggplot2::xlab(xvar) +
           ggplot2::ylab("Residuals") +
-          ggplot2::theme_classic() +
-          ggplot2::ggtitle(xvar)
+          ggplot2::theme_classic()
       }
     }
     resid.component.plots <- lapply(x.ResidComponent, ResidComponent_fun)
@@ -276,7 +271,7 @@ mlm_assumptions <- function(model) {
         cat("No multicollinearity detected in the model.\n")
       }
     })
-    message(if(length(result$outliers) > 0){
+    message(if(outliers == "No outliers detected."){
       cat("Outliers detected. See outliers object for more information.\n")
     } else {
       cat("No outliers detected.\n")
