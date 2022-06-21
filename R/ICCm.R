@@ -23,7 +23,7 @@
 
 ICCm <- function(model, re_type = c("NA")) {
 
-  if (!(class(model)=="lmerMod"|!class(model)=="lmerModLmerTest")) {
+  if (!(class(model)=="lmerMod"|class(model)=="lmerModLmerTest")) {
     stop("Model class is not 'lmerMod' or 'lmerModLmerTest'.", call. = FALSE)
     return(NULL)
   }
