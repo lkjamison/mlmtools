@@ -111,11 +111,11 @@ ICCm <- function(model, re_type = c("NA")) {
 
     # LATENT VARIABLE METHOD
     # extracting tau^2 for the varying intercept
-    tau2 <- brms::VarCorr(model1)[[1]]$sd[1]^2
+    tau2 <- vars$vcov
 
     # computing the ICC for the intercept
-    ICC1 <- tau2 / (tau2 + (pi^2 / 3) )
-    ICC1
+    ICC <- tau2 / (tau2 + (pi^2 / 3) )
+    ICC
 
     # MODEL LINEARIZATION METHOD
     ### CALCULATES ONE ICC
