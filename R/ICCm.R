@@ -116,84 +116,45 @@ ICCm <- function(model, re_type = c("NA")) {
     # computing the ICC for the intercept
     ICC <- tau2 / (tau2 + (pi^2 / 3) )
     ICC
-
-    # MODEL LINEARIZATION METHOD
-    ### CALCULATES ONE ICC
-    mmod <- lme4::glmer(y ~ 1 + (1 | cid), family = binomial,
-                        data = dt, nAGQ = nAGQ)
-    fint <- lme4::fixef(mmod)
-    re_var <- as.vector(lme4::VarCorr(mmod)[[1]])
-    if ("lin" %in% method) {
-      meth <- c(meth, "First-order Model Linearized Estimate")
-      pr <- exp(fint)/(1 + exp(fint))
-      sig1 <- pr * (1 - pr)
-      sig2 <- re_var * pr^2 * (1 + exp(fint))^(-2)
-      rho.lin <- sig2/(sig1 + sig2)
-      if (rho.lin < 0 | rho.lin > 1) {
-        est <- c(est, "-")
-        warning("ICC Not Estimable by 'Model Linearization' Method")
-      }
-      else {
-        est <- c(est, rho.lin)
-      }
-
-    ### CALCULATES BY OUTCOME GROUP SEPARATELY
-    # evaluating pi at the mean of the distribution of the level 2 varying effect
-    p <- exp(est[1] + est[2] * -0.5) / (1 + exp(est[1] + est[2] * -0.5) )
-    # computing var(p)
-    sig1 <- p * (1 - p)
-    # computing var(yij)
-    sig2 <- tau2 * p^2 * (1 + exp(est[1] + est[2] * -0.5) )^(-2)
-    # computing the ICC
-    ICC3.f <- sig2 / (sig1 + sig2)
-
-    # evaluating pi at the mean of the distribution of the level 2 varying effect
-    p <- exp(est[1] + est[2] * 0.5) / (1 + exp(est[1] + est[2] * 0.5) )
-    # computing pi'
-    sig1 <- p * (1 - p)
-    # computing var(yij)
-    sig2 <- tau2 * p^2 * (1 + exp(est[1] + est[2] * 0.5) )^(-2)
-    # computing the ICC
-    ICC3.m <- sig2 / (sig1 + sig2)
-
-    c(ICC3.f, ICC3.m)
   }
 
 
   # Output
-  # one random effect
-  if(lme4::getME(model, name = 'n_rtrms') == 1){
-    res <- (list(
-      "RandEff" = 1,
-      "type" = NA,
-      "factor1" = names(lme4::VarCorr(model))[1],
-      "factor2" = NA,
-      "outcome" = names(stats::model.frame(model))[1],
-      "ICC" = round(icc, 3),
-      "ICC1" = NA,
-      "ICC2" = NA,
-      "ICC3" = NA))
-    class(res) <- "ICCm"
-    return(res)
-    # two random effects - three level model
-  } else if(lme4::getME(model, name = 'n_rtrms') == 2) {
-    res <- (list(
-      "RandEff" = 2,
-      "type" = re_type,
-      "factor1" = gsub("(:).*","",names(lme4::VarCorr(model)))[2],
-      "factor2" = if(sum(grepl("/", model@call, fixed = TRUE)) == 0) {
-        gsub(".*(:)","",names(lme4::VarCorr(model)))[1] # If model is specified as (1|a)+(1|a:b)) or (1|a)+(1|b)
-      } else { gsub(").*","",gsub(".*(/)","",mod4@call)[2]) # If model is specified as (1|a/b)
-      },
-      "outcome" = names(stats::model.frame(model))[1],
-      "ICC" = NA,
-      "ICC1" = round(icc1,3),
-      "ICC2" = round(icc2,3),
-      "ICC3" = round(icc3,3)))
+  if(class(model)!="glmerMod"){# one random effect
+    if(lme4::getME(model, name = 'n_rtrms') == 1){
+      res <- (list(
+        "RandEff" = 1,
+        "type" = NA,
+        "factor1" = names(lme4::VarCorr(model))[1],
+        "factor2" = NA,
+        "outcome" = names(stats::model.frame(model))[1],
+        "ICC" = round(icc, 3),
+        "ICC1" = NA,
+        "ICC2" = NA,
+        "ICC3" = NA))
+      # two random effects - three level model
+    } else if(lme4::getME(model, name = 'n_rtrms') == 2) {
+      res <- (list(
+        "RandEff" = 2,
+        "type" = re_type,
+        "factor1" = gsub("(:).*","",names(lme4::VarCorr(model)))[2],
+        "factor2" = if(sum(grepl("/", model@call, fixed = TRUE)) == 0) {
+          gsub(".*(:)","",names(lme4::VarCorr(model)))[1] # If model is specified as (1|a)+(1|a:b)) or (1|a)+(1|b)
+        } else { gsub(").*","",gsub(".*(/)","",mod4@call)[2]) # If model is specified as (1|a/b)
+        },
+        "outcome" = names(stats::model.frame(model))[1],
+        "ICC" = NA,
+        "ICC1" = round(icc1,3),
+        "ICC2" = round(icc2,3),
+        "ICC3" = round(icc3,3)))}
+  }
+    else {
+      res <- ICC
+    }
     class(res) <- "ICCm"
     return(res)
   }
 
-}
+
 
 
