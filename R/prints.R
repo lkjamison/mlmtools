@@ -42,19 +42,23 @@ print.center <- function(x, ...){
 # Print ICCm
 #' @export
 print.ICCm <- function(x, ...){
-  # one random effect
-  if(x$RandEff == 1){
+  if(x$modClass!="glmerMod"){
+    # one random effect
+    if(x$RandEff == 1){
+      cat("Likeness of", x$outcome, "values of units in the same", x$factor1, "factor:", x$ICC)
+      # two random effects - re_type = 'nested' - three level model
+    } else if(x$RandEff == 2 & x$type == 'nested') {
+      cat("Likeness of", x$outcome, "values of units in the same", x$factor1, "level:", x$ICC1, '\n')
+      cat("Likeness of", x$outcome, "values of units in the same", x$factor1, "level and the same", x$factor2, "level:", x$ICC2, '\n')
+      cat("Likeness of", x$outcome, "values of units in the same", x$factor2, "level after controlling for the", x$factor1, "level:", x$ICC3, '\n')
+      # two random effects - re_type = 'cc' - cross-classified model
+    } else if(x$RandEff == 2 & x$type == 'cc') {
+      cat("Likeness of", x$outcome, "values of units in the same", x$factor2, "factor but different", x$factor1, "factor:", x$ICC1, '\n')
+      cat("Likeness of", x$outcome, "values of units in the same", x$factor1, "factor but different", x$factor2, "factor:", x$ICC2, '\n')
+      cat("Likeness of", x$outcome, "values of units in the same", x$factor1, "factor and same", x$factor2, "factor:", x$ICC3)
+    }
+  } else {
     cat("Likeness of", x$outcome, "values of units in the same", x$factor1, "factor:", x$ICC)
-    # two random effects - re_type = 'nested' - three level model
-  } else if(x$RandEff == 2 & x$type == 'nested') {
-    cat("Likeness of", x$outcome, "values of units in the same", x$factor1, "level:", x$ICC1, '\n')
-    cat("Likeness of", x$outcome, "values of units in the same", x$factor1, "level and the same", x$factor2, "level:", x$ICC2, '\n')
-    cat("Likeness of", x$outcome, "values of units in the same", x$factor2, "level after controlling for the", x$factor1, "level:", x$ICC3, '\n')
-    # two random effects - re_type = 'cc' - cross-classified model
-  } else if(x$RandEff == 2 & x$type == 'cc') {
-    cat("Likeness of", x$outcome, "values of units in the same", x$factor2, "factor but different", x$factor1, "factor:", x$ICC1, '\n')
-    cat("Likeness of", x$outcome, "values of units in the same", x$factor1, "factor but different", x$factor2, "factor:", x$ICC2, '\n')
-    cat("Likeness of", x$outcome, "values of units in the same", x$factor1, "factor and same", x$factor2, "factor:", x$ICC3)
   }
 }
 
