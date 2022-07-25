@@ -108,21 +108,27 @@ ICCm <- function(model, re_type = c("NA")) {
     }
 
   } else {
+    if(lme4::getME(model, name = 'n_rtrms') == 1){
+      # LATENT VARIABLE METHOD
+      # extracting tau^2 for the varying intercept
+      tau2 <- vars$vcov
 
-    # LATENT VARIABLE METHOD
-    # extracting tau^2 for the varying intercept
-    tau2 <- vars$vcov
+      # computing the ICC for the intercept
+      ICC <- tau2 / (tau2 + (pi^2 / 3) )
+    }
+    else {
+      stop("ICCm does not support calculations for logistic models with more than 1 random term.", call. = FALSE)
+      return(NULL)
+    }
 
-    # computing the ICC for the intercept
-    ICC <- tau2 / (tau2 + (pi^2 / 3) )
-    ICC
   }
 
-
   # Output
-  if(class(model)!="glmerMod"){# one random effect
+  if(class(model)!="glmerMod"){
+    # one random effect
     if(lme4::getME(model, name = 'n_rtrms') == 1){
       res <- (list(
+        "modClass" = "lmerMod",
         "RandEff" = 1,
         "type" = NA,
         "factor1" = names(lme4::VarCorr(model))[1],
@@ -135,6 +141,7 @@ ICCm <- function(model, re_type = c("NA")) {
       # two random effects - three level model
     } else if(lme4::getME(model, name = 'n_rtrms') == 2) {
       res <- (list(
+        "modClass" = "lmerMod",
         "RandEff" = 2,
         "type" = re_type,
         "factor1" = gsub("(:).*","",names(lme4::VarCorr(model)))[2],
@@ -147,9 +154,15 @@ ICCm <- function(model, re_type = c("NA")) {
         "ICC1" = round(icc1,3),
         "ICC2" = round(icc2,3),
         "ICC3" = round(icc3,3)))}
-  }
-    else {
-      res <- ICC
+  } else {
+      res <- list(
+        "modClass" = "glmerMod",
+        "RandEff" = 1,
+        "type" = NA,
+        "factor1" = names(lme4::VarCorr(model))[1],
+        "factor2" = NA,
+        "outcome" = names(stats::model.frame(model))[1],
+        "ICC" = ICC)
     }
     class(res) <- "ICCm"
     return(res)
