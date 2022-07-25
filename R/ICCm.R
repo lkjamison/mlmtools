@@ -160,7 +160,6 @@ ICCm <- function(model, re_type = c("NA")) {
         "RandEff" = 1,
         "type" = NA,
         "factor1" = names(lme4::VarCorr(model))[1],
-        "factor2" = NA,
         "outcome" = names(stats::model.frame(model))[1],
         "ICC" = ICC)
     }
