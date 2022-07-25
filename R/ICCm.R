@@ -161,7 +161,7 @@ ICCm <- function(model, re_type = c("NA")) {
         "type" = NA,
         "factor1" = names(lme4::VarCorr(model))[1],
         "outcome" = names(stats::model.frame(model))[1],
-        "ICC" = ICC)
+        "ICC" = round(ICC,3))
     }
     class(res) <- "ICCm"
     return(res)
