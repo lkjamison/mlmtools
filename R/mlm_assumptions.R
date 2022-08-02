@@ -215,25 +215,26 @@ mlm_assumptions <- function(model) {
   }
 
   # Multicollinearity
-  if (length(x) < 2) {
+  x_vif <- x[-which(sapply(data[,x],class) == "character")]
+  if (length(x_vif) < 2) {
     multicollinearity <- ("Model contains fewer than 2 terms, multicollinearity cannot be assessed.\n")
   } else {
     v <- as.matrix(vcov(model))
-    assign <- attr(model.matrix(model), "assign")
+    assign <- attr(model.matrix(model),"assign")[-which(attr(model.matrix(model), "assign")==which(sapply(data[,x],class) == "character"))]
     if (names(fixef(model)[1]) == "(Intercept)") {
       v <- v[-1, -1]
       assign <- assign[-1]
     }
     R <- cov2cor(v)
     detR <- det(R)
-    multicollinearity <- matrix(0, length(x), 3)
-    rownames(multicollinearity) <- x
+    multicollinearity <- matrix(0, length(x_vif), 3)
+    rownames(multicollinearity) <- x_vif
     colnames(multicollinearity) <- c("GVIF", "Df", "GVIF^(1/(2*Df))")
-    for (term in 1:length(x)) {
-      subs <- which(assign == x)
+    for (term in 1:length(x_vif)) {
+      subs <- which(assign == x_vif)
       multicollinearity[term, 1] <- det(as.matrix(R[subs, subs])) *
         det(as.matrix(R[-subs, -subs])) / detR
-      multicollinearity[x, 2] <- length(subs)
+      multicollinearity[x_vif, 2] <- length(subs)
     }
     if (all(multicollinearity[, 2] == 1)){
       multicollinearity <- multicollinearity[, 1]
