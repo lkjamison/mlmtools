@@ -25,7 +25,7 @@ mlm_assumptions <- function(model) {
     stop("Model class is not 'lmerMod', 'lmerModLmerTest', or 'glmerMod'.", call. = FALSE)
     return(NULL)
   }
-  if(class(model)=="glmerMod" & !stats::family(model)[[1]]=="binomial"){
+  if(inherits(class(model),"glmerMod") & !stats::family(model)[[1]]=="binomial"){
     stop("Function currently only supports binomial family glmerMod models.", call. = FALSE)
     return(NULL)
   }
@@ -40,7 +40,7 @@ mlm_assumptions <- function(model) {
   # Predictors
   x <- attributes(stats::terms(model))$term.labels # Extracts independent variables from the model
 
-  if(class(model)=="glmerMod"){
+  if(inherits(class(model),"glmerMod")){
     data$probabilities <- stats::predict(model, type = "response")
     data$logit <- log(data$probabilities/(1-data$probabilities))
   }
@@ -52,7 +52,7 @@ mlm_assumptions <- function(model) {
 
   # Linearity
   linearityplot_fun <- function(xvar){
-    if(class(model)=="glmerMod"){
+    if(inherits(class(model),"glmerMod")){
       yvar <- "logit"
     } else {
       yvar <- y
@@ -110,7 +110,7 @@ mlm_assumptions <- function(model) {
 
   linearity.plots <- lapply(x, linearityplot_fun)
 
-  if(class(model) != "glmerMod"){
+  if(!inherits(class(model),"glmerMod")){
     # Homogeneity of Variance
     data$model.Res2<- abs(stats::residuals(model))^2 # squares the absolute values of the residuals to provide the more robust estimate
     Levene.model <- stats::lm(model.Res2 ~ classid, data=data) #ANOVA of the squared residuals
