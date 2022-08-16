@@ -17,7 +17,7 @@ mlm_assumptions <- function(model) {
     stop("Model class is not 'lmerMod', 'lmerModLmerTest', or 'glmerMod'.", call. = FALSE)
     return(NULL)
   }
-  if(class(model)=="glmerMod" & !family(model)[[1]]=="binomial"){
+  if(class(model)=="glmerMod" & !stats::family(model)[[1]]=="binomial"){
     stop("Function currently only supports binomial family glmerMod models.", call. = FALSE)
     return(NULL)
   }
@@ -26,14 +26,14 @@ mlm_assumptions <- function(model) {
   data <- lme4::getData(model)
 
   # Original y variable
-  form <- deparse(formula(model))
+  form <- deparse(stats::formula(model))
   y <- trimws(strsplit(form, "[~+]")[[1]][1]) # Extracts dependent variable from the model
 
   # Predictors
-  x <- attributes(terms(model))$term.labels # Extracts independent variables from the model
+  x <- attributes(stats::terms(model))$term.labels # Extracts independent variables from the model
 
   if(class(model)=="glmerMod"){
-    data$probabilities <- predict(model, type = "response")
+    data$probabilities <- stats::predict(model, type = "response")
     data$logit <- log(data$probabilities/(1-data$probabilities))
   }
 
@@ -104,10 +104,10 @@ mlm_assumptions <- function(model) {
 
   if(class(model) != "glmerMod"){
     # Homogeneity of Variance
-    data$model.Res2<- abs(residuals(model))^2 # squares the absolute values of the residuals to provide the more robust estimate
-    Levene.model <- lm(model.Res2 ~ classid, data=data) #ANOVA of the squared residuals
-    homo.test <- anova(Levene.model) #displays the results
-    data$predicted <- predict(model)
+    data$model.Res2<- abs(stats::residuals(model))^2 # squares the absolute values of the residuals to provide the more robust estimate
+    Levene.model <- stats::lm(model.Res2 ~ classid, data=data) #ANOVA of the squared residuals
+    homo.test <- stats::anova(Levene.model) #displays the results
+    data$predicted <- stats::predict(model)
     #create a fitted vs residual plot
     fitted.residual.plot <- ggplot2::ggplot(data=data,mapping=ggplot2::aes(x=predicted,y=residuals(model))) +
       ggplot2::geom_point() +
