@@ -8,6 +8,14 @@
 #'
 #' @references Glaser, R. E. (2006). Levene’s Robust Test of Homogeneity of Variances. Encyclopedia of Statistical Sciences. 6.
 #'
+#' @examples
+#'
+#' \donttest{
+#' data(instruction)
+#' mod <- lme4::lmer(mathgain ~ mathkind + (1 | classid), data = instruction)
+#' mlm_assumptions(mod)
+#' }
+#'
 #' @export mlm_assumptions
 
 mlm_assumptions <- function(model) {
@@ -107,9 +115,10 @@ mlm_assumptions <- function(model) {
     data$model.Res2<- abs(stats::residuals(model))^2 # squares the absolute values of the residuals to provide the more robust estimate
     Levene.model <- stats::lm(model.Res2 ~ classid, data=data) #ANOVA of the squared residuals
     homo.test <- stats::anova(Levene.model) #displays the results
-    data$predicted <- stats::predict(model)
+    predicted <- stats::predict(model)
+    data$predicted <- predicted
     #create a fitted vs residual plot
-    fitted.residual.plot <- ggplot2::ggplot(data=data,mapping=ggplot2::aes(x=predicted,y=residuals(model))) +
+    fitted.residual.plot <- ggplot2::ggplot(data=data,mapping=ggplot2::aes(x=predicted,y=stats::residuals(model))) +
       ggplot2::geom_point() +
       ggplot2::geom_hline(yintercept=0,linetype="dashed") +
       ggplot2::theme_classic() +
@@ -118,7 +127,10 @@ mlm_assumptions <- function(model) {
       ggplot2::ggtitle("Fitted vs. Residuals")
 
     # Normally distributed residuals
-    resid.linearity.plot <- ggplot2::ggplot(as.data.frame(cbind(resid(model),data[,y])),
+    V1 <- stats::resid(model)
+    V2 <- data[,y]
+    resid.data <- as.data.frame(cbind(V1,V2))
+    resid.linearity.plot <- ggplot2::ggplot(resid.data,
                                             ggplot2::aes(x = V1, y = V2)) +
       ggplot2::geom_point() +
       ggplot2::geom_smooth(formula = y ~ x, method=stats::loess) +
@@ -127,16 +139,17 @@ mlm_assumptions <- function(model) {
       ggplot2::ylab("Original y")
   }
   if(class(model)=="glmerMod"){
-    data$predicted <- predict(model)
+    data$predicted <- stats::predict(model)
   }
   data$Leverage = data$predicted/(1 - data$predicted)
-  data$mse = (residuals(model))^2/var(residuals(model))
+  data$mse = (stats::residuals(model))^2/stats::var(stats::residuals(model))
   data$CooksD <- (1/6)*(data$mse)*data$Leverage
   outliers <- rownames(data[data$CooksD > (4/nrow(data)),])
   if(length(outliers) == 0){
     outliers <- "No outliers detected."
   }
-  data$model.Res <- residuals(model)
+  model.Res <- stats::residuals(model)
+  data$model.Res <- model.Res
   if(class(model) != "glmerMod"){
     resid.normality.plot <- ggplot2::qplot(sample = model.Res, data = data) +
       ggplot2::stat_qq_line() +
@@ -219,13 +232,13 @@ mlm_assumptions <- function(model) {
   if (length(x_vif) < 2) {
     multicollinearity <- ("Model contains fewer than 2 terms, multicollinearity cannot be assessed.\n")
   } else {
-    v <- as.matrix(vcov(model))
-    assign <- attr(model.matrix(model),"assign")[-which(attr(model.matrix(model), "assign")==which(sapply(data[,x],class) == "character"))]
-    if (names(fixef(model)[1]) == "(Intercept)") {
+    v <- as.matrix(stats::vcov(model))
+    assign <- attr(stats::model.matrix(model),"assign")[-which(attr(stats::model.matrix(model), "assign")==which(sapply(data[,x],class) == "character"))]
+    if (names(lme4::fixef(model)[1]) == "(Intercept)") {
       v <- v[-1, -1]
       assign <- assign[-1]
     }
-    R <- cov2cor(v)
+    R <- stats::cov2cor(v)
     detR <- det(R)
     multicollinearity <- matrix(0, length(x_vif), 3)
     rownames(multicollinearity) <- x_vif
