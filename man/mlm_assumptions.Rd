@@ -15,6 +15,15 @@ Tests the relevant assumptions of the specified multilevel model.
 \description{
 Reports the results from testing all assumptions of a multilevel model and provides suggestions if an assumption is not passed
 }
+\examples{
+
+\donttest{
+data(instruction)
+mod <- lme4::lmer(mathgain ~ mathkind + (1 | classid), data = instruction)
+mlm_assumptions(mod)
+}
+
+}
 \references{
 Glaser, R. E. (2006). Levene’s Robust Test of Homogeneity of Variances. Encyclopedia of Statistical Sciences. 6.
 }
