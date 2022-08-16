@@ -29,7 +29,7 @@ rsqmlm <- function (model, by_cluster = FALSE)
     stop("Only one model can be assessed at one time.", call. = FALSE)
     return(NULL)
   }
-  if (!(class(model) == "lmerMod" | class(model) == "lmerModLmerTest")) {
+  if (!(inherits(class(model),"lmerMod") | inherits(class(model),"lmerModLmerTest"))) {
     stop("Model class is not 'lmerMod' or 'lmerModLmerTest'.",
          call. = FALSE)
     return(NULL)

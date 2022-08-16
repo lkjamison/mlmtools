@@ -73,32 +73,32 @@ withinPlot <- function(x, y, grouping, dataset, xlab = x, ylab = y, within_title
   }
 
   # xlab must be in quotes and of class character
-  if(!class(xlab) == "character"){
+  if(!inherits(class(xlab),"character")){
     stop("Check that your xlab is in quotes.", call. = FALSE)
     return(NULL)
   }
 
   # ylab must be in quotes and of class character
-  if(!class(ylab) == "character"){
+  if(!inherits(class(ylab),"character")){
     stop("Check that your ylab is in quotes.", call. = FALSE)
     return(NULL)
   }
 
 
   # within_title must be in quotes and of class character
-  if(!class(within_title) == "character"){
+  if(!inherits(class(within_title),"character")){
     stop("Check that your within_title is in quotes.", call. = FALSE)
     return(NULL)
   }
 
   # point_color must be in quotes and of class character
-  if(!class(point_color) == "character"){
+  if(!inherits(class(point_color),"character")){
     stop("Check that your point_color is in quotes.", call. = FALSE)
     return(NULL)
   }
 
   # line_color must be in quotes and of class character
-  if(!class(line_color) == "character"){
+  if(!inherits(class(line_color),"character")){
     stop("Check that your line_color is in quotes.", call. = FALSE)
     return(NULL)
   }

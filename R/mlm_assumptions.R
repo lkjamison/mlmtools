@@ -21,7 +21,7 @@
 mlm_assumptions <- function(model) {
 
   # Model class must be 'lmerMod' or 'lmerModLmerTest'
-  if (!(class(model)=="lmerMod"|!class(model)=="lmerModLmerTest"|!class(model)=="glmerMod")) {
+  if (!(inherits(class(model),"lmerMod")|!inherits(class(model),"lmerModLmerTest")|!inherits(class(model),"glmerMod"))) {
     stop("Model class is not 'lmerMod', 'lmerModLmerTest', or 'glmerMod'.", call. = FALSE)
     return(NULL)
   }
