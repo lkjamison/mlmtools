@@ -28,7 +28,7 @@ ICCm <- function(model, re_type = c("NA")) {
     stop("Model class is not 'lmerMod', 'lmerModLmerTest', or 'glmerMod'.", call. = FALSE)
     return(NULL)
   }
-  if(class(model)=="glmerMod" & !family(model)[[1]]=="binomial"){
+  if(class(model)=="glmerMod" & !stats::family(model)[[1]]=="binomial"){
     stop("Function currently only supports binomial family glmerMod models.", call. = FALSE)
     return(NULL)
   }
