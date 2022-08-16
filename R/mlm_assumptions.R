@@ -138,7 +138,7 @@ mlm_assumptions <- function(model) {
       ggplot2::xlab("Residuals") +
       ggplot2::ylab("Original y")
   }
-  if(class(model)=="glmerMod"){
+  if(inherits(class(model),"glmerMod")){
     data$predicted <- stats::predict(model)
   }
   data$Leverage = data$predicted/(1 - data$predicted)
@@ -150,7 +150,7 @@ mlm_assumptions <- function(model) {
   }
   model.Res <- stats::residuals(model)
   data$model.Res <- model.Res
-  if(class(model) != "glmerMod"){
+  if(!inherits(class(model),"glmerMod")){
     resid.normality.plot <- ggplot2::qplot(sample = model.Res, data = data) +
       ggplot2::stat_qq_line() +
       ggplot2::xlab("Theoretical Quantiles") +
@@ -161,7 +161,7 @@ mlm_assumptions <- function(model) {
 
   # Component + Residual plots
   ### continuous predictors only - Will not produce a plot for logical, unordered factor, character, < 3 unique values in predictors, interactions between categorical variables, or interactions of > 3 variables
-  if(class(model) != "glmerMod"){
+  if(!inherits(class(model),"glmerMod")){
     x.ResidComponent <- c(x[!grepl(":",x)][sapply(x[!grepl(":",x)], function(x) ifelse(!is.factor(data[,x]), TRUE, is.ordered(data[,x])) & !is.character(data[,x]) & length(unique((data[,x])))>2)],x[grepl(":",x)])
     #data$model.Res <- residuals(model)
     ResidComponent_fun <- function(xvar){
@@ -258,12 +258,12 @@ mlm_assumptions <- function(model) {
   }
 
   # Combining Results
-  result <- if(class(model)=="glmerMod"){
+  result <- if(inherits(class(model),"glmerMod")){
     list(linearity.plots,outliers,multicollinearity)
     } else {
       list(linearity.plots,homo.test,fitted.residual.plot,outliers,resid.normality.plot,resid.component.plots,multicollinearity)
     }
-  names(result) <- if(class(model)=="glmerMod"){
+  names(result) <- if(inherits(class(model),"glmerMod")){
     c("linearity.plots","outliers","multicollinearity")
   } else {
     c("linearity.plots","homo.test","fitted.residual.plot","outliers","resid.normality.plot","resid.component.plots","multicollinearity")
