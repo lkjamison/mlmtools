@@ -2,11 +2,11 @@
 #'
 #' Reports the results from testing all assumptions of a multilevel model and provides suggestions if an assumption is not passed
 #'
-#' @param model A linear mixed-effects model of class lmerMod or lmerModLmerTest
+#' @param model A linear mixed-effects model of class lmerMod, lmerModLmerTest, or glmerMod of type binomial.
 #'
-#' @return TO DO
+#' @return Tests the relevant assumptions of the specified multilevel model.
 #'
-#' @references TO DO
+#' @references Glaser, R. E. (2006). Levene’s Robust Test of Homogeneity of Variances. Encyclopedia of Statistical Sciences. 6.
 #'
 #' @export mlm_assumptions
 
