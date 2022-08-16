@@ -21,11 +21,11 @@
 mlm_assumptions <- function(model) {
 
   # Model class must be 'lmerMod' or 'lmerModLmerTest'
-  if (!(inherits(class(model),"lmerMod")|!inherits(class(model),"lmerModLmerTest")|!inherits(class(model),"glmerMod"))) {
+  if (!(inherits(model,"lmerMod")|!inherits(model,"lmerModLmerTest")|!inherits(model,"glmerMod"))) {
     stop("Model class is not 'lmerMod', 'lmerModLmerTest', or 'glmerMod'.", call. = FALSE)
     return(NULL)
   }
-  if(inherits(class(model),"glmerMod") & !stats::family(model)[[1]]=="binomial"){
+  if(inherits(model,"glmerMod") & !stats::family(model)[[1]]=="binomial"){
     stop("Function currently only supports binomial family glmerMod models.", call. = FALSE)
     return(NULL)
   }
@@ -40,7 +40,7 @@ mlm_assumptions <- function(model) {
   # Predictors
   x <- attributes(stats::terms(model))$term.labels # Extracts independent variables from the model
 
-  if(inherits(class(model),"glmerMod")){
+  if(inherits(model,"glmerMod")){
     data$probabilities <- stats::predict(model, type = "response")
     data$logit <- log(data$probabilities/(1-data$probabilities))
   }
@@ -52,7 +52,7 @@ mlm_assumptions <- function(model) {
 
   # Linearity
   linearityplot_fun <- function(xvar){
-    if(inherits(class(model),"glmerMod")){
+    if(inherits(model,"glmerMod")){
       yvar <- "logit"
     } else {
       yvar <- y
@@ -110,7 +110,7 @@ mlm_assumptions <- function(model) {
 
   linearity.plots <- lapply(x, linearityplot_fun)
 
-  if(!inherits(class(model),"glmerMod")){
+  if(!inherits(model,"glmerMod")){
     # Homogeneity of Variance
     data$model.Res2<- abs(stats::residuals(model))^2 # squares the absolute values of the residuals to provide the more robust estimate
     Levene.model <- stats::lm(model.Res2 ~ classid, data=data) #ANOVA of the squared residuals
@@ -138,7 +138,7 @@ mlm_assumptions <- function(model) {
       ggplot2::xlab("Residuals") +
       ggplot2::ylab("Original y")
   }
-  if(inherits(class(model),"glmerMod")){
+  if(inherits(model,"glmerMod")){
     data$predicted <- stats::predict(model)
   }
   data$Leverage = data$predicted/(1 - data$predicted)
@@ -150,7 +150,7 @@ mlm_assumptions <- function(model) {
   }
   model.Res <- stats::residuals(model)
   data$model.Res <- model.Res
-  if(!inherits(class(model),"glmerMod")){
+  if(!inherits(model,"glmerMod")){
     resid.normality.plot <- ggplot2::qplot(sample = model.Res, data = data) +
       ggplot2::stat_qq_line() +
       ggplot2::xlab("Theoretical Quantiles") +
@@ -161,7 +161,7 @@ mlm_assumptions <- function(model) {
 
   # Component + Residual plots
   ### continuous predictors only - Will not produce a plot for logical, unordered factor, character, < 3 unique values in predictors, interactions between categorical variables, or interactions of > 3 variables
-  if(!inherits(class(model),"glmerMod")){
+  if(!inherits(model,"glmerMod")){
     x.ResidComponent <- c(x[!grepl(":",x)][sapply(x[!grepl(":",x)], function(x) ifelse(!is.factor(data[,x]), TRUE, is.ordered(data[,x])) & !is.character(data[,x]) & length(unique((data[,x])))>2)],x[grepl(":",x)])
     #data$model.Res <- residuals(model)
     ResidComponent_fun <- function(xvar){
@@ -258,19 +258,19 @@ mlm_assumptions <- function(model) {
   }
 
   # Combining Results
-  result <- if(inherits(class(model),"glmerMod")){
+  result <- if(inherits(model,"glmerMod")){
     list(linearity.plots,outliers,multicollinearity)
     } else {
       list(linearity.plots,homo.test,fitted.residual.plot,outliers,resid.normality.plot,resid.component.plots,multicollinearity)
     }
-  names(result) <- if(inherits(class(model),"glmerMod")){
+  names(result) <- if(inherits(model,"glmerMod")){
     c("linearity.plots","outliers","multicollinearity")
   } else {
     c("linearity.plots","homo.test","fitted.residual.plot","outliers","resid.normality.plot","resid.component.plots","multicollinearity")
   }
 
   # Adding messages for summary/interpretation
-  if(class(model)!="glmerMod"){
+  if(!inherits(model,"glmerMod")){
     message(if(result$homo.test$`Pr(>F)`[1] >= .05){
       cat("Homogeneity of variance assumption met.\n")
     } else {
