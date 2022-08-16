@@ -31,7 +31,7 @@ levelCompare <- function(model) {
     return(NULL)
   }
 
-  glmerCheck <- vapply(mods, function(x) family(x)[[1]]=="binomial", NA)
+  glmerCheck <- vapply(mods, function(x) stats::family(x)[[1]]=="binomial", NA)
   if(any(glmerCheck)){
     stop("Function currently only supports binomial family glmerMod models.", call. = FALSE)
     return(NULL)
