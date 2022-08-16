@@ -2,3 +2,9 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^\.github$
+
+^README\.Rmd$
+^README_files$
+^docs$
+^paper\.md$
+^Data/instruction\.txt$
