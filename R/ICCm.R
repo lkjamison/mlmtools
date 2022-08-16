@@ -128,7 +128,7 @@ ICCm <- function(model, re_type = c("NA")) {
   	  	"factor1" = gsub("(:).*","",names(lme4::VarCorr(model)))[2],
   	  	"factor2" = if(sum(grepl("/", model@call, fixed = TRUE)) == 0) {
   	  	   gsub(".*(:)","",names(lme4::VarCorr(model)))[1] # If model is specified as (1|a)+(1|a:b)) or (1|a)+(1|b)
-  	  	} else { gsub(").*","",gsub(".*(/)","",mod4@call)[2]) # If model is specified as (1|a/b)
+  	  	} else { gsub(").*","",gsub(".*(/)","",model@call)[2]) # If model is specified as (1|a/b)
   	  	},
   	  	"outcome" = names(stats::model.frame(model))[1],
       	"ICC" = NA,
