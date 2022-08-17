@@ -24,7 +24,7 @@
 ICCm <- function(model, re_type = c("NA")) {
 
   # Model class must be 'lmerMod' or 'lmerModLmerTest'
-  if (!inherits(model,"lmerMod") | !inherits(model,"lmerModLmerTest")|!inherits(model,"glmerMod")) {
+  if (!(inherits(model,"lmerMod")|!inherits(model,"lmerModLmerTest")|!inherits(model,"glmerMod"))) {
     stop("Model class is not 'lmerMod', 'lmerModLmerTest', or 'glmerMod'.", call. = FALSE)
     return(NULL)
   }
