@@ -1,9 +1,13 @@
 Package: mlmtools
-Title: Things related to multi-level models
+Title: Tools for assessing multi-level models
 Version: 0.0.0.9000
-Authors@R: person("Jessica Mazen", email = "jm5ku@virginia.edu", role = c("aut", "cre"))
-Description: Things related to multi-level models.
-Depends: R (>= 3.2.0)
+Authors@R: c(person("Jessica Mazen", email = "mazenjes@gmail.com", role = c("aut", "cre")),
+	     person("Laura Jamison", email = "lj5yn@virginia.edu", role = c("aut", "cre")),
+	     person("Erik Ruzek", email = "erik.ruzek@nwea.org", role = c("aut", "cre")),
+	     person("Gus Sjobeck", email = "grs4de@virginia.edu", role = "ctb"))
+Maintainer: Laura Jamison <lj5yn@virginia.edu>
+Description: Tools for assessing multi-level models.
+Depends: R (>= 3.5.0)
 Imports: lme4,stats,ggplot2
 License: GPL (>= 3)
 Encoding: UTF-8
