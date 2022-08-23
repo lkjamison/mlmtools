@@ -22,52 +22,52 @@
 #'
 #' @export rsqmlm
 
-rsqmlm <- function (model, by_cluster = FALSE) 
+rsqmlm <- function (model, by_cluster = FALSE)
 {
   mods <- list(model)
   if (length(mods) > 1) {
     stop("Only one model can be assessed at one time.", call. = FALSE)
     return(NULL)
   }
-  if (!(class(model) == "lmerMod" | class(model) == "lmerModLmerTest")) {
-    stop("Model class is not 'lmerMod' or 'lmerModLmerTest'.", 
+  if (!(inherits(model,"lmerMod") | inherits(model,"lmerModLmerTest"))) {
+    stop("Model class is not 'lmerMod' or 'lmerModLmerTest'.",
          call. = FALSE)
     return(NULL)
   }
   if (length(by_cluster) != 1) {
-    stop("The argument by_cluster is not specified correctly.", 
+    stop("The argument by_cluster is not specified correctly.",
          call. = FALSE)
     return(NULL)
   }
   if (!(by_cluster %in% c(TRUE, FALSE))) {
-    stop("The argument by_cluster is not specified correctly.", 
+    stop("The argument by_cluster is not specified correctly.",
          call. = FALSE)
     return(NULL)
   }
-  if (lme4::getME(model, name = "n_rtrms") == 2 & lme4::getME(model, 
-                                                              name = "cnms")[1] != "(Intercept)" & lme4::getME(model, 
+  if (lme4::getME(model, name = "n_rtrms") == 2 & lme4::getME(model,
+                                                              name = "cnms")[1] != "(Intercept)" & lme4::getME(model,
                                                                                                                name = "cnms")[2] != "(Intercept)") {
-    stop("rsqmlm cannot be calculated for models containing random slopes.", 
+    stop("rsqmlm cannot be calculated for models containing random slopes.",
          call. = FALSE)
     return(NULL)
   }
-  if (length(names(lme4::getME(model, name = "fixef"))) == 
+  if (length(names(lme4::getME(model, name = "fixef"))) ==
       0) {
-    stop("Model must contain at least one fixed effect.", 
+    stop("Model must contain at least one fixed effect.",
          call. = FALSE)
     return(NULL)
   }
   calls <- lapply(mods, stats::getCall)
   off <- lapply(calls, `[[`, "offset")[[1]]
   if (!is.null(off)) {
-    stop("levelCompare cannot be calculated for models using the offset argument", 
+    stop("levelCompare cannot be calculated for models using the offset argument",
          call. = FALSE)
     return(NULL)
   }
   if (by_cluster == FALSE) {
     vars <- tryCatch(lme4::VarCorr(model))
     if (exists("vars") == FALSE) {
-      stop("Error in extracting estimated variances.", 
+      stop("Error in extracting estimated variances.",
            call. = FALSE)
       return(NULL)
     }
@@ -78,19 +78,19 @@ rsqmlm <- function (model, by_cluster = FALSE)
     vars <- as.data.frame(vars)
     fe <- lme4::fixef(model)
     ok <- !is.na(fe)
-    fitted <- (stats::model.matrix(model)[, ok, drop = FALSE] %*% 
+    fitted <- (stats::model.matrix(model)[, ok, drop = FALSE] %*%
                  fe[ok])[, 1L]
     varFE <- stats::var(fitted)
     matmultdiag <- function(x, y, ty = t(y)) {
-      if (ncol(x) != ncol(ty)) 
+      if (ncol(x) != ncol(ty))
         stop("non-conformable arguments")
-      if (nrow(x) != nrow(ty)) 
+      if (nrow(x) != nrow(ty))
         stop("result is not a square matrix")
       return(rowSums(x * ty))
     }
     vc <- lme4::VarCorr(model)
     remodmat <- function(object) {
-      rval <- do.call("cbind", stats::model.matrix(object, 
+      rval <- do.call("cbind", stats::model.matrix(object,
                                                    type = "randomListRaw"))
       rval[, !duplicated(colnames(rval)), drop = FALSE]
     }
@@ -107,7 +107,7 @@ rsqmlm <- function (model, by_cluster = FALSE)
     varE <- vc[vc$grp == "Residual", ]$vcov
     r2_marginal <- varFE/(varFE + varRE + varE)
     r2_conditional <- (varFE + varRE)/(varFE + varRE + varE)
-    res <- (list(marginal = r2_marginal * 100, conditional = r2_conditional * 
+    res <- (list(marginal = r2_marginal * 100, conditional = r2_conditional *
                    100, byCluster = by_cluster))
     class(res) <- "rsqmlm"
     return(res)
@@ -126,13 +126,11 @@ rsqmlm <- function (model, by_cluster = FALSE)
       },
       error = function(e) {
         msg <- e$message
-        if (verbose) {
           if (grepl("(^object)(.*)(not found$)", msg)) {
-            print_color("Can't calculate null-model. Probably the data that was used to fit the model cannot be found.\n", "red")
+            print("Can't calculate null-model. Probably the data that was used to fit the model cannot be found.\n")
           } else if (grepl("^could not find function", msg)) {
-            print_color("Can't calculate null-model. Probably you need to load the package that was used to fit the model.\n", "red")
+            print("Can't calculate null-model. Probably you need to load the package that was used to fit the model.\n")
           }
-        }
       }
     )
     vars_null <- tryCatch(lme4::VarCorr(nullmodel))
@@ -140,15 +138,15 @@ rsqmlm <- function (model, by_cluster = FALSE)
     group_names <- names(lme4::VarCorr(model))
     vc <- as.data.frame(lme4::VarCorr(model))
     varINT <- vc[which(vc$var1 == "(Intercept)"), ]$vcov
-    var.nullINT <- vars_null[which(vars_null$var1 == "(Intercept)"), 
+    var.nullINT <- vars_null[which(vars_null$var1 == "(Intercept)"),
     ]$vcov
     varE <- vc[vc$grp == "Residual", ]$vcov
     var.nullE <- vars_null[vars_null$grp == "Residual", ]$vcov
     r2_random <- 1 - (varINT/var.nullINT)
     r2_fixed <- 1 - (varE/var.nullE)
-    out <- data.frame(Level = c("Level 1", group_names), 
+    out <- data.frame(Level = c("Level 1", group_names),
                       R2 = c(r2_fixed, r2_random), stringsAsFactors = FALSE)
-    res <- (list(fixed = r2_fixed * 100, random = r2_random * 
+    res <- (list(fixed = r2_fixed * 100, random = r2_random *
                    100, byCluster = by_cluster, Level = out$Level))
     class(res) <- "rsqmlm"
     return(res)

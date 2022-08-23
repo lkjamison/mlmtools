@@ -2,22 +2,30 @@
 #'
 #' Reports the results from testing all assumptions of a multilevel model and provides suggestions if an assumption is not passed
 #'
-#' @param model A linear mixed-effects model of class lmerMod or lmerModLmerTest
+#' @param model A linear mixed-effects model of class lmerMod, lmerModLmerTest, or glmerMod of type binomial.
 #'
-#' @return TO DO
+#' @return Tests the relevant assumptions of the specified multilevel model.
 #'
-#' @references TO DO
+#' @references Glaser, R. E. (2006). Levene’s Robust Test of Homogeneity of Variances. Encyclopedia of Statistical Sciences. 6.
+#'
+#' @examples
+#'
+#' \donttest{
+#' data(instruction)
+#' mod <- lme4::lmer(mathgain ~ mathkind + (1 | classid), data = instruction)
+#' mlm_assumptions(mod)
+#' }
 #'
 #' @export mlm_assumptions
 
 mlm_assumptions <- function(model) {
 
   # Model class must be 'lmerMod' or 'lmerModLmerTest'
-  if (!(class(model)=="lmerMod"|!class(model)=="lmerModLmerTest"|!class(model)=="glmerMod")) {
+  if (!(inherits(model,"lmerMod")|!inherits(model,"lmerModLmerTest")|!inherits(model,"glmerMod"))) {
     stop("Model class is not 'lmerMod', 'lmerModLmerTest', or 'glmerMod'.", call. = FALSE)
     return(NULL)
   }
-  if(class(model)=="glmerMod" & !family(model)[[1]]=="binomial"){
+  if(inherits(model,"glmerMod") & !stats::family(model)[[1]]=="binomial"){
     stop("Function currently only supports binomial family glmerMod models.", call. = FALSE)
     return(NULL)
   }
@@ -26,14 +34,14 @@ mlm_assumptions <- function(model) {
   data <- lme4::getData(model)
 
   # Original y variable
-  form <- deparse(formula(model))
+  form <- deparse(stats::formula(model))
   y <- trimws(strsplit(form, "[~+]")[[1]][1]) # Extracts dependent variable from the model
 
   # Predictors
-  x <- attributes(terms(model))$term.labels # Extracts independent variables from the model
+  x <- attributes(stats::terms(model))$term.labels # Extracts independent variables from the model
 
-  if(class(model)=="glmerMod"){
-    data$probabilities <- predict(model, type = "response")
+  if(inherits(model,"glmerMod")){
+    data$probabilities <- stats::predict(model, type = "response")
     data$logit <- log(data$probabilities/(1-data$probabilities))
   }
 
@@ -44,7 +52,7 @@ mlm_assumptions <- function(model) {
 
   # Linearity
   linearityplot_fun <- function(xvar){
-    if(class(model)=="glmerMod"){
+    if(inherits(model,"glmerMod")){
       yvar <- "logit"
     } else {
       yvar <- y
@@ -102,14 +110,15 @@ mlm_assumptions <- function(model) {
 
   linearity.plots <- lapply(x, linearityplot_fun)
 
-  if(class(model) != "glmerMod"){
+  if(!inherits(model,"glmerMod")){
     # Homogeneity of Variance
-    data$model.Res2<- abs(residuals(model))^2 # squares the absolute values of the residuals to provide the more robust estimate
-    Levene.model <- lm(model.Res2 ~ classid, data=data) #ANOVA of the squared residuals
-    homo.test <- anova(Levene.model) #displays the results
-    data$predicted <- predict(model)
+    data$model.Res2<- abs(stats::residuals(model))^2 # squares the absolute values of the residuals to provide the more robust estimate
+    Levene.model <- stats::lm(model.Res2 ~ classid, data=data) #ANOVA of the squared residuals
+    homo.test <- stats::anova(Levene.model) #displays the results
+    predicted <- stats::predict(model)
+    data$predicted <- predicted
     #create a fitted vs residual plot
-    fitted.residual.plot <- ggplot2::ggplot(data=data,mapping=ggplot2::aes(x=predicted,y=residuals(model))) +
+    fitted.residual.plot <- ggplot2::ggplot(data=data,mapping=ggplot2::aes(x=predicted,y=stats::residuals(model))) +
       ggplot2::geom_point() +
       ggplot2::geom_hline(yintercept=0,linetype="dashed") +
       ggplot2::theme_classic() +
@@ -118,7 +127,10 @@ mlm_assumptions <- function(model) {
       ggplot2::ggtitle("Fitted vs. Residuals")
 
     # Normally distributed residuals
-    resid.linearity.plot <- ggplot2::ggplot(as.data.frame(cbind(resid(model),data[,y])),
+    V1 <- stats::resid(model)
+    V2 <- data[,y]
+    resid.data <- as.data.frame(cbind(V1,V2))
+    resid.linearity.plot <- ggplot2::ggplot(resid.data,
                                             ggplot2::aes(x = V1, y = V2)) +
       ggplot2::geom_point() +
       ggplot2::geom_smooth(formula = y ~ x, method=stats::loess) +
@@ -126,18 +138,19 @@ mlm_assumptions <- function(model) {
       ggplot2::xlab("Residuals") +
       ggplot2::ylab("Original y")
   }
-  if(class(model)=="glmerMod"){
-    data$predicted <- predict(model)
+  if(inherits(model,"glmerMod")){
+    data$predicted <- stats::predict(model)
   }
   data$Leverage = data$predicted/(1 - data$predicted)
-  data$mse = (residuals(model))^2/var(residuals(model))
+  data$mse = (stats::residuals(model))^2/stats::var(stats::residuals(model))
   data$CooksD <- (1/6)*(data$mse)*data$Leverage
   outliers <- rownames(data[data$CooksD > (4/nrow(data)),])
   if(length(outliers) == 0){
     outliers <- "No outliers detected."
   }
-  data$model.Res <- residuals(model)
-  if(class(model) != "glmerMod"){
+  model.Res <- stats::residuals(model)
+  data$model.Res <- model.Res
+  if(!inherits(model,"glmerMod")){
     resid.normality.plot <- ggplot2::qplot(sample = model.Res, data = data) +
       ggplot2::stat_qq_line() +
       ggplot2::xlab("Theoretical Quantiles") +
@@ -148,7 +161,7 @@ mlm_assumptions <- function(model) {
 
   # Component + Residual plots
   ### continuous predictors only - Will not produce a plot for logical, unordered factor, character, < 3 unique values in predictors, interactions between categorical variables, or interactions of > 3 variables
-  if(class(model) != "glmerMod"){
+  if(!inherits(model,"glmerMod")){
     x.ResidComponent <- c(x[!grepl(":",x)][sapply(x[!grepl(":",x)], function(x) ifelse(!is.factor(data[,x]), TRUE, is.ordered(data[,x])) & !is.character(data[,x]) & length(unique((data[,x])))>2)],x[grepl(":",x)])
     #data$model.Res <- residuals(model)
     ResidComponent_fun <- function(xvar){
@@ -215,25 +228,31 @@ mlm_assumptions <- function(model) {
   }
 
   # Multicollinearity
-  if (length(x) < 2) {
+  x_character <- which(sapply(data[,x],class) == "character")
+  if(length(x_character > 0)) {
+    x_vif <- x[-which(sapply(data[,x],class) == "character")]
+  } else {
+    x_vif <- x
+  }
+  if (length(x_vif) < 2) {
     multicollinearity <- ("Model contains fewer than 2 terms, multicollinearity cannot be assessed.\n")
   } else {
-    v <- as.matrix(vcov(model))
-    assign <- attr(model.matrix(model), "assign")
-    if (names(fixef(model)[1]) == "(Intercept)") {
+    v <- as.matrix(stats::vcov(model))
+    assign <- attr(stats::model.matrix(model),"assign")[-which(attr(stats::model.matrix(model), "assign")==which(sapply(data[,x],class) == "character"))]
+    if (names(lme4::fixef(model)[1]) == "(Intercept)") {
       v <- v[-1, -1]
       assign <- assign[-1]
     }
-    R <- cov2cor(v)
+    R <- stats::cov2cor(v)
     detR <- det(R)
-    multicollinearity <- matrix(0, length(x), 3)
-    rownames(multicollinearity) <- x
+    multicollinearity <- matrix(0, length(x_vif), 3)
+    rownames(multicollinearity) <- x_vif
     colnames(multicollinearity) <- c("GVIF", "Df", "GVIF^(1/(2*Df))")
-    for (term in 1:length(x)) {
-      subs <- which(assign == x)
+    for (term in 1:length(x_vif)) {
+      subs <- which(assign == x_vif)
       multicollinearity[term, 1] <- det(as.matrix(R[subs, subs])) *
         det(as.matrix(R[-subs, -subs])) / detR
-      multicollinearity[x, 2] <- length(subs)
+      multicollinearity[x_vif, 2] <- length(subs)
     }
     if (all(multicollinearity[, 2] == 1)){
       multicollinearity <- multicollinearity[, 1]
@@ -244,19 +263,19 @@ mlm_assumptions <- function(model) {
   }
 
   # Combining Results
-  result <- if(class(model)=="glmerMod"){
+  result <- if(inherits(model,"glmerMod")){
     list(linearity.plots,outliers,multicollinearity)
     } else {
       list(linearity.plots,homo.test,fitted.residual.plot,outliers,resid.normality.plot,resid.component.plots,multicollinearity)
     }
-  names(result) <- if(class(model)=="glmerMod"){
+  names(result) <- if(inherits(model,"glmerMod")){
     c("linearity.plots","outliers","multicollinearity")
   } else {
     c("linearity.plots","homo.test","fitted.residual.plot","outliers","resid.normality.plot","resid.component.plots","multicollinearity")
   }
 
   # Adding messages for summary/interpretation
-  if(class(model)!="glmerMod"){
+  if(!inherits(model,"glmerMod")){
     message(if(result$homo.test$`Pr(>F)`[1] >= .05){
       cat("Homogeneity of variance assumption met.\n")
     } else {

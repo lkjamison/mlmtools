@@ -6,8 +6,8 @@
 \usage{
 caterpillarPlot(
   model,
-  grpvar,
-  title = print(grpvar),
+  grouping,
+  title = print(grouping),
   tall = TRUE,
   grey = FALSE
 )
@@ -15,7 +15,7 @@ caterpillarPlot(
 \arguments{
 \item{model}{A given lmer model.}
 
-\item{grpvar}{The name of the grouping variable of interest, as a character string.}
+\item{grouping}{The name of the grouping variable of interest, as a character string.}
 
 \item{title}{The title of the plot.}
 
@@ -31,7 +31,7 @@ Plots empirical Bayes both point prediction and prediction intervals for each ra
 \donttest{
 data(instruction)
 mod <- lme4::lmer(mathgain ~ (1 | classid), data = instruction)
-classid_caterpillarPlot <- caterpillarPlot(mod, title = "title", grpvar = "classid", grey = TRUE)
+classid_caterpillarPlot <- caterpillarPlot(mod, title = "title", grouping = "classid", grey = TRUE)
 }
 
 }
