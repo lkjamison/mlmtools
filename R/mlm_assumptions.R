@@ -228,7 +228,12 @@ mlm_assumptions <- function(model) {
   }
 
   # Multicollinearity
-  x_vif <- x[-which(sapply(data[,x],class) == "character")]
+  x_character <- which(sapply(data[,x],class) == "character")
+  if(length(x_character > 0)) {
+    x_vif <- x[-which(sapply(data[,x],class) == "character")]
+  } else {
+    x_vif <- x
+  }
   if (length(x_vif) < 2) {
     multicollinearity <- ("Model contains fewer than 2 terms, multicollinearity cannot be assessed.\n")
   } else {
