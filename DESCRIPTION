@@ -1,9 +1,9 @@
 Package: mlmtools
 Title: Tools for assessing multi-level models
 Version: 0.0.0.9000
-Authors@R: c(person("Jessica Mazen", email = "mazenjes@gmail.com", role = c("aut", "cre")),
-	     person("Laura Jamison", email = "lj5yn@virginia.edu", role = c("aut", "cre")),
-	     person("Erik Ruzek", email = "erik.ruzek@nwea.org", role = c("aut", "cre")),
+Authors@R: c(person("Laura Jamison", email = "lj5yn@virginia.edu", role = c("aut", "cre")),
+	     person("Jessica Mazen", email = "mazenjes@gmail.com", role = c("aut")),
+	     person("Erik Ruzek", email = "erik.ruzek@nwea.org", role = c("aut")),
 	     person("Gus Sjobeck", email = "grs4de@virginia.edu", role = "ctb"))
 Maintainer: Laura Jamison <lj5yn@virginia.edu>
 Description: Tools for assessing multi-level models.
