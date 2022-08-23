@@ -127,9 +127,9 @@ rsqmlm <- function (model, by_cluster = FALSE)
       error = function(e) {
         msg <- e$message
           if (grepl("(^object)(.*)(not found$)", msg)) {
-            print("Can't calculate null-model. Probably the data that was used to fit the model cannot be found.\n")
+            print("Unable to estimate the null model, data may not be accessible in the Global Environment.\n")
           } else if (grepl("^could not find function", msg)) {
-            print("Can't calculate null-model. Probably you need to load the package that was used to fit the model.\n")
+            print("Unable to estimate the null model, please load the package used to estimate the original model.\n")
           }
       }
     )
