@@ -1,12 +1,12 @@
 Package: mlmtools
-Title: Tools for assessing multi-level models
-Version: 0.0.0.9000
+Title: Tools for Assessing Multi-Level Models
+Version: 1.0.0
 Authors@R: c(person("Laura Jamison", email = "lj5yn@virginia.edu", role = c("aut", "cre")),
 	     person("Jessica Mazen", email = "mazenjes@gmail.com", role = c("aut")),
 	     person("Erik Ruzek", email = "erik.ruzek@nwea.org", role = c("aut")),
 	     person("Gus Sjobeck", email = "grs4de@virginia.edu", role = "ctb"))
 Maintainer: Laura Jamison <lj5yn@virginia.edu>
-Description: Tools for assessing multi-level models.
+Description: Multilevel models (mixed effects models) are the statistical tool of choice for analyzing multilevel data (Searle et al, 2009). These models account for the correlated nature of observations within higher level units by adding group-level error terms that augment the singular residual error of a standard OLS regression. Multilevel and mixed effects models often require specialized data pre-processing and further post-estimation derivations and graphics to gain insight into model results. The package presented here, `mlmtools`, is a suite of pre- and post-estimation tools for multilevel models in R. Package implements post-estimation tools designed to work with models estimated using lme4's (Bates et al., 2014) lmer function, which fits linear mixed effects regression models. Searle, S. R., Casella, G., & McCulloch, C. E. (2009). Bates, D., Mächler, M., Bolker, B., & Walker, S. (2014) <doi:10.18637/jss.v067.i01>.
 Depends: R (>= 3.5.0)
 Imports: lme4,stats,ggplot2
 License: GPL (>= 3)
