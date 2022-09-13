@@ -67,18 +67,6 @@ caterpillarPlot(mod0, title = "title", grpvar = "classid", grey = TRUE)
 
 This plot shows the 95% prediction intervals for the random intercepts for classrooms in the data based on the null model. 
 
-## Comparing to a model without a random intercept
-```{r}
-levelCompare(mod0)
-#> refitting model(s) with ML (instead of REML)
-#> Chisq(1) = 32.47, p < .001, logLik = -5889.46.
-#> The model that accounts for nesting (lmer model) fits the data significantly 
-#> better than a model that does not account for nesting (lm model). 
-#> This suggests that the random-effects model is needed to account for the 
-#> observed nesting structure.
-```
-To assess whether accounting for the correlation in mathgain scores via a random intercept for classrooms is necessary, we compare the model fit of this model to a single-level linear model without a random intercept. The model with a random intercept provides superior fit to the data.
-
 ## Comparing nested models fit to the same data
 ```{r}
 mod1 <- lmer(mathgain ~ mathkind + (1 | classid), data = instruction)
@@ -87,6 +75,13 @@ varCompare(mod0, mod1)
 #> mod1 explains 23.61% more variance than mod0
 ``` 
 The model with one predictor, as compared to the model with no predictor, explains an additional 24% of variance in maths gains. 
+
+## Test model assumptions
+```{r}
+mod1_assum <- mlm_assumptions(mod1)
+```
+
+The model meets the assumption of homogeneity of variance, no outliers were detected, and passes a visual inspection of all plots. Multicollinearity could not be assessed since only one predictor is present in the model.
 
 ## Centering predictors 
 ```{r}
@@ -148,7 +143,7 @@ mathkind_withinPlot <- withinPlot(x = "mathkind", y = "mathgain",
 ```
 ![Within-Group Association Plot](man/figures/figure_2.png)
 
-The unadjusted within-classroom associations between maths scores in kindergarten and maths gains are visualized above and the between classroom association below. 
+The unadjusted within-classroom associations between maths scores in kindergarten and math gains are visualized above and the between classroom association below. 
 
 
 ```{r}
@@ -159,6 +154,10 @@ mathkind_betweeenPlot <- betweenPlot(x = "mathkind", y = "mathgain",
 ```
 ![Between-Group Association Plot](man/figures/figure_3.png)
 
+```{r}
+caterpillarPlot(mod2, grouping = "classid")
+```
+![Caterpillar Plot](man/figures/figure_4.png)
 
 # Acknowledgements
 

@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 
 Multilevel and mixed effects models often require specialized data pre-processing and further post-estimation derivations and graphics to gain insight into model results. `mlmtools` is a suite of pre- and post-estimation tools for multilevel models in R. The package's post-estimation tools are designed to work with models estimated using `lme4`'s lmer function, which fits linear mixed effects regression models. Although nearly all the functions provided in the `mlmtools` package exist as singleton functions within other R packages, they are often improved in `mlmtools` and more accessible by being located within a multilevel modeling specific package.
 
-The package was developed by Jessica Mazen, Laura Jamison, Erik Ruzek, and Gus Sjobek.
+The package was developed by Laura Jamison, Jessican Mazen, Erik Ruzek, and Gus Sjobek.
 
 ## Included functions
 * Center level-1 predictors around their group (cluster) means
@@ -26,15 +26,14 @@ The package was developed by Jessica Mazen, Laura Jamison, Erik Ruzek, and Gus S
 * Variance explained
   + When comparing nested models
   + $R^2$
-* Test of necessity of random intercepts
 * Visualizations 
   + Associations between variables within clusters
   + Associations between variables between clusters
   + Caterpillar plots
-
+* Test model assumptions
 
 ## Installation
-To install the latest release version (0.0.0.9) from [GitHub](https://github.com/) with:
+To install the latest release version (1.0.0) from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
@@ -66,6 +65,11 @@ fit2 <- lmer(mathgain ~ classid_mathkind.devcmn + classid_mathkind.cmn + (1|clas
 # variance explained by adding predictor
 varCompare(fit2, fit1)
 
+# test model assumptions
+mlm_assumptions(fit2)
+
+# variance explained by the model
+rsqmlm(fit2)
 ```
 
 ## Visualizations
@@ -73,10 +77,13 @@ varCompare(fit2, fit1)
 Rich visualizations of associations can be had along with caterpillar plots, which graph the 95% prediction intervals for the random effects.
 
 ```{r}
+# visualize between-group association
+betweenPlot(x = "mathkind", y = "mathgain", grouping = "classid", dataset = instruction, xlab = "Kindergarten Math Score", ylab = "Gain in Math Score")
+
 # visualze within-group association
 withinPlot(x = "mathkind", y = "mathgain", grouping = "classid", dataset = instruction)
 
 # caterpillar plot
-caterpillarPlot(fit2, grpvar = "classid")
+caterpillarPlot(fit2, grouping = "classid")
 ```
 
