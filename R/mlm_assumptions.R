@@ -40,6 +40,12 @@ mlm_assumptions <- function(model) {
   # Predictors
   x <- attributes(stats::terms(model))$term.labels # Extracts independent variables from the model
 
+  # Model has to have predictors
+  if(length(x) == 0){
+    stop("mlm_assumptions requires 1 or more predictors to be present in the model.", call. = FALSE)
+    return(NULL)
+  }
+
   if(inherits(model,"glmerMod")){
     data$probabilities <- stats::predict(model, type = "response")
     data$logit <- log(data$probabilities/(1-data$probabilities))
@@ -290,7 +296,7 @@ mlm_assumptions <- function(model) {
         cat("No multicollinearity detected in the model.\n")
       }
     })
-    message(if(outliers == "No outliers detected."){
+    message(if(outliers != "No outliers detected."){
       cat("Outliers detected. See outliers object for more information.\n")
     } else {
       cat("No outliers detected.\n")
@@ -307,7 +313,7 @@ mlm_assumptions <- function(model) {
         cat("No multicollinearity detected in the model.\n")
       }
     })
-    message(if(length(result$outliers) > 0){
+    message(if(result$outliers!="No outliers detected."){
       cat("Outliers detected. See outliers object for more information.\n")
     } else {
       cat("No outliers detected.\n")
