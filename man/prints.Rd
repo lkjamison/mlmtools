@@ -4,7 +4,6 @@
 \alias{prints}
 \alias{print.center}
 \alias{print.ICCm}
-\alias{print.levelCompare}
 \alias{print.rsqmlm}
 \alias{print.varCompare}
 \title{S3Methods for Printing}
@@ -12,8 +11,6 @@
 \method{print}{center}(x, ...)
 
 \method{print}{ICCm}(x, ...)
-
-\method{print}{levelCompare}(x, ...)
 
 \method{print}{rsqmlm}(x, ...)
 

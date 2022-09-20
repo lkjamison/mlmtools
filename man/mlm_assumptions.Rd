@@ -16,12 +16,12 @@ Tests the relevant assumptions of the specified multilevel model.
 Reports the results from testing all assumptions of a multilevel model and provides suggestions if an assumption is not passed
 }
 \examples{
-
-\donttest{
+# Read in data
 data(instruction)
+# Create model
 mod <- lme4::lmer(mathgain ~ mathkind + (1 | classid), data = instruction)
+# Evaluate assumptions
 mlm_assumptions(mod)
-}
 
 }
 \references{

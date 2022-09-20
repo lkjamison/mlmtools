@@ -22,11 +22,12 @@ If re_type = "cc", the likeness of y scores in the same C1_factor unit (correlat
 Computes ICC values for lme4-fitted mixed-effects models.
 }
 \examples{
-\donttest{
+# Read in data
 data(instruction)
+# Create model
 mod <- lme4::lmer(mathgain ~ (1 | classid), data = instruction)
+# Estimate ICC
 ICCm(mod)
-}
 
 }
 \references{

@@ -18,14 +18,18 @@ Computes the percent variance explained by the model.
 Calculates variance explained by lme4-fitted mixed-effects models.
 }
 \examples{
-
-\donttest{
+# Read in data
 data(instruction)
+# Center mathkind by classid
 center(dataset = instruction, x = "mathkind", grouping = "classid")
+# Create model
 mod <- lme4::lmer(mathgain ~ classid_mathkind.cmn +
 classid_mathkind.devcmn + (1 | classid), data = instruction)
-rsqmlm(mod)
-}
+# Calculate r-squared
+rsq <- rsqmlm(mod)
+rsq
+rsq$marginal
+rsq$conditional
 
 }
 \references{

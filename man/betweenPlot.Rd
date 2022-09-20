@@ -51,13 +51,12 @@ betweenPlot(
 Plots the between-group and within-group associations between an outcome and predictor variable across two plots.
 }
 \examples{
-
-\donttest{
+# Read in data
 data(instruction)
+# Produce between plot
 betweenPlot(x = "mathkind", y = "mathgain", grouping = "classid",
 dataset = instruction, xlab = "Kindergarten Math Score",
 ylab = "Gain in Math Score")
-}
 
 }
 \references{

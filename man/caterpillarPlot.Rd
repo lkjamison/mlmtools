@@ -27,12 +27,12 @@ caterpillarPlot(
 Plots empirical Bayes both point prediction and prediction intervals for each random effect parameter across all groups.
 }
 \examples{
-
-\donttest{
+# Read in data
 data(instruction)
+# Create model
 mod <- lme4::lmer(mathgain ~ (1 | classid), data = instruction)
-classid_caterpillarPlot <- caterpillarPlot(mod, title = "title", grouping = "classid", grey = TRUE)
-}
+# Produce caterpillar plot
+caterpillarPlot(mod, title = "title", grouping = "classid", grey = TRUE)
 
 }
 \references{

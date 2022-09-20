@@ -33,14 +33,12 @@ Creates two new variables in the data frame - a mean of the desired variable com
 Centers variables using the group-mean (person-mean) centering approach for mixed-effects models, and adds these variables to the data frame.
 }
 \examples{
-\donttest{
 data(instruction)
 #Center student level socioeconomic status, "ses", around class mean "ses"
 center(dataset = instruction, x = "ses", grouping = "classid")
 #Center class-level variable teacher's mathematic prepartion,
 # mathprep, around school mean "mathprep"
 center(dataset = instruction, x = "mathprep", grouping = "schoolid")
-}
 
 }
 \references{

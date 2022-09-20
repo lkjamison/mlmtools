@@ -51,13 +51,12 @@ withinPlot(
 Plots the within-group associations between an outcome and predictor variable across two plots
 }
 \examples{
-
-\donttest{
+# Read in data
 data(instruction)
+# Create within plot
 mathkind_withinPlot <- withinPlot(x = "mathkind", y = "mathgain",
 grouping = "classid", dataset = instruction,
 xlab = "Kindergarten Math Score", ylab = "Gain in Math Score")
-}
 
 }
 \references{
