@@ -158,7 +158,9 @@ withinPlot <- function(x, y, grouping, dataset, xlab = x, ylab = y, within_title
           plot.title=ggplot2::element_text(size=16, hjust=.5)) +
     ggplot2::ggtitle(within_title)
 
-  suppressMessages(print(within))
+  suppressMessages(plot(within))
+  result <- within
+  return(result)
 
 }
 

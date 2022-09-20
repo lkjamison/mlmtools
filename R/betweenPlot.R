@@ -152,7 +152,9 @@ betweenPlot <- function(x, y, grouping, dataset, xlab = x, ylab = y, between_tit
           plot.title=ggplot2::element_text(size=16, hjust=.5)) +
     ggplot2::ggtitle(between_title)
 
-  suppressMessages(print(between.plot))
+  suppressMessages(plot(between.plot))
+  result <- between.plot
+  return(result)
 }
 
 

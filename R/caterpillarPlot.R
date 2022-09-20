@@ -119,6 +119,8 @@ caterpillarPlot <- function(model, grouping, title = print(grouping), tall = TRU
     }
 
   }
-  print(caterpillar.plot)
+  suppressMessages(plot(caterpillar.plot))
+  result <- caterpillar.plot
+  return(result)
 
 }
