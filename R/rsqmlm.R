@@ -19,7 +19,10 @@
 #' mod <- lme4::lmer(mathgain ~ classid_mathkind.cmn +
 #' classid_mathkind.devcmn + (1 | classid), data = instruction)
 #' # Calculate r-squared
-#' rsqmlm(mod)
+#' rsq <- rsqmlm(mod)
+#' rsq
+#' rsq$marginal
+#' rsq$conditional
 #'
 #' @export rsqmlm
 
