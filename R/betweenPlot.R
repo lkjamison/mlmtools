@@ -31,13 +31,12 @@
 #' @references Chow, S., Gilmore, R. O., Hallquist, M., Ram, N., & Brinberg, M. (2019). Introduction to multilevel model and interactions. GitHub. https://github.com/psu-psychology/r-bootcamp-2019/blob/master/talks/RBootcamp_MLMInteractions_2019_0820_Final2.Rmd
 #'
 #' @examples
-#'
-#' \donttest{
+#' # Read in data
 #' data(instruction)
+#' # Produce between plot
 #' betweenPlot(x = "mathkind", y = "mathgain", grouping = "classid",
 #' dataset = instruction, xlab = "Kindergarten Math Score",
 #' ylab = "Gain in Math Score")
-#' }
 #'
 #' @export betweenPlot
 

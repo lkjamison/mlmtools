@@ -10,11 +10,12 @@
 #' @return If re_type = "cc", the likeness of y scores in the same C1_factor unit (correlation between outcome values of units in same C1_factor but different C2_factor), the likeness of y scores in the same C2_factor (correlation between outcome values of units in the same C2_factor but different C2_factor), and the likeness of y scores in the same C1_factor and C2_factor combination (correlation between outcome values of units in the same C2_factor and C2_factor) are computed.
 #'
 #' @examples
-#' \donttest{
+#' # Read in data
 #' data(instruction)
+#' # Create model
 #' mod <- lme4::lmer(mathgain ~ (1 | classid), data = instruction)
+#' # Estimate ICC
 #' ICCm(mod)
-#'}
 #'
 #' @references Snijders, T. A. B. & Bosker, R. J. (2012). Multilevel Analysis (2nd Ed.). Sage Publications Ltd.
 #'

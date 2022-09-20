@@ -10,13 +10,14 @@
 #' @details Specifically,  1-(total variance for less parsimonious model/total variance for more parsimonious model).
 #'
 #' @examples
-#'
-#' \donttest{
+#' # Read in data
 #' data(instruction)
+#' # Create null model
 #' mod0 <- lme4::lmer(mathgain ~ (1 | classid), data = instruction)
+#' # Create model of interest
 #' mod1 <- lme4::lmer(mathgain ~ mathkind + (1 | classid), data = instruction)
+#' # Compare variance explained
 #' varCompare(mod0, mod1)
-#' }
 #'
 #' @references Snijders, T. A. B. & Bosker, R. J. (2012). Multilevel Analysis (2nd Ed.). Sage Publications Ltd.
 #'
