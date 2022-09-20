@@ -9,7 +9,6 @@
 #' @aliases
 #' print.center
 #' print.ICCm
-#' print.levelCompare
 #' print.rsqmlm
 #' print.varCompare
 #'
@@ -17,8 +16,6 @@
 #' \method{print}{center}(x, ...)
 #'
 #' \method{print}{ICCm}(x, ...)
-#'
-#' \method{print}{levelCompare}(x, ...)
 #'
 #' \method{print}{rsqmlm}(x, ...)
 #'
@@ -56,18 +53,6 @@ print.ICCm <- function(x, ...){
     cat("Likeness of", x$outcome, "values of units in the same", x$factor1, "factor but different", x$factor2, "factor:", x$ICC2, '\n')
     cat("Likeness of", x$outcome, "values of units in the same", x$factor1, "factor and same", x$factor2, "factor:", x$ICC3)
   }
-}
-
-# Print levelCompare
-#' @export
-print.levelCompare <- function(x, ...){
-  if (x$resModel == "lmerModel"){
-    cat("Chisq(", x$Df, ") = ", format(round(x$Chisq, 2), nsmall = 2), ", ", x$pVal.print, ", logLik = ", format(round(x$logLik, 2), nsmall = 2),".", '\n', sep = "")
-    cat("The model that accounts for nesting (lmer model) fits the data significantly \nbetter than a model that does not account for nesting (lm model).", '\n')
-    cat("This suggests that the random-effects model is needed to account for the \nobserved nesting structure.")
-  } else {
-    cat("The model that accounts for nesting (lmer model) does not fit the data significantly \nbetter than a model that does not account for nesting (lm model).", '\n')
-    cat("This suggests that the fixed-effexts model fits the data just as well as \nthe random-effects model.")}
 }
 
 # Print rsqmlm
