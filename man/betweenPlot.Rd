@@ -47,8 +47,11 @@ betweenPlot(
 
 \item{size}{Width of fit line.}
 }
+\value{
+Produces a plot of the between-group associations between an outcome and predictor variable.
+}
 \description{
-Plots the between-group and within-group associations between an outcome and predictor variable across two plots.
+Plots the between-group associations between an outcome and predictor variable.
 }
 \examples{
 # Read in data

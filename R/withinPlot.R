@@ -1,6 +1,6 @@
 #' Plots Within Group Associations
 #'
-#' Plots the within-group associations between an outcome and predictor variable across two plots
+#' Plots the within-group associations between an outcome and predictor variable.
 #'
 #' @param x Predictor variable.
 #'
@@ -27,6 +27,8 @@
 #' @param lty Line type.
 #'
 #' @param size Width of fit line.
+#'
+#' @return Produces a plot of the within-group associations between an outcome and predictor variable.
 #'
 #' @examples
 #' # Read in data
@@ -157,7 +159,6 @@ withinPlot <- function(x, y, grouping, dataset, xlab = x, ylab = y, within_title
           plot.title=ggplot2::element_text(size=16, hjust=.5)) +
     ggplot2::ggtitle(within_title)
 
-  suppressMessages(plot(within))
   result <- within
   return(result)
 

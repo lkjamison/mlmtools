@@ -1,5 +1,5 @@
 ---
-title: 'mlmtools: An R-Based Toolkit for lme4 Multilevel Models'
+title: 'mlmtools: An R-Based Multi-level Model Assessment Kit'
 tags:
   - R
   - multilevel modeling
@@ -12,14 +12,12 @@ authors:
   - name: Laura Jamison^[co-first author]
     affiliation: 1
   - name: Erik Ruzek^[second author]
-    affiliation: 2
+    affiliation: 1
   - name: Gustav R. Sjobeck^[third author]
     affiliation: 1
 affiliations:
   - name: University of Virginia
     index: 1
-  - name: NWEA, Portland, USA
-    index: 2
 date: 08 March 2022
 year: 2022
 bibliography: inst/refs.bib

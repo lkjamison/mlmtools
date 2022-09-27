@@ -47,8 +47,11 @@ withinPlot(
 
 \item{size}{Width of fit line.}
 }
+\value{
+Produces a plot of the within-group associations between an outcome and predictor variable.
+}
 \description{
-Plots the within-group associations between an outcome and predictor variable across two plots
+Plots the within-group associations between an outcome and predictor variable.
 }
 \examples{
 # Read in data
