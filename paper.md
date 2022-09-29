@@ -1,5 +1,5 @@
 ---
-title: 'mlmtools: An R-Based Multi-level Model Assessment Kit'
+title: 'mlmtools: An R-Based Multi-Level Model Assessment Kit'
 tags:
   - R
   - multilevel modeling
