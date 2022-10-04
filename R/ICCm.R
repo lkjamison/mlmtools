@@ -10,11 +10,12 @@
 #' @return If re_type = "cc", the likeness of y scores in the same C1_factor unit (correlation between outcome values of units in same C1_factor but different C2_factor), the likeness of y scores in the same C2_factor (correlation between outcome values of units in the same C2_factor but different C2_factor), and the likeness of y scores in the same C1_factor and C2_factor combination (correlation between outcome values of units in the same C2_factor and C2_factor) are computed.
 #'
 #' @examples
-#' \donttest{
+#' # Read in data
 #' data(instruction)
+#' # Create model
 #' mod <- lme4::lmer(mathgain ~ (1 | classid), data = instruction)
+#' # Estimate ICC
 #' ICCm(mod)
-#'}
 #'
 #' @references Snijders, T. A. B. & Bosker, R. J. (2012). Multilevel Analysis (2nd Ed.). Sage Publications Ltd.
 #' Goldstein, H., Browne, W., & Rasbash, J. (2002). Partitioning variation in multilevel models. Understanding statistics: statistical issues in psychology, education, and the social sciences, 1(4), 223-231.
@@ -25,19 +26,11 @@
 ICCm <- function(model, re_type = c("NA")) {
 
   # Model class must be 'lmerMod' or 'lmerModLmerTest'
-<<<<<<< HEAD
-  if (!(class(model)=="lmerMod"|!class(model)=="lmerModLmerTest"|!class(model)=="glmerMod")) {
-    stop("Model class is not 'lmerMod', 'lmerModLmerTest', or 'glmerMod'.", call. = FALSE)
-    return(NULL)
-  }
-  if(class(model)=="glmerMod" & !family(model)[[1]]=="binomial"){
-=======
   if (!(inherits(model,"lmerMod")|!inherits(model,"lmerModLmerTest")|!inherits(model,"glmerMod"))) {
     stop("Model class is not 'lmerMod', 'lmerModLmerTest', or 'glmerMod'.", call. = FALSE)
     return(NULL)
   }
   if(inherits(model,"glmerMod") & !stats::family(model)[[1]]=="binomial"){
->>>>>>> master
     stop("Function currently only supports binomial family glmerMod models.", call. = FALSE)
     return(NULL)
   }
@@ -75,7 +68,6 @@ ICCm <- function(model, re_type = c("NA")) {
     stop("ICCs cannot be calculated for models containing more than two random effects.", call. = FALSE)
     return(NULL)
   }
-
 
   vars <- tryCatch(lme4::VarCorr(model))
   if (exists("vars")==FALSE) {
@@ -132,7 +124,6 @@ ICCm <- function(model, re_type = c("NA")) {
   }
 
   # Output
-<<<<<<< HEAD
   if(class(model)!="glmerMod"){
     # one random effect
     if(lme4::getME(model, name = 'n_rtrms') == 1){
@@ -156,7 +147,7 @@ ICCm <- function(model, re_type = c("NA")) {
         "factor1" = gsub("(:).*","",names(lme4::VarCorr(model)))[2],
         "factor2" = if(sum(grepl("/", model@call, fixed = TRUE)) == 0) {
           gsub(".*(:)","",names(lme4::VarCorr(model)))[1] # If model is specified as (1|a)+(1|a:b)) or (1|a)+(1|b)
-        } else { gsub(").*","",gsub(".*(/)","",mod4@call)[2]) # If model is specified as (1|a/b)
+        } else { gsub(").*","",gsub(".*(/)","",model@call)[2]) # If model is specified as (1|a/b)
         },
         "outcome" = names(stats::model.frame(model))[1],
         "ICC" = NA,
@@ -174,44 +165,8 @@ ICCm <- function(model, re_type = c("NA")) {
     }
     class(res) <- "ICCm"
     return(res)
-  }
-
-
-=======
-  	# one random effect
- 	if(lme4::getME(model, name = 'n_rtrms') == 1){
- 			res <- (list(
-  	  	"RandEff" = 1,
-  	  	"type" = NA,
-  	  	"factor1" = names(lme4::VarCorr(model))[1],
-  	  	"factor2" = NA,
-  	  	"outcome" = names(stats::model.frame(model))[1],
-      	"ICC" = round(icc, 3),
-      	"ICC1" = NA,
-      	"ICC2" = NA,
-      	"ICC3" = NA))
-   		class(res) <- "ICCm"
-   		return(res)
- 	# two random effects - three level model
- 	} else if(lme4::getME(model, name = 'n_rtrms') == 2) {
- 	 	res <- (list(
-  	  	"RandEff" = 2,
-  	  	"type" = re_type,
-  	  	"factor1" = gsub("(:).*","",names(lme4::VarCorr(model)))[2],
-  	  	"factor2" = if(sum(grepl("/", model@call, fixed = TRUE)) == 0) {
-  	  	   gsub(".*(:)","",names(lme4::VarCorr(model)))[1] # If model is specified as (1|a)+(1|a:b)) or (1|a)+(1|b)
-  	  	} else { gsub(").*","",gsub(".*(/)","",model@call)[2]) # If model is specified as (1|a/b)
-  	  	},
-  	  	"outcome" = names(stats::model.frame(model))[1],
-      	"ICC" = NA,
-      	"ICC1" = round(icc1,3),
-      	"ICC2" = round(icc2,3),
-      	"ICC3" = round(icc3,3)))
-   		class(res) <- "ICCm"
-   		return(res)
- 	}
-
 }
->>>>>>> master
+
+
 
 
