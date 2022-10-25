@@ -7,8 +7,8 @@
 \format{
 A data frame with 2235 observations on the following 18 variables.
 \describe{
-\item{\code{Reference.Code}}{Bibtex reference code for the article}
-\item{\code{year}}{Year of publication}
+\item{\code}{Reference.Code}{Bibtex reference code for the article}
+\item{\code}{year}{Year of publication}
 \item{\code}{time.pulled}{Year article was pulled for these data}
 \item{\code}{Type}{Type of psychological journal}
 \item{\code}{Journal}{Journal of publication}
