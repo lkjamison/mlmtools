@@ -15,6 +15,7 @@
 #' # Create model
 #' mod <- lme4::lmer(mathgain ~ (1 | classid), data = instruction)
 #' # Estimate ICC
+#' ### To repress output: use invisible()
 #' ICCm(mod)
 #'
 #' @references Snijders, T. A. B. & Bosker, R. J. (2012). Multilevel Analysis (2nd Ed.). Sage Publications Ltd.

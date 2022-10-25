@@ -17,6 +17,7 @@
 #' # Create model of interest
 #' mod1 <- lme4::lmer(mathgain ~ mathkind + (1 | classid), data = instruction)
 #' # Compare variance explained
+#' ### To repress output: use invisible()
 #' varCompare(mod0, mod1)
 #'
 #' @references Snijders, T. A. B. & Bosker, R. J. (2012). Multilevel Analysis (2nd Ed.). Sage Publications Ltd.
