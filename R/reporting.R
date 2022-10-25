@@ -1,0 +1,39 @@
+#' Reporting Data
+#'
+#' Data from a study on the reporting rates of outliers with data on 2235 experiments.
+#'
+#' @docType data
+#'
+#' @usage data(reporting)
+#'
+#' @format A data frame with 2235 observations on the following 18 variables.
+#' \describe{
+#' \item{\code{Reference.Code}}{Bibtex reference code for the article}
+#' \item{\code{year}}{Year of publication}
+#' \item{\code}{time.pulled}{Year article was pulled for these data}
+#' \item{\code}{Type}{Type of psychological journal}
+#' \item{\code}{Journal}{Journal of publication}
+#' \item{\code}{authors}{Authors}
+#' \item{\code}{article}{Title of article}
+#' \item{\code}{original.sample.size}{Original sample size from the article}
+#' \item{\code}{mention.outliers}{Whether or not the article mentioned outliers}
+#' \item{\code}{final.sample.size}{Final sample size from the article}
+#' \item{\code}{number.outliers}{Number of outliers identified by the article}
+#' \item{\code}{Basics}{Whether or not they ran basic statistics (e.g., descriptive statistics, z scores, t tests, and correlations)}
+#' \item{\code}{ANOVA}{Whether or not they ran ANOVA}
+#' \item{\code}{Regression}{Whether or not they ran a regression}
+#' \item{\code}{ChiSquare}{Whether or not they ran a chi-squared test}
+#' \item{\code}{Nonparametric}{Whether or not they ran a nonparametric test}
+#' \item{\code}{Modeling}{Whether or not they used structural equation modeling}
+#' \item{\code}{BayesOther}{Whether or not they used Bayes or another form of analysis}
+#' }
+#'
+#' @keywords datasets
+#'
+#' @references Valentine, K. D., Buchanan, E. M., Cunningham, A., Hopke, T., Wikowsky, A., & Wilson, H. (2021). Have psychologists increased reporting of outliers in response to the reproducibility crisis?. Social and Personality Psychology Compass, 15(5), e12591.
+#'
+#' @source \href{https://github.com/doomlab/Outliers/blob/master/paper/outliers%20complete.csv}{GitHub}
+#'
+#' @examples
+#' data(reporting)
+"reporting"
