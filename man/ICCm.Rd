@@ -22,15 +22,24 @@ If re_type = "cc", the likeness of y scores in the same C1_factor unit (correlat
 Computes ICC values for lme4-fitted mixed-effects models.
 }
 \examples{
-# Read in data
+# Gaussian
+## Read in data
 data(instruction)
-# Create model
+## Create model
 mod <- lme4::lmer(mathgain ~ (1 | classid), data = instruction)
-# Estimate ICC
-### To repress output: use invisible()
+## Estimate ICC
+ICCm(mod)
+
+# Logistic
+## Read in data
+data(reporting)
+## Create model
+mod <- lme4::glmer(mention.outliers ~ Basics + (1 | Journal), data = reporting, family = "binomial")
+## Estimate ICC
 ICCm(mod)
 
 }
 \references{
 Snijders, T. A. B. & Bosker, R. J. (2012). Multilevel Analysis (2nd Ed.). Sage Publications Ltd.
+Goldstein, H., Browne, W., & Rasbash, J. (2002). Partitioning variation in multilevel models. Understanding statistics: statistical issues in psychology, education, and the social sciences, 1(4), 223-231.
 }
