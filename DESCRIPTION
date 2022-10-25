@@ -1,6 +1,6 @@
 Package: mlmtools
 Title: Multi-Level Model Assessment Kit
-Version: 1.0.1
+Version: 1.0.2
 Authors@R: c(person("Laura Jamison", email = "lj5yn@virginia.edu", role = c("aut", "cre")),
 	     person("Jessica Mazen", email = "mazenjes@gmail.com", role = c("aut")),
 	     person("Erik Ruzek", email = "eruzek@virginia.edu", role = c("aut")),
