@@ -28,6 +28,7 @@ mod0 <- lme4::lmer(mathgain ~ (1 | classid), data = instruction)
 # Create model of interest
 mod1 <- lme4::lmer(mathgain ~ mathkind + (1 | classid), data = instruction)
 # Compare variance explained
+### To repress output: use invisible()
 varCompare(mod0, mod1)
 
 }

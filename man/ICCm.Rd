@@ -27,6 +27,7 @@ data(instruction)
 # Create model
 mod <- lme4::lmer(mathgain ~ (1 | classid), data = instruction)
 # Estimate ICC
+### To repress output: use invisible()
 ICCm(mod)
 
 }

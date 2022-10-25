@@ -24,15 +24,14 @@ A data frame with 1190 observations on the following 8 variables.
 data(instruction)
 }
 \description{
-Data from a QTL experiment on gravitropism in
-Arabidopsis, with data on 162 recombinant inbred lines (Ler x
-Cvi). The outcome is the root tip angle (in degrees) at two-minute
-increments over eight hours.
+Data from a study on instructional improvement across 312 classrooms.
 }
 \examples{
 data(instruction)
 }
 \references{
 Rabe-Hesketh, Sophia, and Brian Everitt. Handbook of statistical analyses using Stata. CRC Press, 2003.
+
+Hill, H. C., Rowan, B., & Ball, D. L. (2005). Effects of teachers’ mathematical knowledge for teaching on student achievement. American educational research journal, 42(2), 371-406.
 }
 \keyword{datasets}

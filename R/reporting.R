@@ -32,7 +32,7 @@
 #'
 #' @references Valentine, K. D., Buchanan, E. M., Cunningham, A., Hopke, T., Wikowsky, A., & Wilson, H. (2021). Have psychologists increased reporting of outliers in response to the reproducibility crisis?. Social and Personality Psychology Compass, 15(5), e12591.
 #'
-#' @source \href{https://github.com/doomlab/Outliers/blob/master/paper/outliers%20complete.csv}{GitHub}
+#' @source \href{https://github.com/doomlab/Outliers/tree/master/paper}{GitHub}
 #'
 #' @examples
 #' data(reporting)
