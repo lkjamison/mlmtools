@@ -119,7 +119,8 @@ mlm_assumptions <- function(model) {
   if(!inherits(model,"glmerMod")){
     # Homogeneity of Variance
     data$model.Res2<- abs(stats::residuals(model))^2 # squares the absolute values of the residuals to provide the more robust estimate
-    Levene.model <- stats::lm(model.Res2 ~ classid, data=data) #ANOVA of the squared residuals
+    data$group <- data[,names(getME(model, name = "flist"))]
+    Levene.model <- stats::lm(model.Res2 ~ group, data=data) #ANOVA of the squared residuals
     homo.test <- stats::anova(Levene.model) #displays the results
     predicted <- stats::predict(model)
     data$predicted <- predicted
