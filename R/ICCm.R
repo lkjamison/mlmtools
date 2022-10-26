@@ -90,7 +90,7 @@ ICCm <- function(model, re_type = c("NA")) {
 
   vars <- as.data.frame(vars)
 
-  if(class(model)!="glmerMod"){
+  if(!(inherits(model,"glmerMod"))){
     # Calculate ICC values
     # one random effect
     if(lme4::getME(model, name = 'n_rtrms') == 1){
@@ -133,7 +133,7 @@ ICCm <- function(model, re_type = c("NA")) {
   }
 
   # Output
-  if(class(model)!="glmerMod"){
+  if(!(inherits(model,"glmerMod"))){
     # one random effect
     if(lme4::getME(model, name = 'n_rtrms') == 1){
       res <- (list(
