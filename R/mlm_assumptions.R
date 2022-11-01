@@ -235,39 +235,25 @@ mlm_assumptions <- function(model) {
   }
 
   # Multicollinearity
-  x_character <- which(sapply(data[,x],class) == "character")
-  if(length(x_character > 0)) {
-    x_vif <- x[-which(sapply(data[,x],class) == "character")]
-  } else {
-    x_vif <- x
-  }
-  if (length(x_vif) < 2) {
-    multicollinearity <- ("Model contains fewer than 2 terms, multicollinearity cannot be assessed.\n")
-  } else {
-    v <- as.matrix(stats::vcov(model))
-    assign <- attr(stats::model.matrix(model),"assign")[-which(attr(stats::model.matrix(model), "assign")==which(sapply(data[,x],class) == "character"))]
-    if (names(lme4::fixef(model)[1]) == "(Intercept)") {
-      v <- v[-1, -1]
-      assign <- assign[-1]
+  if (length(x) < 2) {
+    multicollinearity <- ("Model contains fewer than 2 terms, multicollinearity cannot be assessed.\n") } else {
+      R <- cov2cor(as.matrix(vcov(model))[-1, -1])
+      detR <- det(R)
+      multicollinearity <- matrix(0, length(x), 3)
+      rownames(multicollinearity) <- x
+      colnames(multicollinearity) <- c("GVIF", "Df", "GVIF^(1/(2*Df))")
+      for (i in 1:length(x)) {
+        multicollinearity[i, 1] <- det(as.matrix(R[i, i])) *
+          det(as.matrix(R[-i, -i])) / detR
+        multicollinearity[i, 2] <- length(i)
+      }
+      if (all(multicollinearity[, 2] == 1)) {
+        multicollinearity <- multicollinearity[, 1]
+      } else {
+        multicollinearity[, 3] <- multicollinearity[, 1]^(1/(2 * multicollinearity[, 2]))
+          }
+
     }
-    R <- stats::cov2cor(v)
-    detR <- det(R)
-    multicollinearity <- matrix(0, length(x_vif), 3)
-    rownames(multicollinearity) <- x_vif
-    colnames(multicollinearity) <- c("GVIF", "Df", "GVIF^(1/(2*Df))")
-    for (term in 1:length(x_vif)) {
-      subs <- which(assign == x_vif)
-      multicollinearity[term, 1] <- det(as.matrix(R[subs, subs])) *
-        det(as.matrix(R[-subs, -subs])) / detR
-      multicollinearity[x_vif, 2] <- length(subs)
-    }
-    if (all(multicollinearity[, 2] == 1)){
-      multicollinearity <- multicollinearity[, 1]
-    } else {
-      multicollinearity[, 3] <- multicollinearity[, 1]^(1/(2 * multicollinearity[, 2]))
-    }
-    multicollinearity <- multicollinearity[,1]
-  }
 
   # Combining Results
   result <- if(inherits(model,"glmerMod")){
