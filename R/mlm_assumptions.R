@@ -9,11 +9,20 @@
 #' @references Glaser, R. E. (2006). Levene’s Robust Test of Homogeneity of Variances. Encyclopedia of Statistical Sciences. 6.
 #'
 #' @examples
-#' # Read in data
+#' # Gaussian
+#' ## Read in data
 #' data(instruction)
-#' # Create model
+#' ## Create model
 #' mod <- lme4::lmer(mathgain ~ mathkind + (1 | classid), data = instruction)
-#' # Evaluate assumptions
+#' ## Evaluate assumptions
+#' mlm_assumptions(mod)
+#'
+#' # Logistic
+#' ## Read in data
+#' data(reporting)
+#' ## Create model
+#' mod <- lme4::glmer(mention.outliers ~ Basics + (1 | Journal), data = reporting, family = "binomial")
+#' ## Evaluate assumptions
 #' mlm_assumptions(mod)
 #'
 #' @export mlm_assumptions
