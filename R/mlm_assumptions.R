@@ -245,23 +245,67 @@ mlm_assumptions <- function(model) {
 
   # Multicollinearity
   if (length(x) < 2) {
-    multicollinearity <- ("Model contains fewer than 2 terms, multicollinearity cannot be assessed.\n") } else {
-      R <- cov2cor(as.matrix(vcov(model))[-1, -1])
-      detR <- det(R)
-      multicollinearity <- matrix(0, length(x), 3)
-      rownames(multicollinearity) <- x
-      colnames(multicollinearity) <- c("GVIF", "Df", "GVIF^(1/(2*Df))")
-      for (i in 1:length(x)) {
-        multicollinearity[i, 1] <- det(as.matrix(R[i, i])) *
-          det(as.matrix(R[-i, -i])) / detR
-        multicollinearity[i, 2] <- length(i)
-      }
-      if (all(multicollinearity[, 2] == 1)) {
-        multicollinearity <- multicollinearity[, 1]
-      } else {
-        multicollinearity[, 3] <- multicollinearity[, 1]^(1/(2 * multicollinearity[, 2]))
+    multicollinearity <- ("Model contains fewer than 2 terms, multicollinearity cannot be assessed.\n")
+    } else {
+      if(any(grepl(":",x))){
+        factors <- attr(terms(model), "factors")
+        #names <- term.names(model)
+        X <- model.matrix(model)
+        X <- X[, -1]
+        R <- cor(X)
+        detR <- det(R)
+        x.vars <- lapply(parse(text=x), all.vars)
+        predictors <- x[-which(grepl(":",x))]
+        multicollinearity <- matrix(0, length(predictors), 3)
+        rownames(multicollinearity) <- predictors
+        colnames(multicollinearity) <- c("GVIF", "Df", "GVIF^(1/(2*Df))")
+        multicollinearity <- as.data.frame(multicollinearity)
+        multicollinearity$`Interacts With` <- rep("", length(predictors))
+        multicollinearity$`Other Predictors` <- rep("", length(predictors))
+        all.cols <- 1:ncol(X)
+        for (predictor in predictors){
+          which.terms <- sapply(x.vars, function(vars) predictor %in% vars)
+          related <- unique(unlist(strsplit(paste(x[which.terms], collapse=":"), ":")))
+          multicollinearity[predictor, 4] <- if (length(related[-1]) > 0) {
+            paste(related[-1], collapse=", ")
+          } else {
+            "--  "
           }
-
+          unrelated <- setdiff(predictors, related)
+          if (length(unrelated) > 0){
+            unrelated.terms <- sapply(x.vars,
+                                      function(vars) unrelated %in% vars)
+            if (is.matrix(unrelated.terms)) unrelated.terms <- apply(unrelated.terms, 2, any)
+            assign.X <- attr(X, "assign")[-1]
+            columns <- setdiff(all.cols, which(assign.X %in% which(unrelated.terms)))
+            gvif <- det(R[columns, columns, drop=FALSE])*det(R[-columns, -columns, drop=FALSE])/detR
+            multicollinearity[predictor, 5] <- paste(unrelated, collapse=", ")
+          } else {
+            columns <- all.cols
+            gvif <- 1
+            multicollinearity[predictor, 5] <- "--  "
+          }
+          p <- length(columns)
+          multicollinearity[predictor, 1:3] <- c(gvif, p, gvif^(1/(2*p)))
+        }
+        } else {
+          R <- cov2cor(as.matrix(vcov(model))[-1, -1])
+          detR <- det(R)
+          multicollinearity <- matrix(0, length(x), 3)
+          rownames(multicollinearity) <- x
+          colnames(multicollinearity) <- c("GVIF", "Df", "GVIF^(1/(2*Df))")
+          for (i in 1:length(x)) {
+            multicollinearity[i, 1] <- det(as.matrix(R[i, i])) *
+              det(as.matrix(R[-i, -i])) / detR
+            multicollinearity[i, 2] <- length(i)
+          }
+          if (all(multicollinearity[, 2] == 1)) {
+            multicollinearity <- multicollinearity[, 1]
+          } else {
+            multicollinearity[, 3] <- multicollinearity[, 1]^(1/(2 * multicollinearity[, 2]))
+          }
+        }
+    }
     }
 
   # Combining Results
