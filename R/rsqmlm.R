@@ -34,9 +34,13 @@ rsqmlm <- function (model, by_cluster = FALSE)
     stop("Only one model can be assessed at one time.", call. = FALSE)
     return(NULL)
   }
-  if (!(inherits(model,"lmerMod") | inherits(model,"lmerModLmerTest"))) {
-    stop("Model class is not 'lmerMod' or 'lmerModLmerTest'.",
-         call. = FALSE)
+  # Model class must be 'lmerMod' or 'lmerModLmerTest'
+  if (!(inherits(model,"lmerMod")|!inherits(model,"lmerModLmerTest")|!inherits(model,"glmerMod"))) {
+    stop("Model class is not 'lmerMod', 'lmerModLmerTest', or 'glmerMod'.", call. = FALSE)
+    return(NULL)
+  }
+  if(inherits(model,"glmerMod") & !stats::family(model)[[1]]=="binomial"){
+    stop("Function currently only supports binomial family glmerMod models.", call. = FALSE)
     return(NULL)
   }
   if (length(by_cluster) != 1) {
@@ -69,92 +73,126 @@ rsqmlm <- function (model, by_cluster = FALSE)
          call. = FALSE)
     return(NULL)
   }
-  if (by_cluster == FALSE) {
-    vars <- tryCatch(lme4::VarCorr(model))
-    if (exists("vars") == FALSE) {
-      stop("Error in extracting estimated variances.",
-           call. = FALSE)
-      return(NULL)
+  if(inherits(model,"glmerMod")){
+    X <- model.matrix(model)
+    data <- lapply(calls, `[[`, "data")[[1]]
+    data <- eval(data, envir = parent.frame())
+    sigma <- unclass(lme4::VarCorr(model))
+    rand <- sapply(lme4::findbars(formula(model)), function(x) as.character(x)[3])
+    rand <- rand[!duplicated(rand)]
+    idx <- sapply(sapply(strsplit(rand, "\\:"), function(x) gsub("\\(|\\)", "", x)), function(x) {
+    length(unique(data[, x])) == nrow(data) })
+    sigma.names <- unlist(names(sigma))
+    idx. <- sapply(sigma.names, function(x) !any(x %in% rand[idx]))
+    sigmaL <- sum(sapply(sigma[idx.], function(i) {
+      Z <- as.matrix(X[, rownames(i), drop = FALSE])
+      sum(rowSums(Z %*% i) * Z) / nrow(X)
+    } ))
+    sigmaE <- sum( ifelse(all(idx == FALSE), 0,
+      sapply(sigma[idx], function(i) {
+        Z <- as.matrix(X[, rownames(i), drop = FALSE])
+        sum(rowSums(Z %*% i) * Z) / nrow(X)
+      } )))
+    sigmaE <- ifelse(length(sigmaE) == 0, 0, sigmaE)
+
+    sigmaD <- pi^2/3
+
+    X <- model.matrix(model)
+
+    sigmaF <- var(as.vector(lme4::fixef(model) %*% t(X)))
+
+    mar <- (sigmaF) / (sigmaF + sigmaL + sigmaD + sigmaE)
+
+    con <- (sigmaF + sigmaL) / (sigmaF + sigmaL + sigmaD + sigmaE)
+
+  } else {
+    if (by_cluster == FALSE) {
+      vars <- tryCatch(lme4::VarCorr(model))
+      if (exists("vars") == FALSE) {
+        stop("Error in extracting estimated variances.",
+             call. = FALSE)
+        return(NULL)
+      }
+      if (anyNA(vars, recursive = TRUE)) {
+        stop("Error in estimating variances.", call. = FALSE)
+        return(NULL)
+      }
+      vars <- as.data.frame(vars)
+      fe <- lme4::fixef(model)
+      ok <- !is.na(fe)
+      fitted <- (stats::model.matrix(model)[, ok, drop = FALSE] %*%
+                   fe[ok])[, 1L]
+      varFE <- stats::var(fitted)
+      matmultdiag <- function(x, y, ty = t(y)) {
+        if (ncol(x) != ncol(ty))
+          stop("non-conformable arguments")
+        if (nrow(x) != nrow(ty))
+          stop("result is not a square matrix")
+        return(rowSums(x * ty))
+      }
+      vc <- lme4::VarCorr(model)
+      remodmat <- function(object) {
+        rval <- do.call("cbind", stats::model.matrix(object,
+                                                     type = "randomListRaw"))
+        rval[, !duplicated(colnames(rval)), drop = FALSE]
+      }
+      mmRE <- suppressWarnings(remodmat(model))
+      varRESum <- function(vc, X) {
+        n <- nrow(X)
+        sum(sapply(vc, function(sig) {
+          mm1 <- X[, rownames(sig), drop = FALSE]
+          sum(matmultdiag(mm1 %*% sig, ty = mm1))/n
+        }))
+      }
+      varRE <- varRESum(vc, mmRE)
+      vc <- as.data.frame(vc)
+      varE <- vc[vc$grp == "Residual", ]$vcov
+      r2_marginal <- varFE/(varFE + varRE + varE)
+      r2_conditional <- (varFE + varRE)/(varFE + varRE + varE)
+      res <- (list(marginal = r2_marginal * 100, conditional = r2_conditional *
+                     100, byCluster = by_cluster))
+      class(res) <- "rsqmlm"
+      return(res)
     }
-    if (anyNA(vars, recursive = TRUE)) {
-      stop("Error in estimating variances.", call. = FALSE)
-      return(NULL)
-    }
-    vars <- as.data.frame(vars)
-    fe <- lme4::fixef(model)
-    ok <- !is.na(fe)
-    fitted <- (stats::model.matrix(model)[, ok, drop = FALSE] %*%
-                 fe[ok])[, 1L]
-    varFE <- stats::var(fitted)
-    matmultdiag <- function(x, y, ty = t(y)) {
-      if (ncol(x) != ncol(ty))
-        stop("non-conformable arguments")
-      if (nrow(x) != nrow(ty))
-        stop("result is not a square matrix")
-      return(rowSums(x * ty))
-    }
-    vc <- lme4::VarCorr(model)
-    remodmat <- function(object) {
-      rval <- do.call("cbind", stats::model.matrix(object,
-                                                   type = "randomListRaw"))
-      rval[, !duplicated(colnames(rval)), drop = FALSE]
-    }
-    mmRE <- suppressWarnings(remodmat(model))
-    varRESum <- function(vc, X) {
-      n <- nrow(X)
-      sum(sapply(vc, function(sig) {
-        mm1 <- X[, rownames(sig), drop = FALSE]
-        sum(matmultdiag(mm1 %*% sig, ty = mm1))/n
-      }))
-    }
-    varRE <- varRESum(vc, mmRE)
-    vc <- as.data.frame(vc)
-    varE <- vc[vc$grp == "Residual", ]$vcov
-    r2_marginal <- varFE/(varFE + varRE + varE)
-    r2_conditional <- (varFE + varRE)/(varFE + varRE + varE)
-    res <- (list(marginal = r2_marginal * 100, conditional = r2_conditional *
-                   100, byCluster = by_cluster))
-    class(res) <- "rsqmlm"
-    return(res)
-  }
-  if (by_cluster == TRUE) {
-    w <- lapply(calls, `[[`, "weights")[[1]]
-    subsets <- lapply(calls, `[[`, "subset")[[1]]
-    d <- lapply(calls, `[[`, "data")[[1]]
-    forms <- stats::as.formula(paste(lapply(lapply(calls, `[[`, "formula"), deparse)[[1]], collapse = " "))
-    y_term <- deparse(forms[[2L]])
-    rand_terms <- paste0("(", sapply(lme4::findbars(forms), deparse), ")")
-    nullform <- stats::reformulate(rand_terms, response = y_term)
-    nullmodel <- tryCatch(
-      {
-        stats::update(model, nullform)
-      },
-      error = function(e) {
-        msg <- e$message
+    if (by_cluster == TRUE) {
+      w <- lapply(calls, `[[`, "weights")[[1]]
+      subsets <- lapply(calls, `[[`, "subset")[[1]]
+      d <- lapply(calls, `[[`, "data")[[1]]
+      forms <- stats::as.formula(paste(lapply(lapply(calls, `[[`, "formula"), deparse)[[1]], collapse = " "))
+      y_term <- deparse(forms[[2L]])
+      rand_terms <- paste0("(", sapply(lme4::findbars(forms), deparse), ")")
+      nullform <- stats::reformulate(rand_terms, response = y_term)
+      nullmodel <- tryCatch(
+        {
+          stats::update(model, nullform)
+        },
+        error = function(e) {
+          msg <- e$message
           if (grepl("(^object)(.*)(not found$)", msg)) {
             print("Unable to estimate the null model, data may not be accessible in the Global Environment.\n")
           } else if (grepl("^could not find function", msg)) {
             print("Unable to estimate the null model, please load the package used to estimate the original model.\n")
           }
-      }
-    )
-    vars_null <- tryCatch(lme4::VarCorr(nullmodel))
-    vars_null <- as.data.frame(vars_null)
-    group_names <- names(lme4::VarCorr(model))
-    vc <- as.data.frame(lme4::VarCorr(model))
-    varINT <- vc[which(vc$var1 == "(Intercept)"), ]$vcov
-    var.nullINT <- vars_null[which(vars_null$var1 == "(Intercept)"),
-    ]$vcov
-    varE <- vc[vc$grp == "Residual", ]$vcov
-    var.nullE <- vars_null[vars_null$grp == "Residual", ]$vcov
-    r2_random <- 1 - (varINT/var.nullINT)
-    r2_fixed <- 1 - (varE/var.nullE)
-    out <- data.frame(Level = c("Level 1", group_names),
-                      R2 = c(r2_fixed, r2_random), stringsAsFactors = FALSE)
-    res <- (list(fixed = r2_fixed * 100, random = r2_random *
-                   100, byCluster = by_cluster, Level = out$Level))
-    class(res) <- "rsqmlm"
-    return(res)
+        }
+      )
+      vars_null <- tryCatch(lme4::VarCorr(nullmodel))
+      vars_null <- as.data.frame(vars_null)
+      group_names <- names(lme4::VarCorr(model))
+      vc <- as.data.frame(lme4::VarCorr(model))
+      varINT <- vc[which(vc$var1 == "(Intercept)"), ]$vcov
+      var.nullINT <- vars_null[which(vars_null$var1 == "(Intercept)"),
+      ]$vcov
+      varE <- vc[vc$grp == "Residual", ]$vcov
+      var.nullE <- vars_null[vars_null$grp == "Residual", ]$vcov
+      r2_random <- 1 - (varINT/var.nullINT)
+      r2_fixed <- 1 - (varE/var.nullE)
+      out <- data.frame(Level = c("Level 1", group_names),
+                        R2 = c(r2_fixed, r2_random), stringsAsFactors = FALSE)
+      res <- (list(fixed = r2_fixed * 100, random = r2_random *
+                     100, byCluster = by_cluster, Level = out$Level))
+      class(res) <- "rsqmlm"
+      return(res)
+    }
   }
 }
 
