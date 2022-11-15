@@ -68,6 +68,8 @@ rsqmlm <- function (model, by_cluster = FALSE)
   }
   calls <- lapply(mods, stats::getCall)
   off <- lapply(calls, `[[`, "offset")[[1]]
+  data <- lapply(calls, `[[`, "data")[[1]]
+  data <- eval(data, envir = parent.frame())
   if (!is.null(off)) {
     stop("levelCompare cannot be calculated for models using the offset argument",
          call. = FALSE)
@@ -75,8 +77,6 @@ rsqmlm <- function (model, by_cluster = FALSE)
   }
   if(inherits(model,"glmerMod")){
     X <- model.matrix(model)
-    data <- lapply(calls, `[[`, "data")[[1]]
-    data <- eval(data, envir = parent.frame())
     sigma <- unclass(lme4::VarCorr(model))
     rand <- sapply(lme4::findbars(formula(model)), function(x) as.character(x)[3])
     rand <- rand[!duplicated(rand)]
@@ -101,9 +101,12 @@ rsqmlm <- function (model, by_cluster = FALSE)
 
     sigmaF <- var(as.vector(lme4::fixef(model) %*% t(X)))
 
-    mar <- (sigmaF) / (sigmaF + sigmaL + sigmaD + sigmaE)
+    marginal <- (sigmaF) / (sigmaF + sigmaL + sigmaD + sigmaE)
 
-    con <- (sigmaF + sigmaL) / (sigmaF + sigmaL + sigmaD + sigmaE)
+    conditional <- (sigmaF + sigmaL) / (sigmaF + sigmaL + sigmaD + sigmaE)
+
+    res <- (list(Marginal = marginal * 100, Conditional = conditional *
+                   100, Level = rand, type = "binomial"))
 
   } else {
     if (by_cluster == FALSE) {
@@ -189,11 +192,12 @@ rsqmlm <- function (model, by_cluster = FALSE)
       out <- data.frame(Level = c("Level 1", group_names),
                         R2 = c(r2_fixed, r2_random), stringsAsFactors = FALSE)
       res <- (list(fixed = r2_fixed * 100, random = r2_random *
-                     100, byCluster = by_cluster, Level = out$Level))
-      class(res) <- "rsqmlm"
-      return(res)
+                     100, byCluster = by_cluster, Level = out$Level, type = "Gaussian"))
+
     }
   }
+  class(res) <- "rsqmlm"
+  return(res)
 }
 
 

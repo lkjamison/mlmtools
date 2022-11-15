@@ -58,14 +58,19 @@ print.ICCm <- function(x, ...){
 # Print rsqmlm
 #' @export
 print.rsqmlm <- function(x, ...){
-  if (x$byCluster == FALSE){
-    cat(paste(format(round(x$marginal, 2), nsmall = 2), "% of the total variance is explained by the fixed effects.", "\n", sep=""))
-    cat(paste(format(round(x$conditional, 2), nsmall = 2),"% of the total variance is explained by both fixed and random effects.", sep=""))
+  if(x$type = "Gaussian"){
+    if (x$byCluster == FALSE){
+      cat(paste(format(round(x$marginal, 2), nsmall = 2), "% of the total variance is explained by the fixed effects.", "\n", sep=""))
+      cat(paste(format(round(x$conditional, 2), nsmall = 2),"% of the total variance is explained by both fixed and random effects.", sep=""))
+    } else {
+      cat(paste(format(round(x$fixed[1], 2), nsmall = 2), "% of the variance is explained by the fixed effects at Level 1", "\n", sep=""))
+      for(i in 1:length(x$random)){
+        cat(paste(format(round(x$random[i], 2), nsmall = 2), "% of the variance is explained at the ",strsplit(x$Level[i + 1], ":")[[1]][1], " level", "\n", sep=""))
+      }}
   } else {
-    cat(paste(format(round(x$fixed[1], 2), nsmall = 2), "% of the variance is explained by the fixed effects at Level 1", "\n", sep=""))
-    for(i in 1:length(x$random)){
-    cat(paste(format(round(x$random[i], 2), nsmall = 2), "% of the variance is explained at the ",strsplit(x$Level[i + 1], ":")[[1]][1], " level", "\n", sep=""))
-    }}
+    cat(paste(format(round(x$Marginal, 2), nsmall = 2), "% of the total variance is explained by the fixed effects.", "\n",sep = ""))
+    cat(paste(format(round(x$Conditional, 2), nsmall = 2),"% of the total variance is explained by both fixed and random effects.", sep=""))
+  }
 }
 
 # Print varCompare
