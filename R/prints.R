@@ -58,7 +58,7 @@ print.ICCm <- function(x, ...){
 # Print rsqmlm
 #' @export
 print.rsqmlm <- function(x, ...){
-  if(x$type = "Gaussian"){
+  if(x$type == "Gaussian"){
     if (x$byCluster == FALSE){
       cat(paste(format(round(x$marginal, 2), nsmall = 2), "% of the total variance is explained by the fixed effects.", "\n", sep=""))
       cat(paste(format(round(x$conditional, 2), nsmall = 2),"% of the total variance is explained by both fixed and random effects.", sep=""))
