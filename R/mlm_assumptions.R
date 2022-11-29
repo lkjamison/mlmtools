@@ -148,9 +148,20 @@ mlm_assumptions <- function(model, re_type = c("NA")) {
   if(!inherits(model,"glmerMod")){
     # Homogeneity of Variance
     data$model.Res2<- abs(stats::residuals(model))^2 # squares the absolute values of the residuals to provide the more robust estimate
-    data$group <- data[,names(lme4::getME(model, name = "flist"))]
-    Levene.model <- stats::lm(model.Res2 ~ group, data=data) #ANOVA of the squared residuals
-    homo.test <- stats::anova(Levene.model) #displays the results
+    if(re_type == "NA" | re_type = "nested"){
+      data$group <- data[,names(lme4::getME(model, name = "flist"))]
+      Levene.model <- stats::lm(model.Res2 ~ group, data=data) #ANOVA of the squared residuals
+      homo.test <- stats::anova(Levene.model) #displays the results
+    } else if(re_type =="cc") {
+      Levene.model <- list("vector")
+      homo.test <- list("vector")
+      for(i in 1:length(names(lme4::getME(model, name = "flist")))){ # iterating through each grouping variable
+        data$group <- as.vector(data[,names(lme4::getME(model, name = "flist"))[i]])[[1]]  # assigning the grouping variable
+        Levene.model[[i]] <- stats::lm(model.Res2 ~ group, data=data) #ANOVA of the squared residuals
+        homo.test[[i]] <- stats::anova(Levene.model[[i]]) #displays the results
+      }
+      names(homo.test) <- names(lme4::getME(model, name = "flist"))
+    }
     predicted <- stats::predict(model)
     data$predicted <- predicted
     #create a fitted vs residual plot
