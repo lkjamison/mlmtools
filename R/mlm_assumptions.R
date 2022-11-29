@@ -358,11 +358,23 @@ mlm_assumptions <- function(model, re_type = c("NA")) {
 
   # Adding messages for summary/interpretation
   if(!inherits(model,"glmerMod")){
-    message(if(result$homo.test$`Pr(>F)`[1] >= .05){
-      c("Homogeneity of variance assumption met.\n")
+    if(re_type == "NA" | re_type == "nested") {
+      message(if(result$homo.test$`Pr(>F)`[1] >= .05){
+        c("Homogeneity of variance assumption met.\n")
+      } else {
+        c("Homogeneity of variance assumption NOT met. See: TO DO ADD RESOURCES\n")
+      })
     } else {
-      c("Homogeneity of variance assumption NOT met. See: TO DO ADD RESOURCES\n")
-    })
+      for(i in 1:length(result$homo.test)){
+        message(if(result$homo.test[[i]]$`Pr(>F)`[1] >= .05){
+          paste("Homogeneity of variance assumption met for grouping variable ", names(result$homo.test)[i], ".\n", sep = "")
+        } else {
+          paste("Homogeneity of variance assumption NOT met for grouping variable ", names(result$homo.test)[i], ". See: TO DO ADD RESOURCES\n", sep = "")
+        })
+      }
+    }
+
+
     message(if(is.character(result$multicollinearity)){
       c(result$multicollinearity)
     } else {
