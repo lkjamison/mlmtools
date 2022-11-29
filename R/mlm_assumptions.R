@@ -342,7 +342,7 @@ mlm_assumptions <- function(model, re_type = c("NA")) {
           }
         }
     }
-    }
+
 
   # Combining Results
   result <- if(inherits(model,"glmerMod")){
