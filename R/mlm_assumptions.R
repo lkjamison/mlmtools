@@ -148,7 +148,7 @@ mlm_assumptions <- function(model, re_type = c("NA")) {
   if(!inherits(model,"glmerMod")){
     # Homogeneity of Variance
     data$model.Res2<- abs(stats::residuals(model))^2 # squares the absolute values of the residuals to provide the more robust estimate
-    if(re_type == "NA" | re_type = "nested"){
+    if(re_type == "NA" | re_type == "nested"){
       data$group <- data[,names(lme4::getME(model, name = "flist"))]
       Levene.model <- stats::lm(model.Res2 ~ group, data=data) #ANOVA of the squared residuals
       homo.test <- stats::anova(Levene.model) #displays the results
@@ -162,8 +162,10 @@ mlm_assumptions <- function(model, re_type = c("NA")) {
       }
       names(homo.test) <- names(lme4::getME(model, name = "flist"))
     }
+    data <- data[,-which(colnames(data)=="group")]
     predicted <- stats::predict(model)
     data$predicted <- predicted
+
     #create a fitted vs residual plot
     fitted.residual.plot <- ggplot2::ggplot(data=data,mapping=ggplot2::aes(x=predicted,y=stats::residuals(model))) +
       ggplot2::geom_point() +
@@ -175,7 +177,7 @@ mlm_assumptions <- function(model, re_type = c("NA")) {
 
     # Normally distributed residuals
     V1 <- stats::resid(model)
-    V2 <- data[,y]
+    V2 <- as.vector(data[,y])[[1]]
     resid.data <- as.data.frame(cbind(V1,V2))
     resid.linearity.plot <- ggplot2::ggplot(resid.data,
                                             ggplot2::aes(x = V1, y = V2)) +
@@ -272,6 +274,9 @@ mlm_assumptions <- function(model, re_type = c("NA")) {
       }
     }
     resid.component.plots <- lapply(x.ResidComponent, ResidComponent_fun)
+    if(length(resid.component.plots)==0){
+      resid.component.plots <- "No plots produced. Plots are only produced for continuous predictors and interactions of < 3 variables."
+    }
   }
 
   # Multicollinearity
