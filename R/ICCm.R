@@ -2,7 +2,7 @@
 #'
 #' Computes ICC values for lme4-fitted mixed-effects models.
 #'
-#' @param model A linear mixed-effects model of class lmerMod or lmerModLmerTest
+#' @param model A linear mixed-effects model of class lmerMod, lmerModLmerTest, or glmerMod of type binomial
 #' @param re_type A value indicating whether a model with two random effects is nested or cross-classified
 #'
 #' @return If \code{re_type} is "NA", the proportion of variance at the random effect is computed.

@@ -3,6 +3,12 @@
 #' Reports the results from testing all assumptions of a multilevel model and provides suggestions if an assumption is not passed
 #'
 #' @param model A linear mixed-effects model of class lmerMod, lmerModLmerTest, or glmerMod of type binomial.
+#' @param re_type A value indicating whether a model with two random effects is nested or cross-classified
+#'
+#' @return If \code{re_type} is "NA", the proportion of variance at the random effect is computed.
+#' @return If re_type = "nested", the likeness of y scores in the same level 3 unit (the proportion of variance at Level3_factor), the likeness of y scores in the same level 2 units in the same level 3 unit (proportion of variance at Level3_factor and Level2_factor), and the likeness of level 2 units in the same level 3 unit (proportion of Level2_factor variance at Level3_factor) are computed.
+#' @return If re_type = "cc", the likeness of y scores in the same C1_factor unit (correlation between outcome values of units in same C1_factor but different C2_factor), the likeness of y scores in the same C2_factor (correlation between outcome values of units in the same C2_factor but different C2_factor), and the likeness of y scores in the same C1_factor and C2_factor combination (correlation between outcome values of units in the same C2_factor and C2_factor) are computed.
+#'
 #'
 #' @return Tests the relevant assumptions of the specified multilevel model.
 #'
@@ -27,7 +33,7 @@
 #'
 #' @export mlm_assumptions
 
-mlm_assumptions <- function(model) {
+mlm_assumptions <- function(model, re_type = c("NA")) {
 
   # Model class must be 'lmerMod' or 'lmerModLmerTest'
   if (!(inherits(model,"lmerMod")|!inherits(model,"lmerModLmerTest")|!inherits(model,"glmerMod"))) {
@@ -36,6 +42,20 @@ mlm_assumptions <- function(model) {
   }
   if(inherits(model,"glmerMod") & !stats::family(model)[[1]]=="binomial"){
     stop("Function currently only supports binomial family glmerMod models.", call. = FALSE)
+    return(NULL)
+  }
+  if (length(re_type)!=1){
+    stop("The argument re_type is not specified correctly.", call. = FALSE)
+    return(NULL)
+  }
+
+  if (is.character(re_type)==FALSE){
+    stop("The argument re_type is not specified correctly.", call. = FALSE)
+    return(NULL)
+  }
+
+  if (!(re_type%in%c("NA","nested","cc"))){
+    stop("The argument re_type is not specified correctly.", call. = FALSE)
     return(NULL)
   }
 
