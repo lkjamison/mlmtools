@@ -110,7 +110,7 @@ mlm_assumptions <- function(model, re_type = c("NA")) {
           data$interaction <- data[,int.var[1]]*data[,int.var[2]]
           int <- gsub("\\:", ".", int)
           colnames(data)[which(colnames(data)=="interaction")] <- int
-          ggplot2::ggplot(data, ggplot2::aes_string(x=int, y=yvar)) +
+          ggplot2::ggplot(data, ggplot2::aes(x=int, y=yvar)) +
             ggplot2::geom_point()+
             ggplot2::geom_smooth(formula = y ~ x, method=stats::loess) +
             ggplot2::theme_classic()
@@ -123,7 +123,8 @@ mlm_assumptions <- function(model, re_type = c("NA")) {
           ### One character, factor, or logical with numeric or integer
           else {
             data$facet <- data[,names(which(int.class != c("numeric","integer")))]
-            ggplot2::ggplot(data, ggplot2::aes_string(x=names(which(int.class == c("numeric","integer"))), y=yvar)) +
+            var <- names(which(int.class == c("numeric","integer")))
+            ggplot2::ggplot(data, ggplot2::aes(x=get(var), y=yvar)) +
               ggplot2::geom_point()+
               ggplot2::geom_smooth(formula = y ~ x, method=stats::loess) +
               ggplot2::theme_classic() +
@@ -135,7 +136,7 @@ mlm_assumptions <- function(model, re_type = c("NA")) {
     }
     # If not an interaction
     else {
-      ggplot2::ggplot(data, ggplot2::aes_string(x=xvar, y=yvar)) +
+      ggplot2::ggplot(data, ggplot2::aes(x=get(xvar), y=get(yvar))) +
         ggplot2::geom_point()+
         ggplot2::geom_smooth(formula = y ~ x, method=stats::loess) +
         ggplot2::theme_classic() +
@@ -200,8 +201,9 @@ mlm_assumptions <- function(model, re_type = c("NA")) {
   model.Res <- stats::residuals(model)
   data$model.Res <- model.Res
   if(!inherits(model,"glmerMod")){
-    resid.normality.plot <- ggplot2::qplot(sample = model.Res, data = data) +
+    resid.normality.plot <- ggplot2::ggplot(data, ggplot2::aes(sample = model.Res)) +
       ggplot2::stat_qq_line() +
+      ggplot2::stat_qq() +
       ggplot2::xlab("Theoretical Quantiles") +
       ggplot2::ylab("Standardized Residuals") +
       ggplot2::ggtitle("Normal Q-Q") +
@@ -232,7 +234,7 @@ mlm_assumptions <- function(model, re_type = c("NA")) {
             data$interaction <- data[,int.var[1]]*data[,int.var[2]]
             int <- gsub("\\:", ".", int)
             colnames(data)[which(colnames(data)=="interaction")] <- int
-            ggplot2::ggplot(data, ggplot2::aes_string(x=int, y=data[,"model.Res"])) +
+            ggplot2::ggplot(data, ggplot2::aes(x=get(int), y=model.Res)) +
               ggplot2::geom_point() +
               ggplot2::geom_smooth() +
               ggplot2::geom_hline(yintercept = 0) +
@@ -249,7 +251,8 @@ mlm_assumptions <- function(model, re_type = c("NA")) {
             ### One character, factor, or logical with numeric or integer
             else {
               data$facet <- data[,names(which(int.class != c("numeric","integer")))]
-              ggplot2::ggplot(data, ggplot2::aes_string(x=names(which(int.class == c("numeric","integer"))), y=data[,"model.Res"])) +
+              var <- names(which(int.class == c("numeric","integer")))
+              ggplot2::ggplot(data, ggplot2::aes(x=get(var), y=model.Res)) +
                 ggplot2::geom_point() +
                 ggplot2::geom_smooth() +
                 ggplot2::facet_wrap(~facet) +
@@ -264,7 +267,7 @@ mlm_assumptions <- function(model, re_type = c("NA")) {
       }
       # If not an interaction
       else {
-        ggplot2::ggplot(data, ggplot2::aes_string(x=data[,xvar], y=data[,"model.Res"])) +
+        ggplot2::ggplot(data, ggplot2::aes(x=get(xvar), y=model.Res)) +
           ggplot2::geom_point() +
           ggplot2::geom_smooth() +
           ggplot2::geom_hline(yintercept = 0) +
