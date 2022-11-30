@@ -17,7 +17,7 @@ withinPlot(
   se = FALSE,
   full_range = FALSE,
   lty = 1,
-  size = 2
+  linewidth = 2
 )
 }
 \arguments{
@@ -45,7 +45,7 @@ withinPlot(
 
 \item{lty}{Line type.}
 
-\item{size}{Width of fit line.}
+\item{linewidth}{Width of fit line.}
 }
 \value{
 Produces a plot of the within-group associations between an outcome and predictor variable.

@@ -18,14 +18,27 @@ Computes the percent variance explained by the model.
 Calculates variance explained by lme4-fitted mixed-effects models.
 }
 \examples{
-# Read in data
+# Gaussian
+## Read in data
 data(instruction)
-# Center mathkind by classid
+## Center mathkind by classid
 center(dataset = instruction, x = "mathkind", grouping = "classid")
-# Create model
+## Create model
 mod <- lme4::lmer(mathgain ~ classid_mathkind.cmn +
 classid_mathkind.devcmn + (1 | classid), data = instruction)
-# Calculate r-squared
+## Calculate r-squared
+### To repress output: use invisible()
+rsq <- rsqmlm(mod)
+rsq
+rsq$marginal
+rsq$conditional
+
+# Logistic
+## Read in data
+data(reporting)
+## Create model
+mod <- lme4::glmer(mention.outliers ~ Basics + (1 | Journal), data = reporting, family = "binomial")
+## Calculate r-squared
 ### To repress output: use invisible()
 rsq <- rsqmlm(mod)
 rsq

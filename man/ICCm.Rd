@@ -7,7 +7,7 @@
 ICCm(model, re_type = c("NA"))
 }
 \arguments{
-\item{model}{A linear mixed-effects model of class lmerMod or lmerModLmerTest}
+\item{model}{A linear mixed-effects model of class lmerMod, lmerModLmerTest, or glmerMod of type binomial}
 
 \item{re_type}{A value indicating whether a model with two random effects is nested or cross-classified}
 }

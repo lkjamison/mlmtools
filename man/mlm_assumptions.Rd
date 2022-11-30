@@ -4,23 +4,40 @@
 \alias{mlm_assumptions}
 \title{Reports the output of testing all assumptions for a multilevel model}
 \usage{
-mlm_assumptions(model)
+mlm_assumptions(model, re_type = c("NA"))
 }
 \arguments{
 \item{model}{A linear mixed-effects model of class lmerMod, lmerModLmerTest, or glmerMod of type binomial.}
+
+\item{re_type}{A value indicating whether a model with two random effects is nested or cross-classified}
 }
 \value{
+If \code{re_type} is "NA", the proportion of variance at the random effect is computed.
+
+If re_type = "nested", the likeness of y scores in the same level 3 unit (the proportion of variance at Level3_factor), the likeness of y scores in the same level 2 units in the same level 3 unit (proportion of variance at Level3_factor and Level2_factor), and the likeness of level 2 units in the same level 3 unit (proportion of Level2_factor variance at Level3_factor) are computed.
+
+If re_type = "cc", the likeness of y scores in the same C1_factor unit (correlation between outcome values of units in same C1_factor but different C2_factor), the likeness of y scores in the same C2_factor (correlation between outcome values of units in the same C2_factor but different C2_factor), and the likeness of y scores in the same C1_factor and C2_factor combination (correlation between outcome values of units in the same C2_factor and C2_factor) are computed.
+
 Tests the relevant assumptions of the specified multilevel model.
 }
 \description{
 Reports the results from testing all assumptions of a multilevel model and provides suggestions if an assumption is not passed
 }
 \examples{
-# Read in data
+# Gaussian
+## Read in data
 data(instruction)
-# Create model
+## Create model
 mod <- lme4::lmer(mathgain ~ mathkind + (1 | classid), data = instruction)
-# Evaluate assumptions
+## Evaluate assumptions
+mlm_assumptions(mod)
+
+# Logistic
+## Read in data
+data(reporting)
+## Create model
+mod <- lme4::glmer(mention.outliers ~ Basics + (1 | Journal), data = reporting, family = "binomial")
+## Evaluate assumptions
 mlm_assumptions(mod)
 
 }
