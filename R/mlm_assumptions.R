@@ -289,9 +289,9 @@ mlm_assumptions <- function(model, re_type = c("NA")) {
       if(any(grepl(":",x))){
         factors <- attr(terms(model), "factors")
         #names <- term.names(model)
-        X <- model.matrix(model)
+        X <- stats::model.matrix(model)
         X <- X[, -1]
-        R <- cor(X)
+        R <- stats::cor(X)
         detR <- det(R)
         x.vars <- lapply(parse(text=x), all.vars)
         predictors <- x[-which(grepl(":",x))]
@@ -328,7 +328,7 @@ mlm_assumptions <- function(model, re_type = c("NA")) {
           multicollinearity[predictor, 1:3] <- c(gvif, p, gvif^(1/(2*p)))
         }
         } else {
-          R <- cov2cor(as.matrix(vcov(model))[-1, -1])
+          R <- stats::cov2cor(as.matrix(stats::vcov(model))[-1, -1])
           detR <- det(R)
           multicollinearity <- matrix(0, length(x), 3)
           rownames(multicollinearity) <- x
