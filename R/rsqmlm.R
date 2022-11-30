@@ -166,9 +166,7 @@ rsqmlm <- function (model, by_cluster = FALSE)
       r2_marginal <- varFE/(varFE + varRE + varE)
       r2_conditional <- (varFE + varRE)/(varFE + varRE + varE)
       res <- (list(marginal = r2_marginal * 100, conditional = r2_conditional *
-                     100, byCluster = by_cluster))
-      class(res) <- "rsqmlm"
-      return(res)
+                     100, byCluster = by_cluster, type = "Gaussian"))
     }
     if (by_cluster == TRUE) {
       w <- lapply(calls, `[[`, "weights")[[1]]
