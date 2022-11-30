@@ -75,8 +75,8 @@ levelCompare <- function(model) {
   lmModel <- eval(parse(text = ff4), parent.frame())
 
   # BIC
-  bic1 <- BIC(lmModel) # lm
-  bic2 <- BIC(model)  # lmer
+  bic1 <- stats::BIC(lmModel) # lm
+  bic2 <- stats::BIC(model)  # lmer
   bDiff <- (bic1 - bic2)
 
   if(bDiff <= 0){
@@ -88,8 +88,8 @@ levelCompare <- function(model) {
   }
 
   # AIC
-  aic1 <- AIC(lmModel) # lm
-  aic2 <- AIC(model)  # lmer
+  aic1 <- stats::AIC(lmModel) # lm
+  aic2 <- stats::AIC(model)  # lmer
 
   minMod <- ifelse(aic1 < aic2, aic1, aic2)
   otherAIC <- ifelse(minMod == aic1, aic2, aic1)
