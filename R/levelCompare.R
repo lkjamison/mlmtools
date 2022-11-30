@@ -113,15 +113,9 @@ levelCompare <- function(model) {
 }
 
 
-################################ Print function
 
 
-# Print levelCompare
-#' @export
-print.levelCompare <- function(x, ...){
-    cat(paste0("According to the BIC, there is ", eviB, " evidence that the multi-level model is the more likely model."))
-    cat(paste0("According to the AIC, there is ", eviA, " evidence that the ", worseModName, " is more likely than the ",betterModName,"."))
-  }
+
 
 
 

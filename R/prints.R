@@ -11,6 +11,7 @@
 #' print.ICCm
 #' print.rsqmlm
 #' print.varCompare
+#' print.levelCompare
 #'
 #' @usage
 #' \method{print}{center}(x, ...)
@@ -20,6 +21,8 @@
 #' \method{print}{rsqmlm}(x, ...)
 #'
 #' \method{print}{varCompare}(x, ...)
+#'
+#' \method{print}{levelCompare}(x, ...)
 #'
 #' @description Prints for \code{mlmtools} objects
 #'
@@ -85,5 +88,12 @@ print.varCompare <- function(x, ...){
     cat(paste(x$model2, "explains", ""))
     cat(paste(x$varEx, "%", sep=""))
     cat(paste("","more variance than", x$model1))}
+}
+
+# Print levelCompare
+#' @export
+print.levelCompare <- function(x, ...){
+  cat(paste0("According to the BIC, there is ", eviB, " evidence that the multi-level model is the more likely model."))
+  cat(paste0("According to the AIC, there is ", eviA, " evidence that the ", worseModName, " is more likely than the ",betterModName,"."))
 }
 
