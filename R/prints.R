@@ -94,6 +94,6 @@ print.varCompare <- function(x, ...){
 #' @export
 print.levelCompare <- function(x, ...){
   cat(paste0("According to the BIC, there is ", x$eviB, " evidence that the multi-level model is the more likely model."))
-  cat(paste0("According to the AIC, there is ", x$eviA, " evidence that the ", worseModName, " is more likely than the ",betterModName,"."))
+  cat(paste0("According to the AIC, there is ", x$eviA, " evidence that the ", x$worseModName, " is more likely than the ",x$betterModName,"."))
 }
 
