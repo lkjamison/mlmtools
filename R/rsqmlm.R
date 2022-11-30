@@ -89,9 +89,9 @@ rsqmlm <- function (model, by_cluster = FALSE)
     return(NULL)
   }
   if(inherits(model,"glmerMod")){
-    X <- model.matrix(model)
+    X <- stats::model.matrix(model)
     sigma <- unclass(lme4::VarCorr(model))
-    rand <- sapply(lme4::findbars(formula(model)), function(x) as.character(x)[3])
+    rand <- sapply(lme4::findbars(stats::formula(model)), function(x) as.character(x)[3])
     rand <- rand[!duplicated(rand)]
     idx <- sapply(sapply(strsplit(rand, "\\:"), function(x) gsub("\\(|\\)", "", x)), function(x) {
     length(unique(data[, x])) == nrow(data) })
@@ -110,9 +110,9 @@ rsqmlm <- function (model, by_cluster = FALSE)
 
     sigmaD <- pi^2/3
 
-    X <- model.matrix(model)
+    X <- stats::model.matrix(model)
 
-    sigmaF <- var(as.vector(lme4::fixef(model) %*% t(X)))
+    sigmaF <- stats::var(as.vector(lme4::fixef(model) %*% t(X)))
 
     marginal <- (sigmaF) / (sigmaF + sigmaL + sigmaD + sigmaE)
 
