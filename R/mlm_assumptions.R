@@ -287,7 +287,7 @@ mlm_assumptions <- function(model, re_type = c("NA")) {
     multicollinearity <- ("Model contains fewer than 2 terms, multicollinearity cannot be assessed.\n")
     } else {
       if(any(grepl(":",x))){
-        factors <- attr(terms(model), "factors")
+        factors <- attr(stats::terms(model), "factors")
         #names <- term.names(model)
         X <- stats::model.matrix(model)
         X <- X[, -1]
