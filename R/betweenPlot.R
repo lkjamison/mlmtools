@@ -26,7 +26,7 @@
 #'
 #' @param lty Line type.
 #'
-#' @param size Width of fit line.
+#' @param linewidth Width of fit line.
 #'
 #' @references Chow, S., Gilmore, R. O., Hallquist, M., Ram, N., & Brinberg, M. (2019). Introduction to multilevel model and interactions. GitHub. https://github.com/psu-psychology/r-bootcamp-2019/blob/master/talks/RBootcamp_MLMInteractions_2019_0820_Final2.Rmd
 #'
@@ -42,7 +42,7 @@
 #'
 #' @export betweenPlot
 
-betweenPlot <- function(x, y, grouping, dataset, xlab = x, ylab = y, between_title = "Between-Group Association Plot", point_color = "gray40", line_color="black", se = FALSE, full_range = FALSE, lty=1, size=2){
+betweenPlot <- function(x, y, grouping, dataset, xlab = x, ylab = y, between_title = "Between-Group Association Plot", point_color = "gray40", line_color="black", se = FALSE, full_range = FALSE, lty=1, linewidth=2){
 
   # Error dataset must be a dataframe
   if (!is.data.frame(dataset)) {
@@ -116,8 +116,8 @@ betweenPlot <- function(x, y, grouping, dataset, xlab = x, ylab = y, between_tit
   }
 
   # full_range must be in quotes and of class character
-  if(!is.numeric(size)){
-    stop("Check that your size is numeric.", call. = FALSE)
+  if(!is.numeric(linewidth)){
+    stop("Check that your linewidth is numeric.", call. = FALSE)
     return(NULL)
   }
 
@@ -145,7 +145,7 @@ betweenPlot <- function(x, y, grouping, dataset, xlab = x, ylab = y, between_tit
 
   between.plot <- ggplot2::ggplot(data=betweenData, ggplot2::aes(x=grouping_x.cmn, y=grouping_y.cmn, group=factor(grouping)), legend=FALSE) +
     ggplot2::geom_point(colour=point_color) +
-    ggplot2::geom_smooth(ggplot2::aes(group=1), method=stats::lm, se=se, fullrange=full_range, lty=lty, size=size, color=line_color) +
+    ggplot2::geom_smooth(ggplot2::aes(group=1), method=stats::lm, se=se, fullrange=full_range, lty=lty, linewidth=linewidth, color=line_color) +
     ggplot2::xlab(xlab) + ggplot2::ylab(ylab) +
     ggplot2::theme_classic() +
     ggplot2::theme(axis.title=ggplot2::element_text(size=16),
