@@ -6,6 +6,7 @@
 \alias{print.ICCm}
 \alias{print.rsqmlm}
 \alias{print.varCompare}
+\alias{print.levelCompare}
 \title{S3Methods for Printing}
 \usage{
 \method{print}{center}(x, ...)
@@ -15,6 +16,8 @@
 \method{print}{rsqmlm}(x, ...)
 
 \method{print}{varCompare}(x, ...)
+
+\method{print}{levelCompare}(x, ...)
 }
 \arguments{
 \item{x}{Object from \code{mlmtools} package}
