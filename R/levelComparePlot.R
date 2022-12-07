@@ -231,7 +231,7 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
 
     # Select new groups
     mlm_coef <- mlm_coef[mlm_coef$grouping %in% selectNew,]
-    
+
     # create new dataset based on selection
     levelCompareData <- levelCompareData[levelCompareData$grouping %in% selectNew,]
 
@@ -308,8 +308,24 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
                                 paste("glm(", ff3, ", data = ", deparse(d), ", family = binomial", ", subset = ", deparse(subsets), ", weights = ", w, ")"))))
     glmModel <- eval(parse(text = ff4), parent.frame())
 
-    # get ols info
-    dataset$pred <- predict(glmModel, type = "response")
+    # ols
+    # plot title
+    title_OLS_plot <- plot_titles[1]
+    # save plot
+    OLS.plot <- ggplot2::ggplot(dataset, ggplot2::aes(x=get(x), y=get(y))) +
+      ggplot2::geom_point(alpha=.5) +
+      ggplot2::stat_smooth(method="glm", se=FALSE, method.args = list(family=binomial))
+
+
+
+
+
+
+
+
+
+
+
     f1 <- rownames(as.data.frame(coef(glmModel)))[-1]
     f2 <- paste(f1, collapse = "+")
     f3 <- paste0("lm(pred ~ ",f2,", data=dataset)")
@@ -317,89 +333,17 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
     ols_coef <- as.data.frame(coef(predModel))
     ols_intercept <- ols_coef[which(rownames(ols_coef)=="(Intercept)"),]
     ols_slope <- ols_coef[which(rownames(ols_coef)==x),]
-    
 
     # get mlm info
-    
-    
-    
-    
-    # need to get predict by group not just for individuals, average it?
-    
     mlm_coef <- coef(model)[[grouping]]
     mlm_coef <- mlm_coef[c("(Intercept)",x)]
-    
-    dataset$pred <- predict(model, type = "response", re.form=~schoolid) # re.form does not work in this way at least
-    
-    predModel <- eval(parse(text = f3), parent.frame())
-    
-    
-    mlm_coef$grouping <- unique(getME(m1, name = "flist")[[grouping]])
+    mlm_coef$grouping <- unique(getME(model, name = "flist")[[grouping]])
     colnames(mlm_coef) <- c("intercept","slope","grouping")
-    mlm_coef <- mlm_coef[mlm_coef$grouping %in% selectNew,]
-    
-    
 
-    
-    
 
-    ### select groups
-    # relabel data frame
-    if(center == TRUE) {
-      levelCompareData <- temp[,c("grouping_x.cmn", "grouping_y.cmn", "grouping")]
-    } else {
-      levelCompareData <- temp[,c("x","y","grouping")]
-    }
-    # rename variables
-    colnames(levelCompareData) <- c("x","y","grouping")
-    # grouping is factor
-    levelCompareData$grouping <- as.factor(levelCompareData$grouping)
-    # select groups
-    suppressWarnings(if(length(select)==1 & select == "select"){
-      selectNew <- unique(levelCompareData$grouping)[1:10]
-      selectNew <- selectNew[!is.na(selectNew)]
-    } else {
-      # select must be character type
-      if(!class(select) == "character"){
-        stop("Select argument must be character type.", call. = FALSE)
-        return(NULL)
-      }
-      # select must contain at least 2 but not more than 10 numbers
-      if(!length(select) <= 10 | !length(select) >= 2){
-        stop("Number of groups in select argument must be between 2 and 10.", call. = FALSE)
-        return(NULL)
-      }
-      # select entries must be in grouping variable
-      if(!(all(select%in%levelCompareData$grouping))){
-        stop("Groups in select argument must be present in the grouping variable.", call. = FALSE)
-        return(NULL)
-      }
-      selectNew <- select
-    })
 
-    # create new dataset based on selection
-    levelCompareData <- levelCompareData[levelCompareData$grouping %in% selectNew,]
 
-    ### plots
 
-    # ols plot
-
-    # plot title
-    title_OLS_plot <- plot_titles[1]
-    # save plot
-    OLS.plot <- ggplot2::ggplot(data = levelCompareData, ggplot2::aes(x = x, y = y)) +
-      ggplot2::geom_point(size = 1, color = "grey45") +
-      ggplot2::geom_abline(intercept = ols_intercept, slope = ols_slope, size = 1) +
-      ggplot2::ggtitle(title_OLS_plot) +
-      ggplot2::xlab(xlab) +
-      ggplot2::ylab(ylab) +
-      theme_bw() +
-      theme(plot.title = element_text(hjust = 0.5))
-    
-    
-    
-    
-  
 
 
   } else {
@@ -481,215 +425,6 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
 }
 
 
-
-
-#########################################################################################################
-
-
-
-
-#####
-library(lme4)
-library(ggplot2)
-library(lmerTest)
-library(mlmtools)
-data("instruction")
-
-m1 <- lmer(mathgain ~ 1 + ses + female + (1|schoolid), data = instruction)
-model = m1
-x = "ses"
-y = "mathgain"
-grouping = "schoolid"
-dataset = instruction
-paneled = TRUE
-select = c("select")
-center = FALSE
-xlab = x
-ylab = y
-glab = grouping
-plot_titles = c("Scatter Plot", "Scatter Plot by Group")
-
-
-
-
-model <- m1
-x <- "ses"
-y <- "mathgain"
-grouping <- "schoolid"
-dataset <- instruction
-paneled = TRUE
-center = FALSE
-xlab = x
-ylab = y
-glab = grouping
-plot_titles = c("Scatter Plot", "Scatter Plot by Group")
-
-
-
-levelCompareData <- instruction
-levelCompareData$grouping <- cut(levelCompareData$schoolid, 4)
-#names(levelCompareData)
-levelCompareData$grouping_y.cmn <- levelCompareData$mathgain
-levelCompareData$grouping_x.cmn <- levelCompareData$ses
-m1 <- lmer(grouping_y.cmn ~ 1 + grouping_x.cmn + (1|grouping), data = levelCompareData)
-#summary(m1)
-xlab = "SES"
-ylab = "Math Gain"
-glab = "School"
-
-
-m1 <- lmer(mathgain ~ 1 + ses + female + (1|schoolid), data = instruction)
-m2 <- lmer(mathgain ~ 1 + ses + female + (1|schoolid) + (1|classid), data = instruction)
-m3 <- lmer(mathgain ~ 1 + ses + female + (ses|schoolid), data = instruction)
-
-
-m1b <-lmer(mathgain ~ 1 + ses + female + (1|classid), data = instruction)
-groupingb <- "classid"
-
-
-
-
-
-
-
-
-# what about random slope that is a diff varable
-
-
-
-
-
-#####
-
-lmer(mathgain ~ 1 + ses + female + (1|schoolid), data = instruction)
-table(instruction$female)
-
-gm1 <- glmer(female ~ ses + mathgain + (1 | schoolid), data = instruction, family = binomial)
-
-model = gm1
-x = "ses"
-y = "female"
-grouping = "schoolid"
-dataset = instruction
-paneled = TRUE
-select = c("select")
-center = FALSE
-xlab = x
-ylab = y
-glab = grouping
-plot_titles = c("Scatter Plot", "Scatter Plot by Group")
-
-###
-
-tmpdat <- instruction[, c("ses", "mathgain", "schoolid")]
-
-jvalues <- with(instruction, seq(from = min(ses), to = max(ses), length.out = 100))
-
-
-
-tmp1212 <- as.data.frame(matrix(rep(NA), nrow = 100, ncol = 4))
-
-
-for(i in 1:4){
-
-  tmpdat <- tmpdat[which(tmpdat$schoolid == i),]
-
-  prePro <- lapply(jvalues, function(j) {
-    tmpdat$ses <- j
-    predict(gm1, newdata = tmpdat, type = "response")
-  })
-
-  tmp1212[,i] <- sapply(pp, function(x) {c(mean(x))})
-
-  }
-
-
-
-as.data.frame(plotdat)
-
-as.vector(plotdat)
-
-
-
-#myls <- vector("list", length = 4)
-#list(NA, NA, NA, NA)
-
-# add in LengthofStay values and convert to data frame
-plotdat <- as.data.frame(cbind(plotdat, jvalues))
-
-# better names and show the first few rows
-colnames(plotdat) <- c("PredictedProbability", "Lower", "Upper", "ses")
-head(plotdat)
-
-
-plotdat1 <- plotdat
-
-ggplot() +
-for(i in selectNew){
-  geom_line(data = plotdat1, aes(x = ses, y = PredictedProbability)) +
-}
-ylim(c(0, 1))
-
-
-
-
-ggplot() +
-  geom_line(data = plotdat1, aes(x = ses, y = PredictedProbability)) +
-  ylim(c(0, 1))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-ggplot(data = plotdat, ggplot2::aes(x = x, y = y, group = grouping)) +
-  geom_line(aes(y = var0, colour = "var0"))
-
-
-
-
-
-
-
-pp <- lapply(jvalues, function(j) {
-  newd$ses <- j
-  predict(gm1, newdata = newd, type = "response")
-})
-
-
-mlm_coef <- coef(gm1)[[schoolid]]
-
-plotdat <- t(sapply(pp, function(x) {
-  c(M = mean(x))
-}))
-
-# add in LengthofStay values and convert to data frame
-plotdat <- as.data.frame(cbind(plotdat, jvalues))
-
-# better names and show the first few rows
-colnames(plotdat) <- c("PredictedProbability", "Lower", "Upper", "LengthofStay")
-head(plotdat)
-
-ggplot(plotdat, aes(x = LengthofStay, y = PredictedProbability)) + geom_line() +
-  ylim(c(0, 1))
-
-summary(gm1)
-
-
-
-ml1 <- glm(female ~ ses + mathgain, data = instruction, family = "binomial")
-gm1 <- glmer(female ~ ses + mathgain + (1 | schoolid), data = instruction, family = binomial)
-gm2 <- glmer(female ~ ses + mathgain + (1 | schoolid) + (1 | classid), data = instruction, family = binomial)
 
 
 
