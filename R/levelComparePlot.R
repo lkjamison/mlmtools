@@ -371,8 +371,8 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
     levels.plot <- if(paneled == TRUE){
       ggplot2::ggplot(data = subset, ggplot2::aes(x = get(x), y = get(y), group = "grouping")) +
         ggplot2::facet_wrap( ~ grouping) +
-        ggplot2::geom_point(size = 1, ggplot2::aes(colour = grouping)) +
-        ggplot2::geom_line(data = plot_datas, ggplot2::aes(x_plot, y_plot)) +
+        ggplot2::geom_point(size = 1,color = "grey45") +
+        ggplot2::geom_line(data = plot_datas, ggplot2::aes(x_plot, y_plot), color = "blue") +
         ggplot2::ggtitle(title_levels_plot) +
         ggplot2::xlab(xlab) +
         ggplot2::ylab(ylab) +
@@ -397,10 +397,10 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
     stop("This family of model is not supported.", call. = FALSE)
     return(NULL)
   }
+  result <- list(OLS.plot, levels.plot)
+  return(result)
+}
 
-  suppressMessages(print(OLS.plot, levels.plot))
-}
-}
 
 
 
