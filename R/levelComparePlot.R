@@ -397,7 +397,9 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
     stop("This family of model is not supported.", call. = FALSE)
     return(NULL)
   }
+  message(c("Two plots have been returned: 'OLS.plot' and 'levels.plot'. Toggle through your 'Plots' window to view them or save them to an object to call them individually (e.g., object$OLS.plot)"))
   result <- list(OLS.plot, levels.plot)
+  names(result) <- c("OLS.plot", "levels.plot")
   return(result)
 }
 
