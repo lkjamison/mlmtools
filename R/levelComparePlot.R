@@ -337,6 +337,7 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
       }
       selectNew <- select
     })
+    title_levels_plot <- plot_titles[2]
     subset <- dataset[dataset[,grouping] %in% selectNew,]
     # save plot
     OLS.plot <- ggplot2::ggplot(plot_data) +
@@ -350,20 +351,28 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
 
     # Select new groups
     ## get mlm info
+    title_MLM_plot <- plot_titles[2]
     mlm_coef <- coef(model)[[grouping]]
     mlm_coef <- mlm_coef[c("(Intercept)",x)]
     mlm_coef$grouping <- unique(lme4::getME(model, name = "flist")[[grouping]])
     colnames(mlm_coef) <- c("intercept","slope","grouping")
+    #x_plot <- seq(min(dataset[,x]), max(dataset[,x]), by = 0.1)
+
+
+    y_plots <- plogis(t(apply(outer(x_plot,mlm_coef[,2], FUN = "*"), 1, function(x) x + mlm_coef[,1])))
+    plot_datas <- data.frame(x_plot, y_plots)
+
+    plot_datas <- data.frame(grouping = rep(unique(subset[,grouping]),each=length(x_plot)),  # Create data for lines
+                             x_plot = rep(x_plot,length(unique(subset[,grouping]))),
+                             y_plot = c(y_plots))
 
     mlm_coef <- mlm_coef[mlm_coef$grouping %in% selectNew,]
     # save plot
     levels.plot <- if(paneled == TRUE){
-      ggplot2::ggplot(data = subset, ggplot2::aes(x = get(x), y = get(y), group = get(grouping))) +
-        ggplot2::facet_wrap( ~ get(grouping)) +
+      ggplot2::ggplot(data = subset, ggplot2::aes(x = get(x), y = get(y), group = "grouping")) +
+        ggplot2::facet_wrap( ~ grouping) +
         ggplot2::geom_point(size = 1, ggplot2::aes(colour = grouping)) +
-        # LEFT OFF HERE, NEED TO PRODUCE PLOT DATA FOR EACH GROUP FOR THE LINES
-        ggplot2::ggplot(plot_data) +
-        ggplot2::geom_line(ggplot2::aes(x_plot, y_plot), col = "blue") +
+        ggplot2::geom_line(data = plot_datas, ggplot2::aes(x_plot, y_plot)) +
         ggplot2::ggtitle(title_levels_plot) +
         ggplot2::xlab(xlab) +
         ggplot2::ylab(ylab) +
@@ -371,91 +380,23 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
         ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
                        legend.position="None")
     } else {
-      ggplot2::ggplot(data = levelCompareData, ggplot2::aes(x = x, y = y, color = grouping)) +
-        ggplot2::geom_point(size = 1, show.legend = TRUE) +
-        ggplot2::guides(color = guide_legend(override.aes=list(shape = 15, size = 3))) +
-        ggplot2::geom_abline(data = mlm_coef, aes(intercept = intercept, slope = slope), col = mlm_coef$grouping) +
+      subset[,grouping] <- as.factor(subset[,grouping])
+      plot_datas[,"grouping"] <- as.factor(plot_datas[,"grouping"])
+      ggplot2::ggplot(data = subset, ggplot2::aes(x = get(x), y = get(y))) +
+        ggplot2::geom_point(size = 1, ggplot2::aes(color = get(grouping))) +
+        ggplot2::geom_line(data = plot_datas, ggplot2::aes(x_plot, y_plot, group = grouping, color = grouping)) +
         ggplot2::ggtitle(title_levels_plot) +
         ggplot2::xlab(xlab) +
         ggplot2::ylab(ylab) +
-        ggplot2::labs(color=glab) +
         ggplot2::theme_bw() +
-        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
+        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                       legend.position="None")
     }
 
   } else {
     stop("This family of model is not supported.", call. = FALSE)
     return(NULL)
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  ggplot2::ggplot(data = levelCompareData, ggplot2::aes(x = x, y = y, group = grouping)) +
-    ggplot2::facet_wrap( ~ grouping) +
-    ggplot2::geom_point(size = 1, ggplot2::aes(colour = grouping)) +
-    ggplot2::geom_smooth(method = "lm", se = TRUE, colour = "black") +
-    ggplot2::ggtitle(title_levels_plot) +
-    ggplot2::xlab(xlab) +
-    ggplot2::ylab(ylab) +
-    theme_bw() +
-    theme(plot.title = element_text(hjust = 0.5),
-          legend.position="None")
-
-  ggplot2::ggplot(data = levelCompareData, ggplot2::aes(x = x, y = y, group = grouping)) +
-    ggplot2::facet_wrap( ~ grouping) +
-    ggplot2::geom_point(size = 1, ggplot2::aes(colour = grouping)) +
-    geom_abline(data = mlm_coef, aes(intercept = intercept, slope = slope), col = "blue")
-
-
-
-  ## First (each plot has an intercept of 12, but slope from topleft to bottom-right start from 1 to 9):
-  ggplot(nine) + aes(ses, math) + geom_point(size = 1) +
-    facet_wrap( ~ sch.id) +
-    geom_abline(data = slopes_df, aes(intercept = interc, slope = slopes), col = "blue")
-
-
-  newDat <- as.data.frame(lme4::getME(m1, name = "flist")[[grouping]])
-  colnames(newDat) <- "grouping"
-  newDat$newGroup <- with(newDat, match(grouping, unique(grouping)))
-  newDat$intercept <- rep(NA,nrow(newDat))
-  newDat$slope <- rep(NA,nrow(newDat))
-
-
-
-
-
-
-
-
-
-
 
   suppressMessages(print(OLS.plot, levels.plot))
 }
