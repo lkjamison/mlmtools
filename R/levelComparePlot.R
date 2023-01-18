@@ -38,6 +38,10 @@
 #' # Logistic
 #' ## Read in data
 #' data(mtcars)
+#' reporting$final.sample.size <- scale(as.numeric(reporting$final.sample.size))
+#' reporting$mention.outliers <- ifelse(reporting$mention.outliers=="No",0,1)
+#' mod <- lme4::glmer(mention.outliers ~ final.sample.size + (1 | Journal), data = reporting, family = "binomial")
+#' levelComparePlot(mod, x = "final.sample.size", y = "mention.outliers", grouping = "Journal", dataset = reporting, paneled = FALSE)
 #'
 #'
 #' @export levelComparePlot
@@ -362,6 +366,7 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
     mlm_coef <- mlm_coef[c("(Intercept)",x)]
     mlm_coef$grouping <- unique(lme4::getME(model, name = "flist")[[grouping]])
     colnames(mlm_coef) <- c("intercept","slope","grouping")
+    mlm_coef <- mlm_coef[mlm_coef$grouping %in% selectNew,]
     y_plots <- plogis(t(apply(outer(x_plot,mlm_coef[,2], FUN = "*"), 1, function(x) x + mlm_coef[,1])))
     plot_datas <- data.frame(x_plot, y_plots)
 
@@ -369,7 +374,7 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
                              x_plot = rep(x_plot,length(unique(subset[,grouping]))),
                              y_plot = c(y_plots))
 
-    mlm_coef <- mlm_coef[mlm_coef$grouping %in% selectNew,]
+
     # save plot
     levels.plot <- if(paneled == TRUE){
       ggplot2::ggplot(data = subset, ggplot2::aes(x = get(x), y = get(y), group = "grouping")) +
