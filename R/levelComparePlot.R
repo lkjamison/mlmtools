@@ -26,13 +26,19 @@
 #'
 #' @param plot_titles Character vectors specifying the titles for the plots.
 #'
-#' @references
-#'
 #' @examples
+#' # Gaussian
+#' ## Read in data
+#' data(instruction)
+#' ## Create model
+#' mod <- lme4::lmer(mathgain ~ mathkind + (1 | classid), data = instruction)
+#' ## Generate plots
+#' levelComparePlot(mod, x = "mathkind", y = "mathgain", grouping = "classid", dataset = instruction)
 #'
-#' \donttest{
+#' # Logistic
+#' ## Read in data
+#' data(mtcars)
 #'
-#' }
 #'
 #' @export levelComparePlot
 
@@ -244,7 +250,7 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
     # save plot
     OLS.plot <- ggplot2::ggplot(data = levelCompareData, ggplot2::aes(x = x, y = y)) +
       ggplot2::geom_point(size = 1, color = "grey45") +
-      ggplot2::geom_abline(intercept = ols_intercept, slope = ols_slope, size = 1) +
+      ggplot2::geom_abline(intercept = ols_intercept, slope = ols_slope, linewidth = 1) +
       ggplot2::ggtitle(title_OLS_plot) +
       ggplot2::xlab(xlab) +
       ggplot2::ylab(ylab) +
@@ -260,7 +266,7 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
       ggplot2::ggplot(data = levelCompareData, ggplot2::aes(x = x, y = y, group = grouping)) +
         ggplot2::facet_wrap( ~ grouping) +
         ggplot2::geom_point(size = 1, ggplot2::aes(colour = grouping)) +
-        ggplot2::geom_abline(data = mlm_coef, aes(intercept = intercept, slope = slope), col = "black") +
+        ggplot2::geom_abline(data = mlm_coef, ggplot2::aes(intercept = intercept, slope = slope), col = "black") +
         ggplot2::ggtitle(title_levels_plot) +
         ggplot2::xlab(xlab) +
         ggplot2::ylab(ylab) +
@@ -270,8 +276,8 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
     } else {
       ggplot2::ggplot(data = levelCompareData, ggplot2::aes(x = x, y = y, color = grouping)) +
         ggplot2::geom_point(size = 1, show.legend = TRUE) +
-        ggplot2::guides(color = guide_legend(override.aes=list(shape = 15, size = 3))) +
-        ggplot2::geom_abline(data = mlm_coef, aes(intercept = intercept, slope = slope), col = mlm_coef$grouping) +
+        ggplot2::guides(color = ggplot2::guide_legend(override.aes=list(shape = 15, size = 3))) +
+        ggplot2::geom_abline(data = mlm_coef, ggplot2::aes(intercept = intercept, slope = slope), col = mlm_coef$grouping) +
         ggplot2::ggtitle(title_levels_plot) +
         ggplot2::xlab(xlab) +
         ggplot2::ylab(ylab) +
@@ -356,9 +362,6 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
     mlm_coef <- mlm_coef[c("(Intercept)",x)]
     mlm_coef$grouping <- unique(lme4::getME(model, name = "flist")[[grouping]])
     colnames(mlm_coef) <- c("intercept","slope","grouping")
-    #x_plot <- seq(min(dataset[,x]), max(dataset[,x]), by = 0.1)
-
-
     y_plots <- plogis(t(apply(outer(x_plot,mlm_coef[,2], FUN = "*"), 1, function(x) x + mlm_coef[,1])))
     plot_datas <- data.frame(x_plot, y_plots)
 
