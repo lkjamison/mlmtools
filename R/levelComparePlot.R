@@ -37,11 +37,13 @@
 #'
 #' # Logistic
 #' ## Read in data
-#' data(mtcars)
+#' data(reporting)
 #' reporting$final.sample.size <- scale(as.numeric(reporting$final.sample.size))
 #' reporting$mention.outliers <- ifelse(reporting$mention.outliers=="No",0,1)
-#' mod <- lme4::glmer(mention.outliers ~ final.sample.size + (1 | Journal), data = reporting, family = "binomial")
-#' levelComparePlot(mod, x = "final.sample.size", y = "mention.outliers", grouping = "Journal", dataset = reporting, paneled = FALSE)
+#' mod <- lme4::glmer(mention.outliers ~ final.sample.size +
+#' (1 | Journal), data = reporting, family = "binomial")
+#' levelComparePlot(mod, x = "final.sample.size", y = "mention.outliers",
+#' grouping = "Journal", dataset = reporting, paneled = FALSE)
 #'
 #'
 #' @export levelComparePlot
@@ -106,25 +108,25 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
   }
 
   # xlab must be in quotes and of class character
-  if(!class(xlab) == "character"){
+  if(!inherits(xlab,"character")){
     stop("xlab argument must be character type.", call. = FALSE)
     return(NULL)
   }
 
   # ylab must be in quotes and of class character
-  if(!class(ylab) == "character"){
+  if(!inherits(ylab,"character")){
     stop("ylab argument must be character type.", call. = FALSE)
     return(NULL)
   }
 
   # glab must be in quotes and of class character
-  if(!class(glab) == "character"){
+  if(!inherits(glab,"character")){
     stop("glab argument must be character type.", call. = FALSE)
     return(NULL)
   }
 
   # plot_titles must be in quotes and of class character
-  if(!class(plot_titles) == "character"){
+  if(!inherits(plot_titles,"character")){
     stop("plot_titles argument must be character type.", call. = FALSE)
     return(NULL)
   }
@@ -195,12 +197,12 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
     lmModel <- eval(parse(text = ff4), parent.frame())
 
     # get ols info
-    ols_coef <- as.data.frame(coef(lmModel))
+    ols_coef <- as.data.frame(stats::coef(lmModel))
     ols_intercept <- ols_coef[which(rownames(ols_coef)=="(Intercept)"),]
     ols_slope <- ols_coef[which(rownames(ols_coef)==x),]
 
     # get mlm info
-    mlm_coef <- coef(model)[[grouping]]
+    mlm_coef <- stats::coef(model)[[grouping]]
     mlm_coef <- mlm_coef[c("(Intercept)",x)]
     mlm_coef$grouping <- unique(lme4::getME(model, name = "flist")[[grouping]])
     colnames(mlm_coef) <- c("intercept","slope","grouping")
@@ -222,7 +224,7 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
       selectNew <- selectNew[!is.na(selectNew)]
     } else {
       # select must be character type
-      if(!class(select) == "character"){
+      if(!inherits(select,"character")){
         stop("Select argument must be character type.", call. = FALSE)
         return(NULL)
       }
@@ -270,7 +272,7 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
       ggplot2::ggplot(data = levelCompareData, ggplot2::aes(x = x, y = y, group = grouping)) +
         ggplot2::facet_wrap( ~ grouping) +
         ggplot2::geom_point(size = 1, ggplot2::aes(colour = grouping)) +
-        ggplot2::geom_abline(data = mlm_coef, ggplot2::aes(intercept = intercept, slope = slope), col = "black") +
+        ggplot2::geom_abline(data = mlm_coef, ggplot2::aes(intercept = mlm_coef$intercept, slope = mlm_coef$slope), col = "black") +
         ggplot2::ggtitle(title_levels_plot) +
         ggplot2::xlab(xlab) +
         ggplot2::ylab(ylab) +
@@ -281,7 +283,7 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
       ggplot2::ggplot(data = levelCompareData, ggplot2::aes(x = x, y = y, color = grouping)) +
         ggplot2::geom_point(size = 1, show.legend = TRUE) +
         ggplot2::guides(color = ggplot2::guide_legend(override.aes=list(shape = 15, size = 3))) +
-        ggplot2::geom_abline(data = mlm_coef, ggplot2::aes(intercept = intercept, slope = slope), col = mlm_coef$grouping) +
+        ggplot2::geom_abline(data = mlm_coef, ggplot2::aes(intercept = mlm_coef$intercept, slope = mlm_coef$slope), col = mlm_coef$grouping) +
         ggplot2::ggtitle(title_levels_plot) +
         ggplot2::xlab(xlab) +
         ggplot2::ylab(ylab) +
@@ -321,9 +323,9 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
     # ols
     # plot title
     title_OLS_plot <- plot_titles[1]
-    coefs <- coef(glmModel)
+    coefs <- stats::coef(glmModel)
     x_plot <- seq(min(dataset[,x]), max(dataset[,x]), by = 0.1)
-    y_plot <- plogis(coefs[1] + coefs[2] * x_plot)
+    y_plot <- stats::plogis(coefs[1] + coefs[2] * x_plot)
     plot_data <- data.frame(x_plot, y_plot)
     # select groups
     suppressWarnings(if(length(select)==1 & select == "select"){
@@ -331,7 +333,7 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
       selectNew <- selectNew[!is.na(selectNew)]
     } else {
       # select must be character type
-      if(!class(select) == "character"){
+      if(!inherits(select,"character")){
         stop("Select argument must be character type.", call. = FALSE)
         return(NULL)
       }
@@ -362,12 +364,12 @@ levelComparePlot <- function(model, x, y, grouping, dataset, paneled = TRUE, sel
     # Select new groups
     ## get mlm info
     title_MLM_plot <- plot_titles[2]
-    mlm_coef <- coef(model)[[grouping]]
+    mlm_coef <- stats::coef(model)[[grouping]]
     mlm_coef <- mlm_coef[c("(Intercept)",x)]
     mlm_coef$grouping <- unique(lme4::getME(model, name = "flist")[[grouping]])
     colnames(mlm_coef) <- c("intercept","slope","grouping")
     mlm_coef <- mlm_coef[mlm_coef$grouping %in% selectNew,]
-    y_plots <- plogis(t(apply(outer(x_plot,mlm_coef[,2], FUN = "*"), 1, function(x) x + mlm_coef[,1])))
+    y_plots <- stats::plogis(t(apply(outer(x_plot,mlm_coef[,2], FUN = "*"), 1, function(x) x + mlm_coef[,1])))
     plot_datas <- data.frame(x_plot, y_plots)
 
     plot_datas <- data.frame(grouping = rep(unique(subset[,grouping]),each=length(x_plot)),  # Create data for lines
